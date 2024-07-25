@@ -8,7 +8,10 @@
         "баттерфляй": ["50м"]
     };
 
-    // Функция для обновления списка дистанций
+    /**
+     * Обновляет список дистанций для выбранной дисциплины.
+     * @param {HTMLElement} selectElement - селект дисциплины.
+     */
     function updateDistanceOptions(selectElement) {
         const selectedDiscipline = selectElement.value;
         const distanceSelect = selectElement.closest('.discipline-section').querySelector('.distance-select');
@@ -19,7 +22,7 @@
 
         // Добавление новых опций
         if (disciplineOptions[selectedDiscipline]) {
-            disciplineOptions[selectedDiscipline].forEach(function (distance) {
+            disciplineOptions[selectedDiscipline].forEach(distance => {
                 const option = document.createElement('option');
                 option.value = distance;
                 option.text = distance;
@@ -31,45 +34,48 @@
         }
     }
 
-    // Обработчик изменений для всех существующих селектов дисциплин
-    document.querySelectorAll('.discipline-select').forEach(function (selectElement) {
-        updateDistanceOptions(selectElement);
-        selectElement.addEventListener('change', function () {
-            updateDistanceOptions(this);
+    /**
+     * Инициализирует обновление опций для всех существующих селектов дисциплин.
+     */
+    function initializeDisciplineSelects() {
+        document.querySelectorAll('.discipline-select').forEach(selectElement => {
+            updateDistanceOptions(selectElement);
+            selectElement.addEventListener('change', function () {
+                updateDistanceOptions(this);
+            });
         });
-    });
+    }
 
-    // Обработчик изменений для динамически добавляемых селектов
+    /**
+     * Скрывает или показывает кнопки удаления участников и дисциплин.
+     */
+    function toggleRemoveButtons() {
+        document.querySelectorAll('.participant-section').forEach((participantSection, participantIndex) => {
+            const disciplinesCount = participantSection.querySelectorAll('.discipline-section').length;
+            participantSection.querySelectorAll('.remove-discipline-button').forEach((button, disciplineIndex) => {
+                button.style.display = disciplineIndex > 0 || participantIndex === 0 ? 'inline-block' : 'none';
+            });
+            participantSection.querySelector('.remove-participant-button').style.display = participantIndex > 0 ? 'inline-block' : 'none';
+        });
+    }
+
+    // Инициализация при загрузке документа
+    initializeDisciplineSelects();
+    toggleRemoveButtons();
+
+    // Обработчик для динамически добавляемых селектов дисциплин
     document.body.addEventListener('change', function (event) {
         if (event.target.matches('.discipline-select')) {
             updateDistanceOptions(event.target);
         }
     });
 
-    // Функция для скрытия/показа кнопок удаления
-    function toggleRemoveButtons() {
-        const participantsCount = document.querySelectorAll('.participant-section').length;
-        document.querySelectorAll('.participant-section').forEach(function (participantSection, participantIndex) {
-            const disciplinesCount = participantSection.querySelectorAll('.discipline-section').length;
-            participantSection.querySelectorAll('.remove-discipline-button').forEach(function (button, disciplineIndex) {
-                button.style.display = disciplineIndex > 0 || participantIndex == 0 ? 'inline-block' : 'none';
-            });
-            participantSection.querySelector('.remove-participant-button').style.display = participantIndex > 0 ? 'inline-block' : 'none';
-        });
-    }
-
-    // Вызов функции для начального состояния
-    toggleRemoveButtons();
-
-    // Обработчик для динамически добавляемых участников и дисциплин
+    // Обработчик для динамически добавляемых или удаляемых элементов
     document.body.addEventListener('click', function (event) {
         if (event.target.matches('.add-discipline-button, .add-participant-button, .remove-discipline-button, .remove-participant-button')) {
-            setTimeout(function () {
+            setTimeout(() => {
                 toggleRemoveButtons();
-                // Повторное обновление дистанций для новых дисциплин
-                document.querySelectorAll('.discipline-select').forEach(function (selectElement) {
-                    updateDistanceOptions(selectElement);
-                });
+                initializeDisciplineSelects();
             }, 100); // Задержка для завершения действия
         }
     });
