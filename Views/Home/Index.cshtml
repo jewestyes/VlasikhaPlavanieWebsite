@@ -1,0 +1,132 @@
+﻿@{
+	ViewData["Title"] = "Home Page";
+}
+
+<body>
+	<main>
+		<div class="container registration-section">
+			<div class="registration">
+				<h2>Регистрация на турнир "Кубок Главы Городского Округа Власиха"</h2>
+				<h3>1 этап</h3>
+				<p>29 сентября 2024/Власиха/мкр. Школьный д.10</p>
+				<a asp-controller="Registration" asp-action="Index">
+					<button class="reg-button">Зарегистрироваться</button>
+				</a>
+			</div>
+
+
+			<div id="about" class="tournament-info">
+				<div class="column">
+					<div class="col-lg-6">
+						<div class="box-item">
+							<h4><a href="#">Положение <i class="fas fa-download"></i></a></h4>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="box-item">
+							<h4><a href="#">Регламент <i class="fas fa-download"></i></a></h4>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="box-item">
+							<h4><a href="#">Памятка <i class="fas fa-download"></i></a></h4>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					<div class="col-lg-6">
+						<div class="box-item">
+							<h4><a href="#">Online результаты <i class="fas fa-download"></i></a></h4>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="box-item">
+							<h4><a href="#">Первый лист <i class="fas fa-download"></i></a></h4>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="box-item">
+							<h4><a href="#">Список судей <i class="fas fa-download"></i></a></h4>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="row">
+			<div class="col-lg-3">
+				<div class="service-item first-service">
+					<div class="icon"></div>
+					<h4>Именная медицинская заявка</h4>
+					<div class="button">
+						<a>Ознакомиться<i class="fa fa-arrow-right"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="service-item second-service">
+					<div class="icon"></div>
+					<h4>Заявление на перенос денежных средств</h4>
+					<div class="button">
+						<a>Ознакомиться<i class="fa fa-arrow-right"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="service-item third-service">
+					<div class="icon"></div>
+					<h4>Видеотрансляция</h4>
+					<div class="button">
+						<a>Смотреть<i class="fa fa-arrow-right"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="service-item fourth-service">
+					<div class="icon"></div>
+					<h4>Согласие на обработку персональных данных</h4>
+					<p>До 18 лет</p>
+					<div class="button">
+						<a>Ознакомиться<i class="fa fa-arrow-right"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="service-item fifth-service">
+					<div class="icon"></div>
+					<h4>Согласие на обработку персональных данных</h4>
+					<p>Старше 18 лет</p>
+					<div class="button">
+						<a>Ознакомиться<i class="fa fa-arrow-right"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="service-item sixth-service">
+					<div class="icon"></div>
+					<h4>Архив протоколов</h4>
+					<div class="button">
+						<a>Ознакомиться<i class="fa fa-arrow-right"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container contacts-map-section">
+			<div class="contacts">
+				<h3>Контакты</h3>
+				<p><i class="fas fa-phone"></i> <span class="contact-info">+7 903 599 12 90 </span><span class="contact-info"> - Игумнова Ольга Александровна </span><br>Главный судья соревнований </p>
+				<p><i class="fas fa-phone"></i> <span class="contact-info">+7 930 939 28 45 </span><span class="contact-info"> - Будяев Денис Николаевич </span><br>Главный секретарь соревнований </p>
+				<p><i class="fas fa-phone"></i> <span class="contact-info">+7 925 820 71 41 </span><span class="contact-info"> - Будяева Юлия Владимировна </span><br> Организатор соревнований (по вопросам оплаты)</p>
+				<p><i class="fas fa-map-marker-alt"></i> <span class="contact-info"> п. Власиха, мкр. Школьный д. 10 место проведения (п/б перспектива, 25 м.)</span></p>
+				<p><i class="fas fa-envelope"></i><span class="contact-info"> plavanievlasiha@yandex.ru </span></p>
+			</div>
+			<div class="map">
+				<script type="text/javascript" charset="utf-8"
+						async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A9dc7a9176f86ac7cba00634c044a2b923ef568203026665366bebd4d4c01af17&amp;
+							width=600&amp;height=400&amp;lang=en_FR&amp;scroll=true"></script>
+			</div>
+		</div>
+	</main>
+</body>

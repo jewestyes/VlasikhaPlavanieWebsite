@@ -1,0 +1,113 @@
+﻿@model VlasikhaPlavanieWebsite.Models.RegistrationViewModel
+
+@{
+    ViewData["Title"] = "Регистрация на турнир";
+}
+
+<link rel="stylesheet" href="~/css/registration.css" asp-append-version="true" />
+
+<div class="form-container new-style">
+    <h2>Регистрация на турнир</h2>
+    <form asp-action="Submit" method="post">
+        @for (int i = 0; i < Model.Participants.Count; i++)
+        {
+            <div class="participant-section">
+                <h3>Участник №@(i + 1)</h3>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Фамилия</label>
+                        <input asp-for="Participants[i].LastName" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Имя</label>
+                        <input asp-for="Participants[i].FirstName" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Отчество</label>
+                        <input asp-for="Participants[i].MiddleName" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Дата рождения</label>
+                        <input asp-for="Participants[i].BirthDate" type="date" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Пол</label>
+                        <select asp-for="Participants[i].Gender" class="form-control">
+                            <option value="Мужской">Мужской</option>
+                            <option value="Женский">Женский</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Телефон</label>
+                        <input asp-for="Participants[i].Phone" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Email</label>
+                        <input asp-for="Participants[i].Email" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Город/команда</label>
+                        <input asp-for="Participants[i].CityOrTeam" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Разряд</label>
+                        <input asp-for="Participants[i].Rank" class="form-control" />
+                    </div>
+                </div>
+
+                <h4>Выберите дисциплину</h4>
+                @for (int j = 0; j < Model.Participants[i].Disciplines.Count; j++)
+                {
+                    <div class="discipline-section">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>Дисциплина</label>
+                                <select asp-for="Participants[i].Disciplines[j].Name" class="form-control discipline-select">
+                                    <option value="на спине">на спине</option>
+                                    <option value="вольный стиль">вольный стиль</option>
+                                    <option value="классические ласты">классические ласты</option>
+                                    <option value="комплексное плавание">комплексное плавание</option>
+                                    <option value="брасс">брасс</option>
+                                    <option value="баттерфляй">баттерфляй</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Выберите дистанцию</label>
+                                <select asp-for="Participants[i].Disciplines[j].Distance" class="form-control distance-select" data-current-distance="@Model.Participants[i].Disciplines[j].Distance">
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Дата старта</label>
+                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+                        @if (j > 0 || (i == 0 && j > 0))
+                        {
+                            <button type="submit" formaction="/Registration/RemoveDiscipline?participantIndex=@i&disciplineIndex=@j" class="btn btn-danger remove-discipline-button">Удалить дисциплину</button>
+                        }
+                    </div>
+                }
+
+                <button type="submit" formaction="/Registration/AddDiscipline?participantIndex=@i" class="btn add-discipline-button">Добавить дисциплину</button>
+
+                @if (i > 0)
+                {
+                    <button type="submit" formaction="/Registration/RemoveParticipant?participantIndex=@i" class="btn btn-danger remove-participant-button">Удалить участника</button>
+                }
+            </div>
+        }
+
+        <button type="submit" formaction="/Registration/AddParticipant" class="btn add-participant-button">Добавить участника</button>
+        <button type="submit" formaction="/Registration/Submit" class="btn btn-success">К оплате</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/registration.js"></script>
+}

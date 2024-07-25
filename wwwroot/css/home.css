@@ -1,0 +1,468 @@
+/* ------------------------------------------------------
+                    Global Styles
+------------------------------------------------------ */
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    line-height: 1.2;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+}
+
+    body::before {
+        overflow: hidden;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('/images/slider-left-dec.png') no-repeat;
+        background-size: contain;
+        z-index: -1;
+    }
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border-radius: 15px;
+    margin: 0 auto;
+    height: 100px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+    header h1 {
+        font-size: 24px;
+    }
+
+nav a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+    nav a:hover {
+        color: #3498db;
+        background-color: #ecf0f1; 
+        border-radius: 4px;
+    }
+
+.container {
+    flex: 1;
+}
+
+footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 20px;
+}
+
+.social-logos {
+    display: flex;
+    gap: 10px;
+}
+
+    .social-logos img {
+        height: 50px;
+        width: auto;
+    }
+
+
+/* ------------------------------------------------------
+                    Layout and Containers
+------------------------------------------------------ */
+
+.container {
+    position: relative; 
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    padding: 32px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* ------------------------------------------------------
+                    Logo Styles
+------------------------------------------------------ */
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+    .logo-container img {
+        height: 120px;
+        margin-right: 20px;
+    }
+
+.tournament-logo img {
+    height: 120px;
+}
+
+/* ------------------------------------------------------
+                    Registration Section
+------------------------------------------------------ */
+
+.registration-section,
+.contacts-map-section {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.registration,
+.contacts,
+.map {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+    .contacts p {
+        margin-top: 15px;
+        color: #7f8c8d;
+    }
+
+        .contacts p i {
+            margin-right: 10px;
+        }
+
+        .contacts p .contact-info {
+            margin-top: 10px;
+            font-size: 20px;
+            color: #000;
+        }
+
+.registration {
+    display: block;
+    margin: 20px auto;
+    align-items: center;
+    position: relative;
+}
+
+    .registration::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 25%;
+        background: url('/images/footer-bg.png') no-repeat;
+        background-size: cover;
+    }
+
+    .registration h2,
+    .registration h3 {
+        font-size: 30px;
+        margin: 0 0 10px;
+    }
+
+    .registration p {
+        font-size: 25px;
+    }
+
+.reg-button {
+    background-color: #3498db; /* Основной цвет фона кнопки */
+    color: #ffffff; /* Цвет текста кнопки */
+    font-size: 20px; /* Размер шрифта */
+    border: none; /* Убираем стандартные границы */
+    padding: 12px 24px; /* Отступы внутри кнопки */
+    margin: 10px 0; /* Отступы вокруг кнопки */
+    border-radius: 8px; /* Закругление углов кнопки */
+    cursor: pointer; /* Указатель курсора при наведении */
+    transition: background-color 0.3s, transform 0.3s; /* Плавные переходы */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень для кнопки */
+    position: relative; /* Позиционирование относительно контейнера */
+}
+
+    .reg-button:hover {
+        background-color: #2980b9; /* Цвет фона при наведении */
+        transform: translateY(-2px); /* Легкое поднятие кнопки при наведении */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Более выраженная тень при наведении */
+    }
+
+    .reg-button:active {
+        background-color: #1f6f9f; /* Цвет фона при нажатии */
+        transform: translateY(0); /* Возвращение кнопки в исходное состояние */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Уменьшенная тень при нажатии */
+    }
+
+/* ------------------------------------------------------
+                    Navigation Styles
+------------------------------------------------------ */
+
+nav {
+    margin: 20px 0;
+}
+
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        gap: 20px;
+    }
+
+        nav ul li {
+            margin: 0;
+        }
+
+            nav ul li a {
+                text-decoration: none;
+                color: #ecf0f1;
+                font-family: "Roboto", sans-serif;
+                font-size: 26px;
+                padding: 10px 20px;
+                border-radius: 4px;
+            }
+
+
+/* ------------------------------------------------------
+                    Contact & Map Styles
+------------------------------------------------------ */
+
+.contacts {
+    width: 70%;
+}
+
+.map {
+    width: 25%;
+}
+
+/* ------------------------------------------------------
+                    Two Column Links
+------------------------------------------------------ */
+
+.links-heading-container {
+    width: 100%;
+    text-align: center;
+}
+
+.links-heading {
+    margin-bottom: 20px;
+}
+
+.two-column-links {
+    padding: 32px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.links-column {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ------------------------------------------------------
+                    Tournament Info Styles
+------------------------------------------------------ */
+
+
+.tournament-info {
+    display: flex;
+    justify-content: space-between;
+    width: 700px;
+}
+
+.box-item {
+    width: 250px;
+}
+
+.tournament-info .box-item {
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.07);
+    padding: 10px 30px;
+    background-color: #fff;
+    border-radius: 40px;
+    margin-bottom: 30px;
+}
+
+    .tournament-info .box-item h4 a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-decoration: none;
+        color: inherit;
+    }
+
+        .tournament-info .box-item h4 a i.download-icon {
+            margin-left: 10px;
+        }
+
+    .tournament-info .box-item:hover h4 a {
+        color: #4b8ef1;
+    }
+
+.tournament-info .gradient-button {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+/* ------------------------------------------------------
+                    Services Section Styles
+------------------------------------------------------ */
+
+.services {
+    text-align: center;
+    margin-bottom: 80px;
+    margin: 0 auto;
+    position: relative; 
+}
+
+    .services:before {
+        content: "";
+        background-image: url(../images/services-right-dec.png);
+        background-repeat: no-repeat;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 1136px;
+        height: 244px;
+        z-index: 0;
+    }
+
+    .services:after {
+        content: "";
+        background-image: url(../images/services-left-dec.png);
+        background-repeat: no-repeat;
+        position: absolute;
+        left: 0;
+        bottom: -300px;
+        width: 261px;
+        height: 368px;
+        z-index: 0;
+    }
+
+.service-item {
+    position: relative;
+    z-index: 1;
+    padding: 30px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 10px;
+    border-top-right-radius: 50px;
+    transition: all 0.3s;
+    height: 200px;
+    width: 250px;
+}
+
+    .service-item .icon {
+        margin-left: 0;
+        margin-bottom: 30px;
+        background-repeat: no-repeat;
+        width: 50px;
+        height: 50px;
+        background-size: contain;
+        background-position: center; 
+        transition: all 0.3s;
+    }
+
+    .service-item h4 {
+        transition: all 0.3s;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .service-item p {
+        transition: all 0.3s;
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    .service-item:hover h4,
+    .service-item:hover p,
+    .service-item:hover .button a {
+        color: #fff;
+    }
+
+    .service-item:hover {
+        background-image: url(../images/service-bg.jpg);
+        background-position: right top;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+
+.first-service .icon {
+    background-image: url(../images/service-icon-04.png);
+}
+
+.first-service:hover .icon {
+    background-image: url(../images/service-icon-hover-04.png);
+}
+
+.second-service .icon {
+    background-image: url(../images/service-icon-04.png);
+}
+
+
+.second-service:hover .icon {
+    background-image: url(../images/service-icon-hover-04.png);
+}
+
+.third-service .icon {
+    background-image: url(../images/service-icon-02.png);
+}
+
+.third-service:hover .icon {
+    background-image: url(../images/service-icon-hover-02.png);
+}
+
+.fourth-service .icon {
+    background-image: url(../images/service-icon-04.png);
+}
+
+.fourth-service:hover .icon {
+    background-image: url(../images/service-icon-hover-04.png);
+}
+
+.fifth-service .icon {
+    background-image: url(../images/service-icon-04.png);
+}
+
+.fifth-service:hover .icon {
+    background-image: url(../images/service-icon-hover-04.png);
+}
+
+.sixth-service .icon {
+    background-image: url(../images/service-icon-04.png);
+}
+
+.sixth-service:hover .icon {
+    background-image: url(../images/service-icon-hover-04.png);
+}
+
+/* ------------------------------------------------------
+                    Utility Styles
+------------------------------------------------------ */
+
+.button {
+    position: absolute;
+    bottom: 20px;
+    font-size: 20px;
+}

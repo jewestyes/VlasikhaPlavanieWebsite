@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Кубок Главы Городского Округа Власиха</title>
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" asp-append-version="true">
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="@Url.Content("~/images/logos/Vlasiha Logo.png")" alt="Логотип соревнований">
+            <h1>Кубок Главы Городского Округа Власиха</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a asp-controller="Home" asp-action="Index">Главная</a></li>
+                <li><a asp-controller="Photos" asp-action="Index">Фото</a></li>
+                <li><a asp-controller="Stats" asp-action="Index">Статистика</a></li>
+            </ul>
+        </nav>
+        <div class="tournament-logo">
+            <img src="@Url.Content("~/images/logos/Tournament Logo.jpg")" alt="Логотип турнира">
+        </div>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        <div class="social-logos">
+            <img src="@Url.Content("~/images/logos/VK Logo.png")" alt="VK">
+            <img src="@Url.Content("~/images/logos/TG Logo.png")" alt="TG">
+        </div>
+    </footer>
+    <script src="~/js/script.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
