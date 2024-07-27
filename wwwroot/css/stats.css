@@ -1,0 +1,140 @@
+﻿.stats-container {
+    background-color: #fff;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1300px;
+    width: 100%;
+}
+
+h1.stats-title {
+    color: #333;
+    text-align: center;
+}
+
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: white;
+}
+
+    .stats-table, .stats-table th, .stats-table td {
+        border: 1px solid #ddd;
+    }
+
+        .stats-table th, .stats-table td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .stats-table th {
+            background-color: #007bff;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .stats-table td a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .stats-table td a:hover {
+                text-decoration: underline;
+            }
+
+.stats-form {
+    margin-top: 20px;
+}
+
+    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .stats-form button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+        .stats-form button:hover {
+            background-color: #0056b3;
+        }
+
+ul.stats-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+    ul.stats-list li {
+        margin: 5px 0;
+    }
+
+        ul.stats-list li a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            ul.stats-list li a:hover {
+                text-decoration: underline;
+            }
+
+.pdf-icon {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    margin-right: 5px;
+    vertical-align: middle;
+    background-image: url('/images/pdf.png');
+    background-size: cover;
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        padding: 15px;
+    }
+
+    .stats-table th, .stats-table td {
+        padding: 8px;
+    }
+
+    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select {
+        width: calc(100% - 16px);
+        padding: 8px;
+    }
+
+    .stats-form button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-container {
+        margin: 20px auto;
+        padding: 10px;
+    }
+
+    .stats-table, .stats-table th, .stats-table td {
+        font-size: 14px;
+    }
+
+    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select {
+        width: calc(100% - 14px);
+        padding: 7px;
+    }
+
+    .stats-form button {
+        padding: 10px;
+    }
+}
