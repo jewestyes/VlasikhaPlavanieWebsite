@@ -1,0 +1,30 @@
+@model VlasikhaPlavanieWebsite.Models.StatItem
+@{
+    ViewData["Title"] = "Details";
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/stats.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="stats-container">
+        <h1 class="stats-title">@Model.Date / @Model.Name - @Model.City</h1>
+        <ul class="stats-list">
+            @foreach (var file in Model.Files)
+            {
+                <li><a href="@Url.Content("~/Content/Files/" + file)" target="_blank"><span class="pdf-icon"></span>@file</a></li>
+            }
+        </ul>
+
+        <form action="@Url.Action("AddFile")" method="post" class="stats-form">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="text" name="fileName" placeholder="Имя файла" required />
+            <button type="submit">Добавить файл</button>
+        </form>
+    </div>
+</body>
+</html>

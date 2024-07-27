@@ -1,19 +1,46 @@
+@model List<VlasikhaPlavanieWebsite.Models.StatItem>
 @{
     ViewData["Title"] = "Stats";
+    Layout = "_Layout";
 }
 
-<main>
-    <div id="registration">
-        <h2>Форма регистрации</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/stats.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="stats-container">
+        <h1 class="stats-title">Статистика</h1>
+        <table class="stats-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Название</th>
+                    <th>Город</th>
+                    <th>Статистика</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Date</td>
+                        <td>@item.Name</td>
+                        <td>@item.City</td>
+                        <td><a href="@Url.Action("Details", new { id = item.Id })">Смотреть</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-        <form action="/submit_registration" method="post">
-            <label for="name">Имя:</label>
-            <input type="text" id="name" name="name" required>
-            <br>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <br>
-            <input type="submit" value="Отправить">
+        <form action="@Url.Action("AddStat")" method="post" class="stats-form">
+            <input type="text" name="date" placeholder="Дата" required />
+            <input type="text" name="name" placeholder="Название" required />
+            <input type="text" name="city" placeholder="Город" required />
+            <button type="submit">Добавить</button>
         </form>
     </div>
-</main>
+</body>
+</html>
