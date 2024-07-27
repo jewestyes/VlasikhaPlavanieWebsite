@@ -369,3 +369,5 @@ appsettings.Development.json
 # .NET Core files
 bin/
 obj/
+/appsettings.Production.json
+/appsettings.Development.json
