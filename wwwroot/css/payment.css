@@ -1,0 +1,129 @@
+﻿body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.payment-form, .payment-summary {
+    width: 45%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.checkbox-group label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.checkbox-group {
+    margin-bottom: 50px;
+}
+
+.info-links a {
+    display: block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.back-button {
+    display: block;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.summary-item {
+    margin-bottom: 10px;
+}
+
+.promo-code {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 50px;
+}
+
+    .promo-code label {
+        flex: 1;
+    }
+
+    .promo-code input {
+        flex: 2;
+        margin-left: 10px;
+    }
+
+    .promo-code button {
+        margin-left: 10px;
+    }
+
+.total-amount {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.pay-button {
+    background-color: red;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.payment-methods img {
+    width: 250px;
+    margin-right: 10px;
+}
+
+.bank-info {
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .payment-form, .payment-summary {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .promo-code {
+        flex-direction: column;
+    }
+
+        .promo-code input, .promo-code button {
+            width: 100%;
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+}

@@ -9,7 +9,7 @@
 
 <div class="form-container new-style">
     <h2>Регистрация на турнир</h2>
-    <form asp-action="Submit" method="post">
+    <form asp-action="Submit" method="post" id="registrationForm">
         @for (int i = 0; i < Model.Participants.Count; i++)
         {
             <div class="participant-section">
@@ -69,7 +69,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label>Дисциплина</label>
-                                <select asp-for="Participants[i].Disciplines[j].Name" class="form-control discipline-select">
+                                <select asp-for="Participants[i].Disciplines[j].Name" class="form-control discipline-select" required>
                                     <option value="На спине">На спине</option>
                                     <option value="Вольный стиль">Вольный стиль</option>
                                     <option value="Классические ласты">Классические ласты</option>
@@ -80,36 +80,36 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Выберите дистанцию</label>
-                                <select asp-for="Participants[i].Disciplines[j].Distance" class="form-control distance-select" data-current-distance="@Model.Participants[i].Disciplines[j].Distance">
+                                <select asp-for="Participants[i].Disciplines[j].Distance" class="form-control distance-select" data-current-distance="@Model.Participants[i].Disciplines[j].Distance" required>
                                 </select>
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Дата старта</label>
-                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" />
+                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" required />
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Заявочное время</label>
-                                <input asp-for="Participants[i].Disciplines[j].EntryTime" class="form-control" />
+                                <input asp-for="Participants[i].Disciplines[j].EntryTime" class="form-control" required />
                             </div>
                         </div>
                         @if (j > 0 || (i == 0 && j > 0))
                         {
-                            <button type="submit" formaction="/Registration/RemoveDiscipline?participantIndex=@i&disciplineIndex=@j" class="btn btn-danger remove-discipline-button">Удалить дисциплину</button>
+                            <button type="submit" formaction="/Registration/RemoveDiscipline?participantIndex=@i&disciplineIndex=@j" class="btn btn-danger remove-discipline-button" formnovalidate>Удалить дисциплину</button>
                         }
                     </div>
                 }
 
-                <button type="submit" formaction="/Registration/AddDiscipline?participantIndex=@i" class="btn add-discipline-button">Добавить дисциплину</button>
+                <button type="submit" formaction="/Registration/AddDiscipline?participantIndex=@i" class="btn add-discipline-button" formnovalidate>Добавить дисциплину</button>
 
                 @if (i > 0)
                 {
-                    <button type="submit" formaction="/Registration/RemoveParticipant?participantIndex=@i" class="btn btn-danger remove-participant-button">Удалить участника</button>
+                    <button type="submit" formaction="/Registration/RemoveParticipant?participantIndex=@i" class="btn btn-danger remove-participant-button" formnovalidate>Удалить участника</button>
                 }
             </div>
         }
 
-        <button type="submit" formaction="/Registration/AddParticipant" class="btn add-participant-button">Добавить участника</button>
-        <button type="submit" formaction="/Registration/Submit" class="btn btn-success">К оплате</button>
+        <button type="submit" formaction="/Registration/AddParticipant" class="btn add-participant-button" formnovalidate>Добавить участника</button>
+        <button type="submit" class="btn btn-success" id="submitBtn">К оплате</button>
     </form>
 </div>
 
