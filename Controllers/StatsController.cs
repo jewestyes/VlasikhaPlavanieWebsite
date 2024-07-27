@@ -1,43 +1,78 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using VlasikhaPlavanieWebsite.Models;
-using System.Collections.Generic;
+using VlasikhaPlavanieWebsite.Data;
 using System.Linq;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
     public class StatsController : Controller
     {
-        private static List<StatItem> _stats = new List<StatItem>
-        {
-            new StatItem { Id = 1, Date = "22-23 ДЕКАБРЯ 2030", Name = "МЕЖДУНАРОДНЫЕ СОРЕВНОВАНИЯ ПО ПЛАВАНИЮ \"КУБОК ГЛАВЫ ВЛАСИХИ\" - МОСКВА", City = "МОСКВА", Files = new List<string> { "DopInfo.pdf", "Polozhenie_MSK.pdf", "Кубок главы - итоговые.PDF" } },
-            new StatItem { Id = 2, Date = "25-26 ДЕКАБРЯ 2030", Name = "МЕЖДУНАРОДНЫЕ СОРЕВНОВАНИЯ ПО ПЛАВАНИЮ \"КУБОК ГЛАВЫ ВЛАСИХИ\" - МОСКВА", City = "МОСКВА", Files = new List<string>() }
-        };
+        private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public IActionResult Index()
+        public StatsController(ApplicationDbContext context, IWebHostEnvironment env)
         {
-            return View(_stats);
+            _context = context;
+            _env = env;
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public IActionResult AddStat(string date, string name, string city)
+        public async Task<IActionResult> Index()
         {
+            var stats = await _context.StatItems.ToListAsync();
+            return View(stats);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddStat(string date, string name, string city)
+        {
+            if (string.IsNullOrEmpty(date) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(city))
+            {
+                return BadRequest("Invalid input");
+            }
+
             var newItem = new StatItem
             {
-                Id = _stats.Count + 1,
                 Date = date,
                 Name = name,
-                City = city,
-                Files = new List<string>()
+                City = city
             };
-            _stats.Add(newItem);
+
+            _context.StatItems.Add(newItem);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        public IActionResult Details(int id)
+        [HttpPost]
+        public async Task<IActionResult> DeleteStat(int id)
         {
-            var stat = _stats.FirstOrDefault(s => s.Id == id);
+            var stat = await _context.StatItems.FindAsync(id);
+            if (stat == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var file in stat.Files)
+            {
+                var filePath = Path.Combine(_env.WebRootPath, "Files", file);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+
+            _context.StatItems.Remove(stat);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var stat = await _context.StatItems.FindAsync(id);
             if (stat == null)
             {
                 return NotFound();
@@ -45,15 +80,68 @@ namespace VlasikhaPlavanieWebsite.Controllers
             return View(stat);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult AddFile(int id, string fileName)
+        public async Task<IActionResult> AddFile(int id, IFormFile file)
         {
-            var stat = _stats.FirstOrDefault(s => s.Id == id);
-            if (stat != null)
+            if (file == null || file.Length == 0)
             {
-                stat.Files.Add(fileName);
+                return BadRequest("Invalid file");
             }
+
+            var stat = await _context.StatItems.FindAsync(id);
+            if (stat == null)
+            {
+                return NotFound();
+            }
+
+            var uploads = Path.Combine(_env.WebRootPath, "Files");
+            if (!Directory.Exists(uploads))
+            {
+                Directory.CreateDirectory(uploads);
+            }
+
+            var filePath = Path.Combine(uploads, file.FileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                ModelState.AddModelError("File", "A file with this name already exists.");
+                return View("Details", stat);
+            }
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            stat.Files.Add(file.FileName);
+            _context.StatItems.Update(stat);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteFile(int id, string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return BadRequest("Invalid file name");
+            }
+
+            var stat = await _context.StatItems.FindAsync(id);
+            if (stat == null)
+            {
+                return NotFound();
+            }
+
+            stat.Files.Remove(fileName);
+            var filePath = Path.Combine(_env.WebRootPath, "Files", fileName);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+
+            _context.StatItems.Update(stat);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Details", new { id = id });
         }
     }
