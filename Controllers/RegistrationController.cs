@@ -1,11 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VlasikhaPlavanieWebsite.Models;
-using System.Collections.Generic;
+using VlasikhaPlavanieWebsite.Data;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
     public class RegistrationController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public RegistrationController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -52,8 +61,19 @@ namespace VlasikhaPlavanieWebsite.Controllers
         }
 
         [HttpPost]
-        public IActionResult Submit(RegistrationViewModel model)
+        public async Task<IActionResult> Submit(RegistrationViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("Index", model);
+            }
+
+            foreach (var participant in model.Participants)
+            {
+                _context.Participants.Add(participant);
+            }
+
+            await _context.SaveChangesAsync();
             return RedirectToAction("Success");
         }
 

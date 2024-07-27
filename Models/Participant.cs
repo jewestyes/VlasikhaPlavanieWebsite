@@ -1,7 +1,11 @@
-﻿namespace VlasikhaPlavanieWebsite.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace VlasikhaPlavanieWebsite.Models
 {
     public class Participant
     {
+        public int Id { get; set; }  
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -11,6 +15,6 @@
         public string Rank { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public List<Discipline> Disciplines { get; set; } = new List<Discipline> { new Discipline() };
+        public List<Discipline> Disciplines { get; set; } = new List<Discipline>();
     }
 }
