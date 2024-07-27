@@ -70,12 +70,12 @@
                             <div class="form-group col-md-4">
                                 <label>Дисциплина</label>
                                 <select asp-for="Participants[i].Disciplines[j].Name" class="form-control discipline-select">
-                                    <option value="на спине">на спине</option>
-                                    <option value="вольный стиль">вольный стиль</option>
-                                    <option value="классические ласты">классические ласты</option>
-                                    <option value="комплексное плавание">комплексное плавание</option>
-                                    <option value="брасс">брасс</option>
-                                    <option value="баттерфляй">баттерфляй</option>
+                                    <option value="На спине">На спине</option>
+                                    <option value="Вольный стиль">Вольный стиль</option>
+                                    <option value="Классические ласты">Классические ласты</option>
+                                    <option value="Комплексное плавание">Комплексное плавание</option>
+                                    <option value="Брасс">Брасс</option>
+                                    <option value="Баттерфляй">Баттерфляй</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-4">
@@ -114,5 +114,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/registration.js"></script>
+    <script src="~/js/registration.js" asp-append-version="true"></script>
 }

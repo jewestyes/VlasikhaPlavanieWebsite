@@ -20,6 +20,10 @@
                     <th>Название</th>
                     <th>Город</th>
                     <th>Статистика</th>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <th>Действия</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +34,14 @@
                         <td>@item.Name</td>
                         <td>@item.City</td>
                         <td><a href="@Url.Action("Details", new { id = item.Id })">Смотреть</a></td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <form action="@Url.Action("DeleteStat", new { id = item.Id })" method="post">
+                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                </form>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>

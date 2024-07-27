@@ -11,13 +11,15 @@
 h1.stats-title {
     color: #333;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 .stats-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    background-color: white;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
     .stats-table, .stats-table th, .stats-table td {
@@ -25,13 +27,13 @@ h1.stats-title {
     }
 
         .stats-table th, .stats-table td {
-            padding: 10px;
+            padding: 15px;
             text-align: left;
         }
 
         .stats-table th {
             background-color: #007bff;
-            color: white;
+            color: #fff;
             text-transform: uppercase;
         }
 
@@ -46,10 +48,13 @@ h1.stats-title {
 
 .stats-form {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select {
-        width: calc(100% - 20px);
+    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select, .stats-form input[type="file"] {
+        width: 100%;
         padding: 10px;
         margin: 5px 0;
         border: 1px solid #ddd;
@@ -57,13 +62,13 @@ h1.stats-title {
     }
 
     .stats-form button {
-        padding: 10px 20px;
+        padding: 12px;
         background-color: #007bff;
         color: #fff;
         border: none;
         border-radius: 4px;
         cursor: pointer;
-        margin-top: 10px;
+        transition: background-color 0.3s;
     }
 
         .stats-form button:hover {
@@ -98,23 +103,58 @@ ul.stats-list {
     background-size: cover;
 }
 
+/* Стили для кнопок удаления */
+.btn {
+    padding: 10px 20px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+form {
+    display: inline;
+}
+
+.alert {
+    padding: 15px;
+    margin-top: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
 @media (max-width: 768px) {
     .stats-container {
         padding: 15px;
     }
 
     .stats-table th, .stats-table td {
-        padding: 8px;
+        padding: 10px;
     }
 
-    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select {
+    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select, .stats-form input[type="file"] {
         width: calc(100% - 16px);
         padding: 8px;
     }
 
     .stats-form button {
         width: 100%;
-        padding: 10px;
+        padding: 12px;
         margin-top: 10px;
     }
 }
@@ -129,7 +169,7 @@ ul.stats-list {
         font-size: 14px;
     }
 
-    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select {
+    .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select, .stats-form input[type="file"] {
         width: calc(100% - 14px);
         padding: 7px;
     }

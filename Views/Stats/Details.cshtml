@@ -3,31 +3,42 @@
     ViewData["Title"] = "Details";
     Layout = "_Layout";
 }
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/stats.css" asp-append-version="true" />
-</head>
-<body>
-    <div class="stats-container">
-        <h1 class="stats-title">@Model.Date / @Model.Name - @Model.City</h1>
-        <ul class="stats-list">
-            @foreach (var file in Model.Files)
-            {
-                <li><a href="@Url.Content("~/Content/Files/" + file)" target="_blank"><span class="pdf-icon"></span>@file</a></li>
-            }
-        </ul>
-
-        @if (User.IsInRole("Admin"))
+<link rel="stylesheet" href="~/css/stats.css" asp-append-version="true" />
+<div class="stats-container">
+    <h1 class="stats-title">@Model.Date / @Model.Name - @Model.City</h1>
+    <ul class="stats-list">
+        @foreach (var file in Model.Files)
         {
-            <form action="@Url.Action("AddFile")" method="post" class="stats-form">
-                <input type="hidden" name="id" value="@Model.Id" />
-                <input type="text" name="fileName" placeholder="Имя файла" required />
-                <button type="submit">Добавить файл</button>
-            </form>
+            <li>
+                <a href="@Url.Content("~/Files/" + file)" target="_blank"><span class="pdf-icon"></span>@file</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <form action="@Url.Action("DeleteFile", new { id = Model.Id, fileName = file })" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
+                }
+            </li>
         }
-    </div>
-</body>
-</html>
+    </ul>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <form action="@Url.Action("AddFile")
+        " method="post" enctype="multipart/form-data" class="stats-form">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="file" name="file" required />
+            <button type="submit">Добавить файл</button>
+        </form>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+    }
+</div>
