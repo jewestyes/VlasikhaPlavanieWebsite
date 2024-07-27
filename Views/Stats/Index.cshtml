@@ -35,12 +35,15 @@
             </tbody>
         </table>
 
-        <form action="@Url.Action("AddStat")" method="post" class="stats-form">
-            <input type="text" name="date" placeholder="Дата" required />
-            <input type="text" name="name" placeholder="Название" required />
-            <input type="text" name="city" placeholder="Город" required />
-            <button type="submit">Добавить</button>
-        </form>
+        @if (User.IsInRole("Admin"))
+        {
+            <form action="@Url.Action("AddStat")" method="post" class="stats-form">
+                <input type="text" name="date" placeholder="Дата" required />
+                <input type="text" name="name" placeholder="Название" required />
+                <input type="text" name="city" placeholder="Город" required />
+                <button type="submit">Добавить</button>
+            </form>
+        }
     </div>
 </body>
 </html>

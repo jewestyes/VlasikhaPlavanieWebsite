@@ -20,11 +20,14 @@
             }
         </ul>
 
-        <form action="@Url.Action("AddFile")" method="post" class="stats-form">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <input type="text" name="fileName" placeholder="Имя файла" required />
-            <button type="submit">Добавить файл</button>
-        </form>
+        @if (User.IsInRole("Admin"))
+        {
+            <form action="@Url.Action("AddFile")" method="post" class="stats-form">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="text" name="fileName" placeholder="Имя файла" required />
+                <button type="submit">Добавить файл</button>
+            </form>
+        }
     </div>
 </body>
 </html>

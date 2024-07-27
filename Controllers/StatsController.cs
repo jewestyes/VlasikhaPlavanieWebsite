@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VlasikhaPlavanieWebsite.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
             return View(_stats);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult AddStat(string date, string name, string city)
         {
@@ -43,6 +45,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
             return View(stat);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult AddFile(int id, string fileName)
         {
