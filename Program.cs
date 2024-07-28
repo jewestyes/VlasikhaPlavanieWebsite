@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VlasikhaPlavanieWebsite.Data;
+using VlasikhaPlavanieWebsite.Interfaces;
 using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.Services;
-using VlasikhaPlavanieWebsite.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +27,14 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IRoleInitializer, RoleInitializer>();
+builder.Services.AddHttpClient();
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -46,6 +53,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
