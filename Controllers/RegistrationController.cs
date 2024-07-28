@@ -2,14 +2,25 @@
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System;
 
 public class RegistrationController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConfiguration _configuration;
 
-    public RegistrationController(ApplicationDbContext context)
+    public RegistrationController(ApplicationDbContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
         _context = context;
+        _httpClientFactory = httpClientFactory;
+        _configuration = configuration;
     }
 
     [HttpGet]
@@ -58,7 +69,7 @@ public class RegistrationController : Controller
     }
 
     [HttpPost]
-    public IActionResult Submit(RegistrationViewModel model)
+    public async Task<IActionResult> Submit(RegistrationViewModel model)
     {
         if (!ModelState.IsValid || model.Participants.Any(p => !p.Disciplines.Any()))
         {
@@ -71,26 +82,48 @@ public class RegistrationController : Controller
             _context.Participants.Add(participant);
         }
 
-        _context.SaveChanges();
-        return RedirectToAction("Payment", new { participantsCount = model.Participants.Count, disciplinesCount = model.Participants.Sum(p => p.Disciplines.Count) });
+        await _context.SaveChangesAsync();
+
+        var orderId = Guid.NewGuid().ToString();
+        var amount = (int)(CalculateCost(model.Participants.Sum(p => p.Disciplines.Count)) * 100);
+
+        var paymentRequest = new PaymentRequest
+        {
+            UserName = _configuration["AlphaBank:Login"],
+            Password = _configuration["AlphaBank:Password"],
+            OrderNumber = orderId,
+            Amount = amount,
+            ReturnUrl = Url.Action("PaymentCallback", "Registration", new { orderId }, Request.Scheme)
+        };
+
+        var httpClient = _httpClientFactory.CreateClient();
+        var requestContent = new StringContent(JsonSerializer.Serialize(paymentRequest), Encoding.UTF8, "application/json");
+        requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+        var response = await httpClient.PostAsync(_configuration["AlphaBank:PaymentUrl"], requestContent);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return View("Failure");
+        }
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(responseString);
+
+        return Redirect(paymentResponse.FormUrl);
     }
 
     [HttpGet]
-    public IActionResult Payment(int participantsCount, int disciplinesCount)
+    public IActionResult PaymentCallback(string orderId, string status)
     {
-        var model = new PaymentViewModel
+        if (status == "success")
         {
-            ParticipantsCount = participantsCount,
-            DisciplinesCount = disciplinesCount,
-            TotalAmount = CalculateCost(disciplinesCount)
-        };
-
-        return View(model);
-    }
-
-    public IActionResult Success()
-    {
-        return View();
+            return View("Success");
+        }
+        else
+        {
+            return View("Failure");
+        }
     }
 
     private decimal CalculateCost(int disciplinesCount)

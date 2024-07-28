@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Payment\Failure.cshtml" />
+    <Content Remove="Views\Payment\Success.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,11 +25,13 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Views\Order\" />
     <Folder Include="wwwroot\Files\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Models\PaymentViewModel.cs" />
+    <None Include="Views\Payment\Success.cshtml" />
+    <None Include="Views\Payment\Failure.cshtml" />
   </ItemGroup>
 
 </Project>
