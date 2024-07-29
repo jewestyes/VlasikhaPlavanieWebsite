@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Кубок Главы Городского Округа Власиха</title>
     <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/_layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/js/_layout.js" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" asp-append-version="true">
 </head>
 
@@ -12,12 +14,15 @@
     <header>
         <div class="logo-container">
             <img src="@Url.Content("~/images/logos/Vlasiha Logo.png")" alt="Логотип соревнований">
-            <h1>Кубок Главы городского округа Власиха</h1>
+            <h1 class="name_title">Кубок Главы городского округа Власиха</h1>
         </div>
-        <nav>
-            <ul>
-                <li><a asp-controller="Home" asp-action="Index">Главная</a></li>
-                <li><a asp-controller="Stats" asp-action="Index">Статистика</a></li>
+        <nav class="app-navigation">
+            <button class="menu-toggle" onclick="toggleMenu()">
+                ☰
+            </button>
+            <ul class="navigation__list">
+                <li><a class="link_navigate" asp-controller="Home" asp-action="Index" onclick="closeMenu()">Главная</a></li>
+                <li><a class="link_navigate" asp-controller="Stats" asp-action="Index" onclick="closeMenu()">Статистика</a></li>
             </ul>
         </nav>
         <div class="tournament-logo">
@@ -36,6 +41,26 @@
             <img src="@Url.Content("~/images/logos/TG Logo.png")" alt="TG">
         </div>
     </footer>
+
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        let menuOpen = false;
+
+        function toggleMenu() {
+            menuOpen = !menuOpen;
+            const menu = document.querySelector('.navigation__list');
+            if (menuOpen) {
+                menu.classList.add('open');
+            } else {
+                menu.classList.remove('open');
+            }
+        }
+
+        function closeMenu() {
+            menuOpen = false;
+            const menu = document.querySelector('.navigation__list');
+            menu.classList.remove('open');
+        }
+    </script>
 </body>
 </html>
