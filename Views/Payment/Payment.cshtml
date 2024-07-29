@@ -1,4 +1,4 @@
-﻿@model VlasikhaPlavanieWebsite.Models.OrderViewModel
+﻿@model VlasikhaPlavanieWebsite.Models.PaymentViewModel
 
 @{
     ViewData["Title"] = "Оплата";
@@ -8,15 +8,15 @@
 <link rel="stylesheet" href="~/css/payment.css" asp-append-version="true" />
 
 <div class="container">
-    <form class="payment-form" method="post" asp-action="Submit">
+    <form class="payment-form" method="post" asp-action="ProcessPayment" asp-controller="Payment">
         <div class="checkbox-group">
             <label><input type="checkbox" required> Я принимаю условия <a href="#">Пользовательского соглашения</a> и <a href="#">политики конфиденциальности</a></label>
             <label><input type="checkbox" required> Даю согласие на обработку <a href="#">персональных данных</a></label>
         </div>
         <div class="info-links">
-            <a href="#">Информация о продавце</a>
-            <a href="#">Правила возврата</a>
-            <a href="#">Правила оплаты</a>
+            <a asp-action="Information" asp-controller="PaymentInfo">Информация о продавце</a>
+            <a asp-action="RefundPolicy" asp-controller="PaymentInfo">Правила возврата</a>
+            <a asp-action="PaymentPolicy" asp-controller="PaymentInfo">Правила оплаты</a>
         </div>
         <a href="@Url.Action("Index", "Registration")" class="back-button" formnovalidate>← Вернуться к регистрации</a>
     </form>
