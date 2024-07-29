@@ -2,25 +2,16 @@
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using System;
+using System.Threading.Tasks;
 
 public class RegistrationController : Controller
 {
     private readonly ApplicationDbContext _context;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IConfiguration _configuration;
 
-    public RegistrationController(ApplicationDbContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+    public RegistrationController(ApplicationDbContext context)
     {
         _context = context;
-        _httpClientFactory = httpClientFactory;
-        _configuration = configuration;
     }
 
     [HttpGet]
@@ -85,45 +76,19 @@ public class RegistrationController : Controller
         await _context.SaveChangesAsync();
 
         var orderId = Guid.NewGuid().ToString();
-        var amount = (int)(CalculateCost(model.Participants.Sum(p => p.Disciplines.Count)) * 100);
+        var amount = CalculateCost(model.Participants.Sum(p => p.Disciplines.Count));
 
-        var paymentRequest = new PaymentRequest
+        var order = new Order
         {
-            UserName = _configuration["AlphaBank:Login"],
-            Password = _configuration["AlphaBank:Password"],
             OrderNumber = orderId,
             Amount = amount,
-            ReturnUrl = Url.Action("PaymentCallback", "Registration", new { orderId }, Request.Scheme)
+            Participants = model.Participants
         };
 
-        var httpClient = _httpClientFactory.CreateClient();
-        var requestContent = new StringContent(JsonSerializer.Serialize(paymentRequest), Encoding.UTF8, "application/json");
-        requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
 
-        var response = await httpClient.PostAsync(_configuration["AlphaBank:PaymentUrl"], requestContent);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            return View("Failure");
-        }
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(responseString);
-
-        return Redirect(paymentResponse.FormUrl);
-    }
-
-    [HttpGet]
-    public IActionResult PaymentCallback(string orderId, string status)
-    {
-        if (status == "success")
-        {
-            return View("Success");
-        }
-        else
-        {
-            return View("Failure");
-        }
+        return RedirectToAction("Payment", "Payment", new { orderId = orderId });
     }
 
     private decimal CalculateCost(int disciplinesCount)
