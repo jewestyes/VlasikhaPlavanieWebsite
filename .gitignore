@@ -359,10 +359,8 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-
 # Entity Framework Migrations
 **/Migrations/
-
 
 /appsettings.Production.json
 /appsettings.Development.json
