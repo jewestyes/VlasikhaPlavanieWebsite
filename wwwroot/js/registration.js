@@ -34,6 +34,20 @@
         }
     }
 
+    // Инициализация intl-tel-input для всех полей телефона
+    document.querySelectorAll('.phone-input').forEach(phoneInputField => {
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            initialCountry: "auto",
+            geoIpLookup: function (success, failure) {
+                fetch('https://ipinfo.io/json')
+                    .then(response => response.json())
+                    .then(data => success(data.country))
+                    .catch(() => success("us"));
+            },
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        });
+    });
+
     /**
      * Инициализирует обновление опций для всех существующих селектов дисциплин.
      */
