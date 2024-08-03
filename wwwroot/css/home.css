@@ -307,29 +307,58 @@ nav {
 ------------------------------------------------------ */
 .contacts-map-section {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
     flex-wrap: wrap;
-    gap: 10px;
+    justify-content: space-between;
+    gap: 20px;
 }
 
-.map {
-    background-color: #ecf0f1;
+.contacts, .map-container {
+    box-sizing: border-box;
     padding: 20px;
-    border-radius: 12px;
+    min-width: 300px;
 }
 
-@media (max-width: 1200px) {
-    .contacts, .map {
+
+.map-container {
+    position: relative;
+    background-color: #ecf0f1;
+    border-radius: 12px;
+    flex: 1 1 30%;
+    overflow: hidden;
+}
+
+    .map-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+@media (max-width: 1100px) {
+    .contacts-map-section {
+        flex-direction: column;
+    }
+
+    .contacts, .map-container {
         flex: 1 1 100%;
     }
+
+    .map-container {
+        padding-top: 56.25%;
+    }
 }
+
+
+
 
 .contacts {
     background-color: #ecf0f1;
     padding: 20px;
     border-radius: 12px;
     flex: 1;
+    flex: 1 1 60%;
 }
 
     .contacts p {
