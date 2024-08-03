@@ -113,20 +113,29 @@
 			</div>
 		</div>
 
+		@* 		<div class="map">
+		<script type="text/javascript" charset="utf-8"
+		async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A9dc7a9176f86ac7cba00634c044a2b923ef568203026665366bebd4d4c01af17&amp;
+		width=600&amp;height=400&amp;lang=en_FR&amp;scroll=true"></script>
+		</div> *@
+
+
 		<div class="container contacts-map-section">
 			<div class="contacts">
 				<h3>Контакты</h3>
-				<p><i class="fas fa-phone"></i> <span class="contact-info">+7 903 599 12 90 </span><span class="contact-info"> - Игумнова Ольга Александровна </span><br>Главный судья соревнований </p>
+				<p><i class="fas fa-phone"></i> <span class="contact-info">+7 903 599 12 90 </span><span class="contact-info"> - Игумнова Ольга Викторовна </span><br>Главный судья соревнований </p>
 				<p><i class="fas fa-phone"></i> <span class="contact-info">+7 930 939 28 45 </span><span class="contact-info"> - Будяев Денис Николаевич </span><br>Главный секретарь соревнований </p>
 				<p><i class="fas fa-phone"></i> <span class="contact-info">+7 925 820 71 41 </span><span class="contact-info"> - Будяева Юлия Владимировна </span><br> Организатор соревнований (по вопросам оплаты)</p>
 				<p><i class="fas fa-map-marker-alt"></i> <span class="contact-info"> п. Власиха, мкр. Школьный д. 10 место проведения (п/б "Перспектива", 25 м.)</span></p>
 				<p><i class="fas fa-envelope"></i><span class="contact-info"> plavanievlasiha@yandex.ru </span></p>
 			</div>
-			<div class="map">
-				<script type="text/javascript" charset="utf-8"
-						async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A9dc7a9176f86ac7cba00634c044a2b923ef568203026665366bebd4d4c01af17&amp;
-							width=600&amp;height=400&amp;lang=en_FR&amp;scroll=true"></script>
+			<div class="map-container">
+				<div id="yandex-map" style="width: 100%; height: 100%;"></div>
 			</div>
+
+
+
 		</div>
+		<script src="~/js/yandex-map.js" asp-append-version="true"></script>
 	</main>
 </body>
