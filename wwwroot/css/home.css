@@ -426,6 +426,19 @@ nav {
 
 .box-item {
     width: 250px;
+    height: 30px; /* Уменьшенная высота */
+    display: flex; /* Flexbox для центрирования содержимого */
+    align-items: center; /* Вертикальное центрирование */
+    justify-content: space-between; /* Пространство между текстом и значком */
+    text-align: center; /* Центрирование текста */
+    padding: 0 10px; /* Внутренние отступы */
+}
+
+.tournament-info .box-item h4 {
+    margin: 0; /* Убираем внешние отступы */
+    font-size: 18px; /* Размер шрифта */
+    flex-grow: 1; /* Заполняет доступное пространство */
+    text-align: center; /* Центрирование текста */
 }
 
 .tournament-info .box-item {
@@ -438,14 +451,16 @@ nav {
 
     .tournament-info .box-item h4 a {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        align-items: center; /* Вертикальное центрирование */
+        justify-content: space-between; /* Пространство между текстом и значком */
+        width: 100%;
         text-decoration: none;
         color: inherit;
     }
 
         .tournament-info .box-item h4 a i.download-icon {
             margin-left: 10px;
+            margin-right: 0;
         }
 
     .tournament-info .box-item:hover h4 a {
