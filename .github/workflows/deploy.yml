@@ -33,7 +33,7 @@ jobs:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         ARGS: "-avz --delete"
         SOURCE: "publish/"
-        TARGET: "root@147.45.235.177:/home/VlasikhaPlavanieWebsite/"
+        TARGET: "root@147.45.235.177:/home/"
 
     - name: Restart Kestrel
       run: ssh root@147.45.235.177 'sudo systemctl restart kestrel-deploy-guide.service'
