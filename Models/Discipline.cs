@@ -1,6 +1,4 @@
-﻿
-
-namespace VlasikhaPlavanieWebsite.Models
+﻿namespace VlasikhaPlavanieWebsite.Models
 {
     public class Discipline
     {
