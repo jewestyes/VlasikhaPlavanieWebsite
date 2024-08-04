@@ -27,17 +27,19 @@ jobs:
     - name: Publish
       run: dotnet publish --configuration Release --no-restore -o ./publish
 
+    - name: Add SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+    - name: Add known hosts
+      run: ssh-keyscan 147.45.235.177 >> ~/.ssh/known_hosts
+
     - name: Deploy to server
-      uses: easingthemes/ssh-deploy@v2.1.5
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        ARGS: "-avz --delete"
-        SOURCE: "publish/"
-        TARGET: "/home/VlasikhaPlavanieWebsite/"
-      with:
-        REMOTE_HOST: "147.45.235.177"
-        REMOTE_USER: "root"
+      run: |
+        rsync -avz -e "ssh -i ~/.ssh/id_rsa" ./publish/ root@147.45.235.177:/home/VlasikhaPlavanieWebsite/
 
     - name: Restart Kestrel
-      run: ssh root@147.45.235.177 'sudo systemctl restart kestrel.service'
+      run: ssh -i ~/.ssh/id_rsa root@147.45.235.177 'sudo systemctl restart kestrel.service'
 
