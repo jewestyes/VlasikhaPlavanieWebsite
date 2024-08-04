@@ -39,5 +39,5 @@ jobs:
         REMOTE_USER: "root"
 
     - name: Restart Kestrel
-      run: ssh root@147.45.235.177 'sudo systemctl restart kestrel-deploy-guide.service'
+      run: ssh root@147.45.235.177 'sudo systemctl restart kestrel.service'
 
