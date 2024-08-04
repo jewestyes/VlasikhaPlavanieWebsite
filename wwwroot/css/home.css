@@ -451,8 +451,8 @@ nav {
 
     .tournament-info .box-item h4 a {
         display: flex;
-        align-items: center; /* Вертикальное центрирование */
-        justify-content: space-between; /* Пространство между текстом и значком */
+        align-items: center; 
+        justify-content: space-between; 
         width: 100%;
         text-decoration: none;
         color: inherit;
