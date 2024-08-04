@@ -364,5 +364,5 @@ MigrationBackup/
 # Entity Framework Migrations
 **/Migrations/
 
-/appsettings.Production.json
-/appsettings.Development.json
+appsettings.Production.json
+appsettings.Development.json
