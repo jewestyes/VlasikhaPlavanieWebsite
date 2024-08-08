@@ -166,6 +166,11 @@
         width: 100%;
     }
 
+    .col-md-4, .col-md-6, .col-md-12 {
+        width: 100%;
+        padding: 0;
+    }
+
     .btn {
         width: 100%;
         margin-bottom: 10px;
@@ -178,3 +183,4 @@
         width: 100%;
     }
 }
+

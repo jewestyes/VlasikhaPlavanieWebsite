@@ -94,10 +94,17 @@
     margin-bottom: 20px;
 }
 
-.payment-methods img {
-    width: 250px;
-    margin-right: 10px;
+.payment-methods {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px; 
 }
+
+    .payment-methods img {
+        width: 120px;
+        height: 40px;
+    }
 
 .bank-info {
     font-size: 12px;
