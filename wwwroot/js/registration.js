@@ -87,6 +87,8 @@
         });
     }
 
+
+
     // Инициализация при загрузке документа
     initializeDisciplineSelects();
     toggleRemoveButtons();

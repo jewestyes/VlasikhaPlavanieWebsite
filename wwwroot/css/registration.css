@@ -125,6 +125,14 @@
         opacity: 0.8;
     }
 
+
+.time-input {
+    font-family: monospace;
+    text-align: center;
+    width: 120px;
+}
+
+
 /* Дополнительные кнопки */
 .add-discipline-button,
 .add-participant-button {
