@@ -32,7 +32,6 @@ body {
 
 header {
     display: flex;
-    justify-content: center;
     align-items: center;
     padding: 20px;
     background-color: #2c3e50;
@@ -41,12 +40,92 @@ header {
     margin: 0 auto;
     height: 100px;
     max-width: 1200px;
-    width: 100%;
 }
 
     header h1 {
         font-size: 24px;
     }
+
+.app-navigation {
+    position: relative;
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.navigation__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+    .navigation__list li {
+        margin-right: 15px;
+    }
+
+    .navigation__list a {
+        text-decoration: none;
+        display: block;
+        padding: 10px;
+        color: inherit;
+    }
+
+@media (max-width: 1050px) {
+    .name_title {
+        font-size: 17px;
+    }
+
+    .link_navigate {
+        font-size: 19px;
+    }
+}
+
+@media (max-width: 850px) {
+    header {
+        border-radius: 0;
+    }
+
+    .tournament-logo {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .navigation__list {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+    }
+
+        .navigation__list.open {
+            display: flex;
+            background: #2c3e50;
+            z-index: 2;
+            width: 145px;
+        }
+
+    .link_navigate {
+        font-size: 23px;
+    }
+
+    .navigation__list li {
+        margin: 0;
+    }
+}
+
+
+
 
 nav a {
     text-decoration: none;
@@ -56,7 +135,7 @@ nav a {
 
     nav a:hover {
         color: #3498db;
-        background-color: #ecf0f1; 
+        background-color: #ecf0f1;
         border-radius: 4px;
     }
 
@@ -82,6 +161,33 @@ footer {
         height: 50px;
         width: auto;
     }
+/* ------------------------------------------------------
+                    Navigation Styles
+------------------------------------------------------ */
+
+nav {
+    margin: 20px 8px;
+}
+
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+    }
+
+        nav ul li {
+            margin: 0;
+        }
+
+            nav ul li a {
+                text-decoration: none;
+                color: #ecf0f1;
+                font-family: "Roboto", sans-serif;
+                font-size: 26px;
+                padding: 10px 20px;
+                border-radius: 4px;
+            }
+
 
 
 /* ------------------------------------------------------
@@ -89,7 +195,6 @@ footer {
 ------------------------------------------------------ */
 
 .container {
-    position: relative; 
     padding: 20px;
     box-sizing: border-box;
     width: 100%;
@@ -98,10 +203,11 @@ footer {
 
 .row {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     padding: 32px;
     box-sizing: border-box;
-    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 /* ------------------------------------------------------
@@ -126,35 +232,20 @@ footer {
                     Registration Section
 ------------------------------------------------------ */
 
-.registration-section,
-.contacts-map-section {
+.registration_section {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    flex-wrap: wrap;
 }
 
-.registration,
-.contacts,
-.map {
+.registration {
     background-color: #ecf0f1;
     padding: 20px;
     border-radius: 12px;
+    gap: 10px;
+    flex: 1;
 }
-
-    .contacts p {
-        margin-top: 15px;
-        color: #7f8c8d;
-    }
-
-        .contacts p i {
-            margin-right: 10px;
-        }
-
-        .contacts p .contact-info {
-            margin-top: 10px;
-            font-size: 20px;
-            color: #000;
-        }
 
 .registration {
     display: block;
@@ -210,46 +301,81 @@ footer {
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Уменьшенная тень при нажатии */
     }
 
-/* ------------------------------------------------------
-                    Navigation Styles
------------------------------------------------------- */
-
-nav {
-    margin: 20px 0;
-}
-
-    nav ul {
-        list-style-type: none;
-        padding: 0;
-        display: flex;
-        gap: 20px;
-    }
-
-        nav ul li {
-            margin: 0;
-        }
-
-            nav ul li a {
-                text-decoration: none;
-                color: #ecf0f1;
-                font-family: "Roboto", sans-serif;
-                font-size: 26px;
-                padding: 10px 20px;
-                border-radius: 4px;
-            }
-
 
 /* ------------------------------------------------------
                     Contact & Map Styles
 ------------------------------------------------------ */
+.contacts-map-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.contacts, .map-container {
+    box-sizing: border-box;
+    padding: 20px;
+    min-width: 300px;
+}
+
+
+.map-container {
+    position: relative;
+    background-color: #ecf0f1;
+    border-radius: 12px;
+    flex: 1 1 30%;
+    overflow: hidden;
+}
+
+    .map-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+@media (max-width: 1100px) {
+    .contacts-map-section {
+        flex-direction: column;
+    }
+
+    .contacts, .map-container {
+        flex: 1 1 100%;
+    }
+
+    .map-container {
+        padding-top: 56.25%;
+    }
+}
+
+
+
 
 .contacts {
-    width: 70%;
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 12px;
+    flex: 1;
+    flex: 1 1 60%;
 }
 
-.map {
-    width: 25%;
-}
+    .contacts p {
+        margin-top: 15px;
+        color: #7f8c8d;
+    }
+
+        .contacts p i {
+            margin-right: 10px;
+        }
+
+        .contacts p .contact-info {
+            margin-top: 10px;
+            font-size: 20px;
+            color: #000;
+        }
+
 
 /* ------------------------------------------------------
                     Two Column Links
@@ -285,12 +411,34 @@ nav {
 
 .tournament-info {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     width: 700px;
+    margin-top: 29px;
+    margin-left: 15px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 1100px) {
+    .registration, .tournament-info {
+        flex: 1 1 100%;
+    }
 }
 
 .box-item {
     width: 250px;
+    height: 30px; /* Уменьшенная высота */
+    display: flex; /* Flexbox для центрирования содержимого */
+    align-items: center; /* Вертикальное центрирование */
+    justify-content: space-between; /* Пространство между текстом и значком */
+    text-align: center; /* Центрирование текста */
+    padding: 0 10px; /* Внутренние отступы */
+}
+
+.tournament-info .box-item h4 {
+    margin: 0; /* Убираем внешние отступы */
+    font-size: 18px; /* Размер шрифта */
+    flex-grow: 1; /* Заполняет доступное пространство */
+    text-align: center; /* Центрирование текста */
 }
 
 .tournament-info .box-item {
@@ -303,14 +451,16 @@ nav {
 
     .tournament-info .box-item h4 a {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        align-items: center; 
+        justify-content: space-between; 
+        width: 100%;
         text-decoration: none;
         color: inherit;
     }
 
         .tournament-info .box-item h4 a i.download-icon {
             margin-left: 10px;
+            margin-right: 0;
         }
 
     .tournament-info .box-item:hover h4 a {
@@ -322,6 +472,8 @@ nav {
     margin-bottom: 10px;
 }
 
+
+
 /* ------------------------------------------------------
                     Services Section Styles
 ------------------------------------------------------ */
@@ -330,7 +482,7 @@ nav {
     text-align: center;
     margin-bottom: 80px;
     margin: 0 auto;
-    position: relative; 
+    position: relative;
 }
 
     .services:before {
@@ -377,7 +529,7 @@ nav {
         width: 50px;
         height: 50px;
         background-size: contain;
-        background-position: center; 
+        background-position: center;
         transition: all 0.3s;
     }
 

@@ -12,6 +12,7 @@ namespace VlasikhaPlavanieWebsite.Data
         public DbSet<StatItem> StatItems { get; set; }
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Discipline> Disciplines { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

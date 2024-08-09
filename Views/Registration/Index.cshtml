@@ -1,11 +1,13 @@
 ﻿@model VlasikhaPlavanieWebsite.Models.RegistrationViewModel
 
 @{
-    ViewData["Title"] = "Регистрация на турнир";
+    ViewData["Title"] = "Регистрация";
     Layout = "_Layout";
+    var today = DateTime.Now.ToString("yyyy-MM-dd");
 }
 
 <link rel="stylesheet" href="~/css/registration.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css">
 
 <div class="form-container new-style">
     <h2>Регистрация на турнир</h2>
@@ -31,7 +33,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label>Дата рождения</label>
-                        <input asp-for="Participants[i].BirthDate" type="date" class="form-control" />
+                        <input asp-for="Participants[i].BirthDate" type="date" class="form-control" value="@today" />
                     </div>
                     <div class="form-group col-md-4">
                         <label>Пол</label>
@@ -85,11 +87,12 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Дата старта</label>
-                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" required />
+                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" value="@today" required />
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Заявочное время</label>
-                                <input asp-for="Participants[i].Disciplines[j].EntryTime" class="form-control" required />
+                                <input asp-for="Participants[i].Disciplines[j].EntryTime" type="text" class="form-control time-input" placeholder="MM:SS:SSS" maxlength="9" required />
+                                <span asp-validation-for="Participants[i].Disciplines[j].EntryTime" class="text-danger"></span>
                             </div>
                         </div>
                         @if (j > 0 || (i == 0 && j > 0))
@@ -115,4 +118,6 @@
 
 @section Scripts {
     <script src="~/js/registration.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
 }

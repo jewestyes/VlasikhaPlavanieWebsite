@@ -125,6 +125,14 @@
         opacity: 0.8;
     }
 
+
+.time-input {
+    font-family: monospace;
+    text-align: center;
+    width: 120px;
+}
+
+
 /* Дополнительные кнопки */
 .add-discipline-button,
 .add-participant-button {
@@ -156,8 +164,31 @@
         padding: 15px;
     }
 
+    .form-row {
+        flex-direction: column;
+        margin: 0;
+    }
+
+    .form-group {
+        padding: 0;
+        width: 100%;
+    }
+
+    .col-md-4, .col-md-6, .col-md-12 {
+        width: 100%;
+        padding: 0;
+    }
+
     .btn {
         width: 100%;
         margin-bottom: 10px;
     }
+
+    .add-discipline-button,
+    .add-participant-button,
+    .remove-discipline-button,
+    .remove-participant-button {
+        width: 100%;
+    }
 }
+
