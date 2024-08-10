@@ -59,6 +59,7 @@ public class RegistrationController : Controller
         return View("Index", model);
     }
 
+
     [HttpPost]
     public async Task<IActionResult> Submit(RegistrationViewModel model)
     {
@@ -88,11 +89,13 @@ public class RegistrationController : Controller
         _context.Orders.Add(order);
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Payment", "Payment", new { orderId = orderId });
+        // Передаем только OrderId через RedirectToAction
+        return RedirectToAction("Payment", "Payment", new { orderId = order.OrderNumber });
     }
 
     private decimal CalculateCost(int disciplinesCount)
     {
         return ((disciplinesCount / 3) * 2000m) + ((disciplinesCount % 3 != 0) ? 2000m : 0m);
     }
+
 }

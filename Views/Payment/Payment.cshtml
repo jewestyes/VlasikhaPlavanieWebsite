@@ -19,17 +19,70 @@
             <a asp-action="PaymentPolicy" asp-controller="PaymentInfo">Правила оплаты</a>
         </div>
         <a href="@Url.Action("Index", "Registration")" class="back-button" formnovalidate>← Вернуться к регистрации</a>
-    </form>
-    <div class="payment-summary">
-        <div class="summary-item"><strong>Номер заказа:</strong> @Model.OrderNumber</div>
-        <div class="summary-item"><strong>Сумма к оплате:</strong> @Model.Amount ₽</div>
-        <button type="submit" class="pay-button">Оплатить</button>
-        <div class="payment-methods">
-            <img src="~/images/tbank.png" alt="Payment Methods">
+
+        <div class="payment-summary">
+            <input asp-for="OrderId" type="hidden">
+            <input asp-for="Amount" class="payform-tinkoff-row" type="text" placeholder="Сумма заказа" required>
+            <input asp-for="Description" class="payform-tinkoff-row" type="text" placeholder="Описание заказа">
+            <input asp-for="Name" class="payform-tinkoff-row" type="text" placeholder="ФИО плательщика">
+            <input asp-for="Email" class="payform-tinkoff-row" type="email" placeholder="E-mail">
+            <input asp-for="Phone" class="payform-tinkoff-row" type="tel" placeholder="Контактный телефон">
+            <input class="payform-tinkoff-row payform-tinkoff-btn" type="submit" value="Оплатить">
+            <div class="payment-methods">
+                <img src="~/images/tbank.png" alt="Payment Methods">
+            </div>
+            <div class="bank-info">Оплата банковскими картами осуществляется через АО "Тинькофф-БАНК"</div>
         </div>
-        <div class="bank-info">Оплата банковскими картами осуществляется через АО "Тинькофф-БАНК"</div>
-    </div>
+    </form>
+
 </div>
+
+<style>
+    .payform-tinkoff {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        margin: 2px auto;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        max-width: 250px;
+    }
+
+    .payform-tinkoff-row {
+        margin: 2px;
+        border-radius: 4px;
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        -webkit-transition: 0.3s;
+        -o-transition: 0.3s;
+        transition: 0.3s;
+        border: 1px solid #DFE3F3;
+        padding: 15px;
+        outline: none;
+        background-color: #DFE3F3;
+        font-size: 15px;
+    }
+
+        .payform-tinkoff-row:focus {
+            background-color: #FFFFFF;
+            border: 1px solid #616871;
+            border-radius: 4px;
+        }
+
+    .payform-tinkoff-btn {
+        background-color: #FBC520;
+        border: 1px solid #FBC520;
+        color: #3C2C0B;
+    }
+
+        .payform-tinkoff-btn:hover {
+            background-color: #FAB619;
+            border: 1px solid #FAB619;
+        }
+</style>
 
 @section Scripts {
     <script src="~/js/payment.js" asp-append-version="true"></script>
