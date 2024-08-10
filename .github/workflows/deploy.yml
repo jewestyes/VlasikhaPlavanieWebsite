@@ -1,0 +1,41 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish
+      run: dotnet publish --configuration Release --no-restore -o ./publish
+
+    - name: Add SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY_PEM }}" > ~/.ssh/id_rsa_pem
+        chmod 600 ~/.ssh/id_rsa_pem
+
+    - name: Deploy to server
+      run: rsync -avz -e "ssh -i ~/.ssh/id_rsa_pem -o StrictHostKeyChecking=no" ./publish/ root@147.45.235.177:/home/VlasikhaPlavanieWebsite/
+
+    - name: Restart Kestrel
+      run: ssh -i ~/.ssh/id_rsa_pem -o StrictHostKeyChecking=no root@147.45.235.177 'sudo systemctl restart kestrel.service'
+
