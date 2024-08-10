@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="~/css/payment.css" asp-append-version="true" />
 
 <div class="container">
-	<form class="payment-form" method="post" asp-action="ProcessPayment" asp-controller="Payment">
+	<form class="payment-form">
 		<div class="checkbox-group">
 			<label><input type="checkbox" required> Я принимаю условия <a href="#">Пользовательского соглашения</a> и <a href="#">политики конфиденциальности</a></label>
 			<label><input type="checkbox" required> Даю согласие на обработку <a href="#">персональных данных</a></label>
@@ -24,7 +24,7 @@
 
 	<div class="payment-summary">
 		<script src="https://securepay.tinkoff.ru/html/payForm/js/tinkoff_v2.js"></script>
-		<form class="payform-tinkoff" name="payform-tinkoff" id="payform-tinkoff">
+		<form class="payform-tinkoff" asp-action="ProcessPayment" asp-controller="Payment" name="payform-tinkoff" method="post" id="payform-tinkoff">
 			<input asp-for="OrderId" type="hidden">
 			<input asp-for="Amount" class="payform-tinkoff-row" type="text" placeholder="Сумма заказа" required>
 			<input asp-for="Description" class="payform-tinkoff-row" type="text" placeholder="Описание заказа">
