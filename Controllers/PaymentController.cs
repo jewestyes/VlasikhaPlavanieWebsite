@@ -61,13 +61,6 @@ public class PaymentController : Controller
         // Преобразуем сумму в целое число копеек
         int amountInKopecks = (int)amountInKopecksDecimal;
 
-        // Проверка суммы
-        if (amountInKopecks < 100)
-        {
-            ModelState.AddModelError(string.Empty, "Сумма должна быть не менее 1 рубля.");
-            return View("Payment", model);
-        }
-
         // Генерация токена с учетом всех обязательных параметров
         string token = GenerateToken(
             _configuration["Tinkoff:TerminalKey"],
