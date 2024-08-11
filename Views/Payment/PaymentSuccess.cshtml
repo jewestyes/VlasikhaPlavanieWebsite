@@ -2,6 +2,17 @@
     ViewData["Title"] = "Оплата прошла успешно";
 }
 
-<h2>Спасибо за ваш заказ!</h2>
-<p>Ваш платеж был успешно обработан.</p>
-<a href="/">Вернуться на главную</a>
+<link rel="stylesheet" href="~/css/payment-status.css" asp-append-version="true" />
+
+<div class="full-page-container">
+    <div class="payment-message">
+        <h2>Спасибо за ваш заказ!</h2>
+        <p>Ваш платеж был успешно обработан.</p>
+        <a href="/" class="back-button">Вернуться на главную</a>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/js/payment.js" asp-append-version="true"></script>
+}

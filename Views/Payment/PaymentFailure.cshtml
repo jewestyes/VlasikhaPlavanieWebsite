@@ -2,6 +2,22 @@
     ViewData["Title"] = "Ошибка при оплате";
 }
 
-<h2>Ошибка при оплате</h2>
-<p>К сожалению, при обработке вашего платежа произошла ошибка.</p>
-<a href="/">Попробовать снова</a>
+<link rel="stylesheet" href="~/css/payment-status.css" asp-append-version="true" />
+
+<div class="full-page-container">
+    <div class="payment-message">
+        <h2>Ошибка при оплате</h2>
+        <p>К сожалению, при обработке вашего платежа произошла ошибка.</p>
+        <a href="/" class="back-button">Попробовать снова</a>
+    </div>
+</div>
+
+<style>
+    .payment-message h2 {
+        color: red;
+    }
+</style>
+
+@section Scripts {
+    <script src="~/js/payment.js" asp-append-version="true"></script>
+}

@@ -86,6 +86,6 @@ public class RegistrationController : Controller
 
 	private decimal CalculateCost(int disciplinesCount)
 	{
-		return ((disciplinesCount / 3) * 2000m) + ((disciplinesCount % 3 != 0) ? 2000m : 0m);
+		return disciplinesCount <= 3 ? 2000m : 2000m + 500m * (disciplinesCount - 3);
 	}
 }

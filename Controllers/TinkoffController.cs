@@ -2,6 +2,7 @@
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
@@ -22,30 +23,60 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
             if (order == null)
             {
-                return NotFound();
-            }
+                // Если заказ не найден, создаем новый заказ
+                if (model.Status == "CONFIRMED")
+                {
+                    var registrationDataJson = HttpContext.Session.GetString("RegistrationData");
+                    var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
 
-            switch (model.Status)
+                    if (registrationModel == null)
+                    {
+                        return BadRequest("Не удалось восстановить данные участников из сессии.");
+                    }
+
+                    order = new Order
+                    {
+                        OrderNumber = model.OrderId.ToString(),
+                        Amount = model.Amount / 100m, // Преобразование суммы обратно в рубли
+                        Participants = registrationModel.Participants,
+                        Status = OrderStatus.Paid, // Статус успешной оплаты
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+
+                    _context.Orders.Add(order);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return BadRequest("Невозможно создать заказ без успешной оплаты.");
+                }
+            }
+            else
             {
-                case "CONFIRMED":
-                    order.Status = OrderStatus.Paid;
-                    break;
-                case "CANCELED":
-                    order.Status = OrderStatus.Cancelled;
-                    break;
-                case "REJECTED":
-                    order.Status = OrderStatus.Failed;
-                    break;
-                default:
-                    // Обработка других статусов
-                    break;
-            }
+                // Если заказ уже существует, обновляем его статус
+                switch (model.Status)
+                {
+                    case "CONFIRMED":
+                        order.Status = OrderStatus.Paid;
+                        break;
+                    case "CANCELED":
+                        order.Status = OrderStatus.Cancelled;
+                        break;
+                    case "REJECTED":
+                        order.Status = OrderStatus.Failed;
+                        break;
+                    default:
+                        break;
+                }
 
-            order.UpdatedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
+                order.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
 
             return Ok();
         }
+
     }
 
 }
