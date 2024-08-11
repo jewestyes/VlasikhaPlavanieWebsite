@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\Files\" />
+    <Folder Include="Logs\" />
   </ItemGroup>
 
 </Project>

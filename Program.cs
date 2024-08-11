@@ -8,6 +8,7 @@ using VlasikhaPlavanieWebsite.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Загрузка конфигурации из файла appsettings.json
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -24,8 +25,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Admin/Login";
 });
 
+// Настройка Serilog для логирования
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.File("Logs/app.log", rollingInterval: RollingInterval.Day)
+    .ReadFrom.Configuration(builder.Configuration)  // Чтение конфигурации из appsettings.json
     .CreateLogger();
 
 builder.Host.UseSerilog();
