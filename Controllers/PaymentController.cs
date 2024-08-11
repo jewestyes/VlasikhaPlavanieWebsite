@@ -105,30 +105,6 @@ public class PaymentController : Controller
 
             if (paymentResponse.Success)
             {
-                // Получение данных участников из сессии
-                var registrationDataJson = HttpContext.Session.GetString("RegistrationData");
-                var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
-
-                if (registrationModel == null)
-                {
-                    ViewBag.ErrorMessage = "Не удалось восстановить данные участников из сессии.";
-                    return View("PaymentError");
-                }
-
-                // Создаем новый заказ с участниками и статусом Pending
-                var order = new Order
-                {
-                    OrderNumber = model.OrderId.ToString(),
-                    Amount = model.Amount,
-                    Participants = registrationModel.Participants,
-                    Status = OrderStatus.Pending,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
-
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
-
                 return Redirect(paymentResponse.PaymentURL);
             }
             else
@@ -144,6 +120,7 @@ public class PaymentController : Controller
             return View("PaymentError");
         }
     }
+
 
     private string GenerateToken(string terminalKey, string amount, string orderId, string description, string secretKey)
 	{

@@ -1,0 +1,86 @@
+﻿.full-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.payment-message {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+    .payment-message h2 {
+        color: #28a745;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    .payment-message p {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    -webkit-transition: background-color 0.3s;
+    transition: background-color 0.3s;
+}
+
+    .back-button:hover {
+        background-color: #0056b3;
+    }
+
+/* Адаптивность для планшетов и устройств с небольшими экранами */
+@media (max-width: 768px) {
+    .payment-message {
+        padding: 30px;
+        max-width: 90%;
+    }
+
+        .payment-message h2 {
+            font-size: 22px;
+        }
+
+        .payment-message p {
+            font-size: 16px;
+        }
+
+    .back-button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 480px) {
+    .payment-message {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+        .payment-message h2 {
+            font-size: 20px;
+        }
+
+        .payment-message p {
+            font-size: 14px;
+        }
+
+    .back-button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}
