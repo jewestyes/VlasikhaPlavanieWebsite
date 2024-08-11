@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Регистрация";
     Layout = "_Layout";
-    var today = DateTime.Now.ToString("yyyy-MM-dd");
 }
 
 <link rel="stylesheet" href="~/css/registration.css" asp-append-version="true" />
@@ -33,7 +32,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label>Дата рождения</label>
-                        <input asp-for="Participants[i].BirthDate" type="date" class="form-control" value="@today" />
+                        <input asp-for="Participants[i].BirthDate" type="date" id="birthDatePicker_@(i)" class="form-control" />
                     </div>
                     <div class="form-group col-md-4">
                         <label>Пол</label>
@@ -87,7 +86,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Дата старта</label>
-                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" value="@today" required />
+                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" id="startDatePicker_@(i)_@(j)" required />
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Заявочное время</label>
