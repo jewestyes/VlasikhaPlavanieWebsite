@@ -47,8 +47,18 @@ namespace VlasikhaPlavanieWebsite.Controllers
         [Route("Admin/Logout")]
         public async Task<IActionResult> Logout()
         {
+
             await _signInManager.SignOutAsync();
+
+
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
+
+
             return RedirectToAction("Index", "Home");
+
         }
     }
 }
