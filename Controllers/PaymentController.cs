@@ -20,7 +20,19 @@ public class PaymentController : Controller
 		_configuration = configuration;
 	}
 
-	[HttpGet]
+    [HttpGet("payment/success")]
+    public IActionResult PaymentSuccess()
+    {
+        return View();
+    }
+
+    [HttpGet("payment/failure")]
+    public IActionResult PaymentFailure()
+    {
+        return View();
+    }
+
+    [HttpGet]
 	public IActionResult Payment(string orderId)
 	{
 		var registrationDataJson = HttpContext.Session.GetString("RegistrationData");
@@ -52,100 +64,88 @@ public class PaymentController : Controller
 		return View(paymentViewModel);
 	}
 
+    [HttpPost]
+    public async Task<IActionResult> ProcessPayment(PaymentViewModel model)
+    {
+        // Преобразуем сумму в копейки без округления
+        decimal amountInKopecksDecimal = model.Amount * 100;
+        int amountInKopecks = (int)amountInKopecksDecimal;
 
-	[HttpPost]
-	public async Task<IActionResult> ProcessPayment(PaymentViewModel model)
-	{
-		// Преобразуем сумму в копейки без округления
-		decimal amountInKopecksDecimal = model.Amount * 100;
+        string token = GenerateToken(
+            _configuration["Tinkoff:TerminalKey"],
+            amountInKopecks.ToString(),
+            model.OrderId.ToString(),
+            model.Description,
+            _configuration["Tinkoff:SecretKey"]
+        );
 
-		// Преобразуем сумму в целое число копеек
-		int amountInKopecks = (int)amountInKopecksDecimal;
+        var paymentData = new
+        {
+            TerminalKey = _configuration["Tinkoff:TerminalKey"],
+            Amount = amountInKopecks.ToString(),
+            OrderId = model.OrderId,
+            Description = model.Description,
+            Name = model.Name,
+            Email = model.Email,
+            Phone = model.Phone,
+            Token = token
+        };
 
-		string token = GenerateToken(
-			_configuration["Tinkoff:TerminalKey"],
-			amountInKopecks.ToString(),
-			model.OrderId.ToString(),
-			model.Description,
-			_configuration["Tinkoff:SecretKey"]
-		);
+        var client = _httpClientFactory.CreateClient();
+        client.BaseAddress = new Uri(_configuration["Tinkoff:ApiUrl"]);
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-		var paymentData = new
-		{
-			TerminalKey = _configuration["Tinkoff:TerminalKey"],
-			Amount = amountInKopecks.ToString(),
-			OrderId = model.OrderId,
-			Description = model.Description,
-			Name = model.Name,
-			Email = model.Email,
-			Phone = model.Phone,
-			Token = token
-		};
+        var content = new StringContent(JsonSerializer.Serialize(paymentData), Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("Init", content);
 
-		var client = _httpClientFactory.CreateClient();
-		client.BaseAddress = new Uri(_configuration["Tinkoff:ApiUrl"]);
-		client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(responseContent);
 
-		var content = new StringContent(JsonSerializer.Serialize(paymentData), Encoding.UTF8, "application/json");
-		var response = await client.PostAsync("Init", content);
+            if (paymentResponse.Success)
+            {
+                // Получение данных участников из сессии
+                var registrationDataJson = HttpContext.Session.GetString("RegistrationData");
+                var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
 
-		if (response.IsSuccessStatusCode)
-		{
-			var responseContent = await response.Content.ReadAsStringAsync();
-			var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(responseContent);
+                if (registrationModel == null)
+                {
+                    ViewBag.ErrorMessage = "Не удалось восстановить данные участников из сессии.";
+                    return View("PaymentError");
+                }
 
-			if (paymentResponse.Success)
-			{
-				// Получение данных участников из сессии
-				var registrationDataJson = HttpContext.Session.GetString("RegistrationData");
-				var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
+                // Создаем новый заказ с участниками и статусом Pending
+                var order = new Order
+                {
+                    OrderNumber = model.OrderId.ToString(),
+                    Amount = model.Amount,
+                    Participants = registrationModel.Participants,
+                    Status = OrderStatus.Pending,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
 
-				if (registrationModel == null)
-				{
-					ViewBag.ErrorMessage = "Не удалось восстановить данные участников из сессии.";
-					return View("PaymentError");
-				}
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
 
-				// Создаем новый заказ с участниками
-				var order = new Order
-				{
-					OrderNumber = model.OrderId.ToString(),
-					Amount = model.Amount,
-					Participants = registrationModel.Participants // Сохраняем всех участников
-				};
+                return Redirect(paymentResponse.PaymentURL);
+            }
+            else
+            {
+                ViewBag.ErrorMessage = $"Ошибка при обработке платежа: {paymentResponse.ErrorCode} - {paymentResponse.Message}";
+                return View("PaymentError");
+            }
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            ViewBag.ErrorMessage = $"Произошла ошибка при обработке платежа: {errorContent}";
+            return View("PaymentError");
+        }
+    }
 
-				// Добавление участников и их дисциплин в контекст
-				foreach (var participant in order.Participants)
-				{
-					foreach (var discipline in participant.Disciplines)
-					{
-						_context.Disciplines.Add(discipline); // Добавляем каждую дисциплину в контекст
-					}
-					_context.Participants.Add(participant); // Добавляем участника в контекст
-				}
-
-
-				_context.Orders.Add(order);
-				await _context.SaveChangesAsync();
-
-				return Redirect(paymentResponse.PaymentURL);
-			}
-			else
-			{
-				ViewBag.ErrorMessage = $"Ошибка при обработке платежа: {paymentResponse.ErrorCode} - {paymentResponse.Message}";
-				return View("PaymentError");
-			}
-		}
-		else
-		{
-			var errorContent = await response.Content.ReadAsStringAsync();
-			ViewBag.ErrorMessage = $"Произошла ошибка при обработке платежа: {errorContent}";
-			return View("PaymentError");
-		}
-	}
-
-
-	private string GenerateToken(string terminalKey, string amount, string orderId, string description, string secretKey)
+    private string GenerateToken(string terminalKey, string amount, string orderId, string description, string secretKey)
 	{
 		var parameters = new SortedDictionary<string, string>
 		{
@@ -176,7 +176,6 @@ public class PaymentController : Controller
 		public string OrderId { get; set; }
 		public int Amount { get; set; }
 		public string PaymentURL { get; set; }
-
 		public string Message { get; set; }
 
 	}
