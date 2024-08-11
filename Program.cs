@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Interfaces;
 using VlasikhaPlavanieWebsite.Models;
@@ -22,6 +23,12 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Admin/Login";
 });
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File("Logs/app.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
