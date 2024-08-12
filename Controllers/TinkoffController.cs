@@ -33,7 +33,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
             {
                 try
                 {
-                    if (model.Status == "CONFIRMED")
+                    // Проверка успешности и статуса платежа
+                    if (model.Success && model.Status == "AUTHORIZED")
                     {
                         // Извлечение данных регистрации из временного хранилища
                         var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
@@ -73,7 +74,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                     }
                     else
                     {
-                        _logger.LogWarning($"Невозможно создать заказ. Статус: {model.Status}");
+                        _logger.LogWarning($"Невозможно создать заказ. Статус: {model.Status}, Success: {model.Success}");
                         return BadRequest("Невозможно создать заказ без успешной оплаты.");
                     }
 
@@ -87,5 +88,6 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 }
             }
         }
+
     }
 }
