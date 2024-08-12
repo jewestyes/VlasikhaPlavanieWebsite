@@ -26,8 +26,8 @@
 		<script src="https://securepay.tinkoff.ru/html/payForm/js/tinkoff_v2.js"></script>
 		<form class="payform-tinkoff" asp-action="ProcessPayment" asp-controller="Payment" name="payform-tinkoff" method="post" id="payform-tinkoff">
 			<input asp-for="OrderId" type="hidden">
-			<input asp-for="Amount" class="payform-tinkoff-row" type="text" placeholder="Сумма заказа" required>
-			<input asp-for="Description" class="payform-tinkoff-row" type="text" placeholder="Описание заказа">
+			<input asp-for="Amount" class="payform-tinkoff-row" type="text" placeholder="Сумма заказа" required readonly>
+			<input asp-for="Description" class="payform-tinkoff-row" type="text" placeholder="Описание заказа" readonly>
 			<input asp-for="Name" class="payform-tinkoff-row" type="text" placeholder="ФИО плательщика">
 			<input asp-for="Email" class="payform-tinkoff-row" type="email" placeholder="E-mail">
 			<input asp-for="Phone" class="payform-tinkoff-row" type="tel" placeholder="Контактный телефон">
