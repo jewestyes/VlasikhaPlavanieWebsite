@@ -26,6 +26,18 @@ public class PaymentController : Controller
         _logger = logger;
     }
 
+    [HttpGet("payment/success")]
+    public IActionResult PaymentSuccess()
+    {
+        return View();
+    }
+
+    [HttpGet("payment/failure")]
+    public IActionResult PaymentFailure()
+    {
+        return View();
+    }
+
     [HttpGet]
     public async Task<IActionResult> Payment(string orderId)
     {
