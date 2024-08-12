@@ -8,48 +8,43 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging; // Добавляем пространство имен для логгера
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+
 public class PaymentController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IDistributedCache _cache;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
-    private readonly ILogger<PaymentController> _logger; // Добавляем поле для логгера
+    private readonly ILogger<PaymentController> _logger;
 
-    public PaymentController(ApplicationDbContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<PaymentController> logger)
+    public PaymentController(IDistributedCache cache, IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<PaymentController> logger)
     {
-        _context = context;
+        _cache = cache;
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
-        _logger = logger; // Инициализация логгера
-    }
-
-    [HttpGet("payment/success")]
-    public IActionResult PaymentSuccess()
-    {
-        return View();
-    }
-
-    [HttpGet("payment/failure")]
-    public IActionResult PaymentFailure()
-    {
-        return View();
+        _logger = logger;
     }
 
     [HttpGet]
-    public IActionResult Payment(string orderId)
+    public async Task<IActionResult> Payment(string orderId)
     {
         _logger.LogInformation("Начало обработки платежа для OrderId: {OrderId}", orderId);
 
-        var registrationDataJson = HttpContext.Session.GetString("RegistrationData");
-        var model = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
-
-        if (model == null)
+        var registrationDataJson = await _cache.GetStringAsync(orderId);
+        if (registrationDataJson == null)
         {
             _logger.LogWarning("Не удалось найти данные для оплаты по OrderId: {OrderId}", orderId);
             return NotFound("Не удалось найти данные для оплаты.");
         }
 
-        var amount = decimal.Parse(HttpContext.Session.GetString("Amount"));
+        var model = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
+        var amountString = await _cache.GetStringAsync($"{orderId}_amount");
+        if (amountString == null || !decimal.TryParse(amountString, out var amount))
+        {
+            _logger.LogWarning("Не удалось найти сумму для OrderId: {OrderId}", orderId);
+            return NotFound("Не удалось найти сумму заказа.");
+        }
 
         var firstParticipant = model.Participants.FirstOrDefault();
         if (firstParticipant == null)
@@ -76,7 +71,7 @@ public class PaymentController : Controller
     {
         _logger.LogInformation("Обработка платежа для OrderId: {OrderId}", model.OrderId);
 
-        // Преобразуем сумму в копейки без округления
+        // Преобразуем сумму в копейки
         decimal amountInKopecksDecimal = model.Amount * 100;
         int amountInKopecks = (int)amountInKopecksDecimal;
 
