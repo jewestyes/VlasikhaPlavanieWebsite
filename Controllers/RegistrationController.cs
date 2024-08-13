@@ -71,7 +71,6 @@ public class RegistrationController : Controller
 
         // Генерация уникального OrderId для использования на этапе оплаты
         var orderId = Guid.NewGuid().ToString();
-        var amount = CalculateCost(model.Participants.Sum(p => p.Disciplines.Count));
 
         // Сохранение данных регистрации во временном хранилище
         var cacheOptions = new DistributedCacheEntryOptions()
@@ -79,15 +78,8 @@ public class RegistrationController : Controller
 
         await _cache.SetStringAsync(orderId, JsonSerializer.Serialize(model), cacheOptions);
 
-        // Сохранение суммы заказа
-        await _cache.SetStringAsync($"{orderId}_amount", amount.ToString(), cacheOptions);
 
         // Перенаправление на страницу оплаты с передачей OrderId
         return RedirectToAction("Payment", "Payment", new { orderId = orderId });
-    }
-
-    private decimal CalculateCost(int disciplinesCount)
-    {
-        return disciplinesCount <= 3 ? 2000m : 2000m + 500m * (disciplinesCount - 3);
     }
 }

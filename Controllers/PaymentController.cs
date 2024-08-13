@@ -2,13 +2,8 @@
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
-using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging; // Добавляем пространство имен для логгера
-
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 
 public class PaymentController : Controller
@@ -51,12 +46,8 @@ public class PaymentController : Controller
         }
 
         var model = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
-        var amountString = await _cache.GetStringAsync($"{orderId}_amount");
-        if (amountString == null || !decimal.TryParse(amountString, out var amount))
-        {
-            _logger.LogWarning("Не удалось найти сумму для OrderId: {OrderId}", orderId);
-            return NotFound("Не удалось найти сумму заказа.");
-        }
+
+		decimal amount = CalculateCost(model.Participants.Sum(p => p.Disciplines.Count));
 
         var firstParticipant = model.Participants.FirstOrDefault();
         if (firstParticipant == null)
@@ -138,7 +129,7 @@ public class PaymentController : Controller
             {
                 _logger.LogWarning("Ошибка инициализации платежа для OrderId: {OrderId}. Код ошибки: {ErrorCode}, Сообщение: {Message}", paymentResponse.OrderId, paymentResponse.ErrorCode, paymentResponse.Message);
                 ViewBag.ErrorMessage = $"Ошибка при обработке платежа: {paymentResponse.ErrorCode} - {paymentResponse.Message}";
-                return View("PaymentError");
+                return View("PaymentFailure");
             }
         }
         else
@@ -146,7 +137,7 @@ public class PaymentController : Controller
             var errorContent = await response.Content.ReadAsStringAsync();
             _logger.LogError("Ошибка при обращении к API Tinkoff для OrderId: {OrderId}. Ответ сервера: {ResponseContent}", model.OrderId, errorContent);
             ViewBag.ErrorMessage = $"Произошла ошибка при обработке платежа: {errorContent}";
-            return View("PaymentError");
+            return View("PaymentFailure");
         }
     }
 
@@ -172,7 +163,14 @@ public class PaymentController : Controller
             return BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLower();
         }
     }
+
+	private decimal CalculateCost(int disciplinesCount)
+	{
+		return disciplinesCount <= 3 ? 2000m : 2000m + 500m * (disciplinesCount - 3);
+	}
 }
+
+
 
 public class PaymentResponse
 {
