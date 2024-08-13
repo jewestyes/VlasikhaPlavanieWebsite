@@ -18,9 +18,18 @@ public class RegistrationController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        var model = new RegistrationViewModel();
-        return View(model);
-    }
+		var model = new RegistrationViewModel();
+
+		foreach (var participant in model.Participants)
+		{
+			if (participant.Disciplines.Count == 0)
+			{
+				participant.Disciplines.Add(new Discipline());
+			}
+		}
+
+		return View(model);
+	}
 
     [HttpPost]
     public IActionResult AddParticipant(RegistrationViewModel model)
