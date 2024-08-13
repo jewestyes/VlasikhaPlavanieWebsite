@@ -74,8 +74,28 @@ public class PaymentController : Controller
     {
         _logger.LogInformation("Обработка платежа для OrderId: {OrderId}", model.OrderId);
 
-        // Преобразуем сумму в копейки
-        decimal amountInKopecksDecimal = model.Amount * 100;
+
+		// Повторное получение и проверка данных заказа из кеша
+		var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
+		if (registrationDataJson == null)
+		{
+			_logger.LogWarning("Не удалось найти данные для оплаты по OrderId: {OrderId}", model.OrderId);
+			return NotFound("Не удалось найти данные для оплаты.");
+		}
+
+		var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
+		decimal expectedAmount = CalculateCost(registrationModel.Participants.Sum(p => p.Disciplines.Count));
+
+		// Проверка соответствия суммы, полученной с клиента
+		if (model.Amount != expectedAmount)
+		{
+			_logger.LogWarning("Несоответствие суммы для OrderId: {OrderId}. Ожидаемая сумма: {ExpectedAmount}, Переданная сумма: {ProvidedAmount}",
+				model.OrderId, expectedAmount, model.Amount);
+			return BadRequest("Несоответствие суммы.");
+		}
+
+		// Преобразуем сумму в копейки
+		decimal amountInKopecksDecimal = model.Amount * 100;
         int amountInKopecks = (int)amountInKopecksDecimal;
 
         string token;
@@ -93,7 +113,7 @@ public class PaymentController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка генерации токена для OrderId: {OrderId}", model.OrderId);
-            return View("PaymentError");
+            return View("PaymentFailure");
         }
 
         var paymentData = new
