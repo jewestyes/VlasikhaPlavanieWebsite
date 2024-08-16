@@ -1,23 +1,30 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Threading.Tasks;
+using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
+    
     public class AdminController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+			_context = context;
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("Admin/Login")]
         public IActionResult Login()
         {
@@ -98,5 +105,42 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
 			return RedirectToAction("Index", "Home");
 		}
-	}
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("Admin/Index")]
+        public async Task<IActionResult> Index()
+        {
+            var query = from p in _context.Participants
+                        join o in _context.Orders on p.Id equals o.Id
+                        join d in _context.Disciplines on p.Id equals d.ParticipantId
+                        select new ParticipantOrderViewModel
+                        {
+                            ParticipantId = p.Id,
+                            LastName = p.LastName,
+                            FirstName = p.FirstName,
+                            MiddleName = p.MiddleName,
+                            BirthDate = p.BirthDate,
+                            Gender = p.Gender,
+                            CityOrTeam = p.CityOrTeam,
+                            Rank = p.Rank,
+                            Phone = p.Phone,
+                            Email = p.Email,
+                            OrderId = o.Id,
+                            OrderNumber = o.OrderNumber,
+                            Amount = o.Amount,
+                            CreatedAt = o.CreatedAt,
+                            UpdatedAt = o.UpdatedAt,
+                            Status = o.Status,
+                            DisciplineId = d.Id,
+                            DisciplineName = d.Name,
+                            Distance = d.Distance,
+                            StartDate = d.StartDate,
+                            EntryTime = d.EntryTime
+                        };
+
+            var result = await query.ToListAsync();
+            return View(result);
+        }
+    }
 }

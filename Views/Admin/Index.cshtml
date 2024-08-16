@@ -1,0 +1,64 @@
+﻿@model IEnumerable<ParticipantOrderViewModel>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Таблица заявившихся на турнир 29.09.2024</title>
+    <link rel="stylesheet" href="~/css/participants.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="participants-container">
+        <h1 class="participants-title">Таблица заявившихся на турнир 29.09.2024</h1>
+        <div class="table-responsive">
+            <table class="participants-table">
+                <thead>
+                    <tr>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Birth Date</th>
+                        <th>Gender</th>
+                        <th>City/Team</th>
+                        <th>Rank</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Order Number</th>
+                        <th>Amount</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Discipline Name</th>
+                        <th>Distance</th>
+                        <th>Start Date</th>
+                        <th>Entry Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.LastName</td>
+                            <td>@item.FirstName</td>
+                            <td>@item.MiddleName</td>
+                            <td>@item.BirthDate.ToShortDateString()</td>
+                            <td>@item.Gender</td>
+                            <td>@item.CityOrTeam</td>
+                            <td>@item.Rank</td>
+                            <td>@item.Phone</td>
+                            <td>@item.Email</td>
+                            <td>@item.OrderNumber</td>
+                            <td>@item.Amount</td>
+                            <td>@item.CreatedAt.ToShortDateString()</td>
+                            <td>@item.Status</td>
+                            <td>@item.DisciplineName</td>
+                            <td>@item.Distance</td>
+                            <td>@item.StartDate.ToShortDateString()</td>
+                            <td>@item.EntryTime</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

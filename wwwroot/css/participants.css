@@ -1,0 +1,64 @@
+﻿.participants-container {
+    background-color: #fff;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1300px;
+    width: 100%;
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку */
+}
+
+.participants-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-width: 1000px; /* Устанавливаем минимальную ширину таблицы, чтобы она не сжималась */
+}
+
+    .participants-table, .participants-table th, .participants-table td {
+        border: 1px solid #ddd;
+    }
+
+        .participants-table th, .participants-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .participants-table th {
+            background-color: #007bff;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .participants-table td a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .participants-table td a:hover {
+                text-decoration: underline;
+            }
+
+@media (max-width: 768px) {
+    .participants-container {
+        padding: 15px;
+    }
+
+    .participants-table th, .participants-table td {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .participants-container {
+        margin: 20px auto;
+        padding: 10px;
+    }
+
+    .participants-table, .participants-table th, .participants-table td {
+        font-size: 14px;
+    }
+}
