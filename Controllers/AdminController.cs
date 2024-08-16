@@ -116,7 +116,6 @@ namespace VlasikhaPlavanieWebsite.Controllers
                         join d in _context.Disciplines on p.Id equals d.ParticipantId
                         select new ParticipantOrderViewModel
                         {
-                            ParticipantId = p.Id,
                             LastName = p.LastName,
                             FirstName = p.FirstName,
                             MiddleName = p.MiddleName,
@@ -126,16 +125,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
                             Rank = p.Rank,
                             Phone = p.Phone,
                             Email = p.Email,
-                            OrderId = o.Id,
-                            OrderNumber = o.OrderNumber,
-                            Amount = o.Amount,
-                            CreatedAt = o.CreatedAt,
-                            UpdatedAt = o.UpdatedAt,
-                            Status = o.Status,
-                            DisciplineId = d.Id,
                             DisciplineName = d.Name,
                             Distance = d.Distance,
-                            StartDate = d.StartDate,
                             EntryTime = d.EntryTime
                         };
 

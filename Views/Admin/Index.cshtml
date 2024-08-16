@@ -14,23 +14,18 @@
             <table class="participants-table">
                 <thead>
                     <tr>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Middle Name</th>
-                        <th>Birth Date</th>
-                        <th>Gender</th>
-                        <th>City/Team</th>
-                        <th>Rank</th>
-                        <th>Phone</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Отчество</th>
+                        <th>Дата рождения</th>
+                        <th>Пол</th>
+                        <th>Город/Команда</th>
+                        <th>Разряд</th>
+                        <th>Телефон</th>
                         <th>Email</th>
-                        <th>Order Number</th>
-                        <th>Amount</th>
-                        <th>Created At</th>
-                        <th>Status</th>
-                        <th>Discipline Name</th>
-                        <th>Distance</th>
-                        <th>Start Date</th>
-                        <th>Entry Time</th>
+                        <th>Дисциплина</th>
+                        <th>Дистанция</th>
+                        <th>Заявочное время</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,19 +35,14 @@
                             <td>@item.LastName</td>
                             <td>@item.FirstName</td>
                             <td>@item.MiddleName</td>
-                            <td>@item.BirthDate.ToShortDateString()</td>
+                            <td>@item.BirthDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.Gender</td>
                             <td>@item.CityOrTeam</td>
                             <td>@item.Rank</td>
                             <td>@item.Phone</td>
                             <td>@item.Email</td>
-                            <td>@item.OrderNumber</td>
-                            <td>@item.Amount</td>
-                            <td>@item.CreatedAt.ToShortDateString()</td>
-                            <td>@item.Status</td>
                             <td>@item.DisciplineName</td>
                             <td>@item.Distance</td>
-                            <td>@item.StartDate.ToShortDateString()</td>
                             <td>@item.EntryTime</td>
                         </tr>
                     }
