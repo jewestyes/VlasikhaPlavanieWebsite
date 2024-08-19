@@ -39,6 +39,14 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 return BadRequest(ModelState);
             }
 
+            var existingOrder = await _context.Orders.FirstOrDefaultAsync(o => o.OrderNumber == model.OrderId);
+            if (existingOrder != null)
+            {
+                _logger.LogInformation("Заказ с OrderId: {OrderId} уже существует. Запрос обработан ранее.", model.OrderId);
+                return Ok();
+            }
+
+
             _logger.LogInformation("Webhook received for OrderId: {OrderId} with status: {Status}", model.OrderId, model.Status);
 
             // Генерация токена на основе данных, пришедших в запросе
