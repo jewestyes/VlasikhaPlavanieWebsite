@@ -83,12 +83,26 @@ public class RegistrationController : Controller
 
         // Сохранение данных регистрации во временном хранилище
         var cacheOptions = new DistributedCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromHours(1)); // Время жизни записи в кеше
+            .SetAbsoluteExpiration(TimeSpan.FromHours(3));
+
 
         await _cache.SetStringAsync(orderId, JsonSerializer.Serialize(model), cacheOptions);
 
 
         // Перенаправление на страницу оплаты с передачей OrderId
         return RedirectToAction("Payment", "Payment", new { orderId = orderId });
+    }
+
+    [HttpGet("registration/get-cached-data")]
+    public async Task<IActionResult> GetCachedData(string orderId)
+    {
+        var cachedData = await _cache.GetStringAsync(orderId);
+        if (string.IsNullOrEmpty(cachedData))
+        {
+            return NotFound("Данные не найдены в кэше.");
+        }
+
+        var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(cachedData);
+        return Ok(registrationModel);
     }
 }
