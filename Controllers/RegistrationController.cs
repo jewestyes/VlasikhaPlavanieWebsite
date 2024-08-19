@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 public class RegistrationController : Controller
 {
     private readonly IDistributedCache _cache;
+    private readonly ILogger<RegistrationController> _logger;
 
-    public RegistrationController(IDistributedCache cache)
+    public RegistrationController(IDistributedCache cache, ILogger<RegistrationController> logger)
     {
         _cache = cache;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -72,37 +74,49 @@ public class RegistrationController : Controller
     [HttpPost]
     public async Task<IActionResult> Submit(RegistrationViewModel model)
     {
+        _logger.LogInformation("Attempting to submit registration.");
+
+        // Логирование всех данных формы
+        try
+        {
+            string serializedModel = JsonSerializer.Serialize(model, new JsonSerializerOptions
+            {
+                WriteIndented = true, // Чтобы JSON был форматирован для лучшей читаемости
+                IgnoreNullValues = false // Включаем все значения, включая null
+            });
+
+            _logger.LogInformation("Full registration data: {RegistrationData}", serializedModel);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while serializing the registration model.");
+            return StatusCode(500, "Internal server error during serialization");
+        }
+
         if (!ModelState.IsValid || model.Participants.Any(p => !p.Disciplines.Any()))
         {
+            _logger.LogWarning("Registration model is invalid. Each participant must have at least one discipline.");
             ModelState.AddModelError(string.Empty, "У каждого участника должна быть выбрана хотя бы одна дисциплина.");
             return View("Index", model);
         }
 
-        // Генерация уникального OrderId для использования на этапе оплаты
         var orderId = Guid.NewGuid().ToString();
+        _logger.LogInformation("Generated OrderId: {OrderId} for registration.", orderId);
 
-        // Сохранение данных регистрации во временном хранилище
-        var cacheOptions = new DistributedCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromHours(3));
-
-
-        await _cache.SetStringAsync(orderId, JsonSerializer.Serialize(model), cacheOptions);
-
-
-        // Перенаправление на страницу оплаты с передачей OrderId
-        return RedirectToAction("Payment", "Payment", new { orderId = orderId });
-    }
-
-    [HttpGet("registration/get-cached-data")]
-    public async Task<IActionResult> GetCachedData(string orderId)
-    {
-        var cachedData = await _cache.GetStringAsync(orderId);
-        if (string.IsNullOrEmpty(cachedData))
+        try
         {
-            return NotFound("Данные не найдены в кэше.");
-        }
+            var cacheOptions = new DistributedCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromHours(3));
 
-        var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(cachedData);
-        return Ok(registrationModel);
+            await _cache.SetStringAsync(orderId, JsonSerializer.Serialize(model), cacheOptions);
+            _logger.LogInformation("Registration data cached with OrderId: {OrderId}.", orderId);
+
+            return RedirectToAction("Payment", "Payment", new { orderId = orderId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while submitting the registration with OrderId: {OrderId}.", orderId);
+            return StatusCode(500, "Internal server error");
+        }
     }
 }
