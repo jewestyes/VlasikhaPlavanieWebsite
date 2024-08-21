@@ -47,7 +47,7 @@ public class PaymentController : Controller
 
         var model = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
 
-		decimal amount = CalculateCost(model.Participants.Sum(p => p.Disciplines.Count));
+		decimal amount = CalculateCost(model);
 
         var firstParticipant = model.Participants.FirstOrDefault();
         if (firstParticipant == null)
@@ -84,7 +84,7 @@ public class PaymentController : Controller
 		}
 
 		var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
-		decimal expectedAmount = CalculateCost(registrationModel.Participants.Sum(p => p.Disciplines.Count));
+		decimal expectedAmount = CalculateCost(registrationModel);
 
 		// Проверка соответствия суммы, полученной с клиента
 		if (model.Amount != expectedAmount)
@@ -184,10 +184,19 @@ public class PaymentController : Controller
         }
     }
 
-	private decimal CalculateCost(int disciplinesCount)
+    private decimal CalculateCost(RegistrationViewModel model)
 	{
-		return disciplinesCount <= 3 ? 2000m : 2000m + 500m * (disciplinesCount - 3);
-	}
+        List<Participant> participants = model.Participants;
+        decimal totalPrice = 0m;
+
+        foreach (Participant participant in participants)
+        {
+            int disciplinesCount = participant.Disciplines.Count();
+            totalPrice += disciplinesCount <= 3 ? 2000m : 2000m + 500m * (disciplinesCount - 3);
+        }
+
+        return totalPrice;
+    }
 }
 
 

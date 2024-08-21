@@ -112,8 +112,10 @@ namespace VlasikhaPlavanieWebsite.Controllers
         public async Task<IActionResult> Index()
         {
             var query = from p in _context.Participants
-                        join o in _context.Orders on p.Id equals o.Id
-                        join d in _context.Disciplines on p.Id equals d.ParticipantId
+                        join o in _context.Orders on p.OrderId equals o.Id into po
+                        from order in po.DefaultIfEmpty()
+                        join d in _context.Disciplines on p.Id equals d.ParticipantId into pd
+                        from discipline in pd.DefaultIfEmpty()
                         select new ParticipantOrderViewModel
                         {
                             LastName = p.LastName,
@@ -125,13 +127,16 @@ namespace VlasikhaPlavanieWebsite.Controllers
                             Rank = p.Rank,
                             Phone = p.Phone,
                             Email = p.Email,
-                            DisciplineName = d.Name,
-                            Distance = d.Distance,
-                            EntryTime = d.EntryTime
+                            DisciplineName = discipline != null ? discipline.Name : null,
+                            Distance = discipline != null ? discipline.Distance : null,
+                            EntryTime = discipline != null ? discipline.EntryTime : null,
+                            OrderNumber = order != null ? order.OrderNumber : null,
+                            Amount = order != null ? order.Amount : 0m
                         };
 
             var result = await query.ToListAsync();
             return View(result);
+
         }
     }
 }

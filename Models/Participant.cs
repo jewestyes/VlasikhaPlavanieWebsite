@@ -16,5 +16,7 @@ namespace VlasikhaPlavanieWebsite.Models
         public string Phone { get; set; }
         public string Email { get; set; }
         public List<Discipline> Disciplines { get; set; } = new List<Discipline>();
+        public int? OrderId { get; set; }
+        public Order Order { get; set; }
     }
 }

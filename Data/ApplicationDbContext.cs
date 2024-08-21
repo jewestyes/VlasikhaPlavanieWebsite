@@ -47,6 +47,11 @@ namespace VlasikhaPlavanieWebsite.Data
                 .HasForeignKey(d => d.ParticipantId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Participant>()
+                .HasOne(p => p.Order)
+                .WithMany(o => o.Participants)
+                .HasForeignKey(p => p.OrderId);
+
             builder.Entity<Discipline>()
                 .HasKey(d => d.Id);
 
