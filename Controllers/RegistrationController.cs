@@ -76,6 +76,13 @@ public class RegistrationController : Controller
     {
         _logger.LogInformation("Attempting to submit registration.");
 
+        
+        for (int i = 0; i < model.Participants.Count; i++)
+        {
+            ModelState.Remove($"Participants[{i}].Order");
+            ModelState.Remove($"Participants[{i}].OrderId");
+        }
+
         // Логирование всех данных формы
         try
         {
