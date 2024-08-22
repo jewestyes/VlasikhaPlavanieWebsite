@@ -14,6 +14,7 @@
             <table class="participants-table">
                 <thead>
                     <tr>
+                        <th>Дата заказа</th>
                         <th>Имя</th>
                         <th>Фамилия</th>
                         <th>Отчество</th>
@@ -32,6 +33,7 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>@item.CreatedAt</td>
                             <td>@item.LastName</td>
                             <td>@item.FirstName</td>
                             <td>@item.MiddleName</td>
