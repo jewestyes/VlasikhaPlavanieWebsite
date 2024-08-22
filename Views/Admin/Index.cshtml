@@ -33,7 +33,7 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.CreatedAt</td>
+                            <td>@item.CreatedAt.AddHours(3).ToString("dd.MM.yyyy HH:mm")</td>
                             <td>@item.LastName</td>
                             <td>@item.FirstName</td>
                             <td>@item.MiddleName</td>
