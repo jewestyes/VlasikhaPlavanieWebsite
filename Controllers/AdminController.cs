@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -126,6 +127,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                             CityOrTeam = p.CityOrTeam,
                             Rank = p.Rank,
                             Phone = p.Phone,
+                            CreatedAt = order.CreatedAt,
                             Email = p.Email,
                             DisciplineName = discipline != null ? discipline.Name : null,
                             Distance = discipline != null ? discipline.Distance : null,
