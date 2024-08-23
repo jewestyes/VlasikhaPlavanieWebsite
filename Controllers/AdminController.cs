@@ -75,7 +75,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 				await _signInManager.SignInAsync(user, false);
 				Log.Information("User {Email} successfully signed in", model.Email);
 
-				return RedirectToAction("Index", "Home");
+				return RedirectToAction("Index", "Admin");
 			}
 			catch (Exception ex)
 			{
