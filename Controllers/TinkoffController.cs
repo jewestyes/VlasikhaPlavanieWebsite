@@ -50,7 +50,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 // Проверка токена
                 if (calculatedToken != model.Token)
                 {
-                    _logger.LogWarning("Неверный токен для OrderId: {OrderId}.", model.OrderId);
+                    _logger.LogWarning("Неверный токен {model.Token} для OrderId: {OrderId}.", model.Token, model.OrderId);
                     return BadRequest("Неверный токен.");
                 }
 
@@ -68,7 +68,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                         var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
                                         if (string.IsNullOrEmpty(registrationDataJson))
                                         {
-                                            _logger.LogError("Ошибка: Данные регистрации не найдены в кеше.");
+                                            _logger.LogError("Ошибка: Данные регистрации для {model.OrderId} не найдены в кеше.", model.OrderId);
                                             return BadRequest("Не удалось восстановить данные участников.");
                                         }
 
