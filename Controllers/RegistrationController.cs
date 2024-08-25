@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using StackExchange.Redis;
 
 public class RegistrationController : Controller
 {
@@ -115,8 +116,25 @@ public class RegistrationController : Controller
             var cacheOptions = new DistributedCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromHours(3));
 
-            await _cache.SetStringAsync(orderId, JsonSerializer.Serialize(model), cacheOptions);
-            _logger.LogInformation("Registration data cached with OrderId: {OrderId}.", orderId);
+            int maxRetries = 3;
+            for (int attempt = 0; attempt < maxRetries; attempt++)
+            {
+                try
+                {
+                    await _cache.SetStringAsync(orderId, JsonSerializer.Serialize(model), cacheOptions);
+                    _logger.LogInformation("Registration data cached with OrderId: {OrderId}.", orderId);
+                    break;
+                }
+                catch (RedisException ex)
+                {
+                    _logger.LogWarning(ex, "Ошибка при попытке записи в Redis, попытка {Attempt} из {MaxRetries}", attempt + 1, maxRetries);
+                    if (attempt == maxRetries - 1)
+                    {
+                        throw; // Если все попытки провалились, выбрасываем исключение
+                    }
+                    await Task.Delay(1000);
+                }
+            }
 
             return RedirectToAction("Payment", "Payment", new { orderId = orderId });
         }
@@ -125,5 +143,6 @@ public class RegistrationController : Controller
             _logger.LogError(ex, "An error occurred while submitting the registration with OrderId: {OrderId}.", orderId);
             return StatusCode(500, "Internal server error");
         }
+
     }
 }
