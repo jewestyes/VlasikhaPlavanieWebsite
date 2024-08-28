@@ -35,12 +35,12 @@ namespace VlasikhaPlavanieWebsite.Controllers
         {
             try
             {
-                _logger.LogInformation("Webhook received for OrderId: {OrderId} with status: {Status}", model.OrderId, model.Status);
+                _logger.LogInformation($"Webhook received for OrderId: {model.OrderId} with status: {model.Status}");
                 
                 var existingOrder = await _context.Orders.FirstOrDefaultAsync(o => o.OrderNumber == model.OrderId);
                 if (existingOrder != null)
                 {
-                    _logger.LogInformation("Заказ с OrderId: {OrderId} уже существует. Запрос обработан ранее.", model.OrderId);
+                    _logger.LogInformation($"Заказ с OrderId: {model.OrderId} уже существует. Запрос обработан ранее.");
                     return Ok();
                 }
 
@@ -88,9 +88,11 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                         var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
                                         if (string.IsNullOrEmpty(registrationDataJson))
                                         {
+                                            _logger.LogError($"Ошибка: Данные регистрации заказа {model.OrderId} не найдены в кеше.");
+
                                             if (model.Amount < 50)
                                                 return Ok();
-                                            _logger.LogError($"Ошибка: Данные регистрации заказа {model.OrderId} не найдены в кеше.");
+
                                             return BadRequest("Не удалось восстановить данные участников.");
                                         }
 
