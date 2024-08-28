@@ -50,25 +50,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 // Проверка токена
                 if (calculatedToken != model.Token)
                 {
-                    _logger.LogWarning($"Неверный токен для OrderId: {model.OrderId}. ");
-
-                    var parameters = new SortedDictionary<string, string>
-                    {
-                        { "Amount", model.Amount.ToString() },
-                        { "CardId", model.CardId.ToString() },
-                        { "ErrorCode", model.ErrorCode },
-                        { "ExpDate", model.ExpDate },
-                        { "OrderId", model.OrderId },
-                        { "Pan", model.Pan },
-                        { "PaymentId", model.PaymentId.ToString() },
-                        { "Status", model.Status },
-                        { "Success", model.Success.ToString().ToLower() },
-                        { "TerminalKey", model.TerminalKey }
-                    };
-
-                    var concatenatedString = string.Join(string.Empty, parameters.Values);
-
-                    _logger.LogError($"{concatenatedString}");
+                    _logger.LogError($"Неверный токен calctoken {calculatedToken} для {model.Token} OrderId: {model.OrderId}. ");
                     //return BadRequest("Неверный токен.");
                 }
 
