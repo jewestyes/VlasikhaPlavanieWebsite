@@ -51,6 +51,26 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 if (calculatedToken != model.Token)
                 {
                     _logger.LogError($"Неверный токен calctoken {calculatedToken} для {model.Token} OrderId: {model.OrderId}. ");
+
+                    _logger.LogWarning($"Неверный токен для OrderId: {model.OrderId}. ");
+
+                    var parameters = new SortedDictionary<string, string>
+                    {
+                        { "Amount", model.Amount.ToString() },
+                        { "CardId", model.CardId.ToString() },
+                        { "ErrorCode", model.ErrorCode },
+                        { "ExpDate", model.ExpDate },
+                        { "OrderId", model.OrderId },
+                        { "Pan", model.Pan },
+                        { "PaymentId", model.PaymentId.ToString() },
+                        { "Status", model.Status },
+                        { "Success", model.Success.ToString().ToLower() },
+                        { "TerminalKey", model.TerminalKey }
+                    };
+
+                    var concatenatedString = string.Join(string.Empty, parameters.Values);
+
+                    _logger.LogError($"{concatenatedString}");
                     //return BadRequest("Неверный токен.");
                 }
 
@@ -68,6 +88,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                         var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
                                         if (string.IsNullOrEmpty(registrationDataJson))
                                         {
+                                            if (model.Amount < 50)
+                                                return Ok();
                                             _logger.LogError($"Ошибка: Данные регистрации заказа {model.OrderId} не найдены в кеше.");
                                             return BadRequest("Не удалось восстановить данные участников.");
                                         }
