@@ -50,6 +50,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 // Проверка токена
                 if (calculatedToken != model.Token)
                 {
+                    _logger.LogError($"Неверный токен calctoken {calculatedToken} для {model.Token} OrderId: {model.OrderId}. ");
+
                     _logger.LogWarning($"Неверный токен для OrderId: {model.OrderId}. ");
 
                     var parameters = new SortedDictionary<string, string>
@@ -68,7 +70,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
                     var concatenatedString = string.Join(string.Empty, parameters.Values);
 
-                    _logger.LogWarning($"{concatenatedString}");
+                    _logger.LogError($"{concatenatedString}");
                     //return BadRequest("Неверный токен.");
                 }
 
@@ -86,6 +88,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                         var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
                                         if (string.IsNullOrEmpty(registrationDataJson))
                                         {
+                                            if (model.Amount < 50)
+                                                return Ok();
                                             _logger.LogError($"Ошибка: Данные регистрации заказа {model.OrderId} не найдены в кеше.");
                                             return BadRequest("Не удалось восстановить данные участников.");
                                         }
