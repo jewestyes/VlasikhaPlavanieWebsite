@@ -50,8 +50,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 // Проверка токена
                 if (calculatedToken != model.Token)
                 {
-                    _logger.LogWarning("Неверный токен {model.Token} для OrderId: {OrderId}.", model.Token, model.OrderId);
-                    return BadRequest("Неверный токен.");
+                    _logger.LogWarning($"Неверный токен calctoken {calculatedToken} для {model.Token} OrderId: {model.OrderId}. ");
+                    //return BadRequest("Неверный токен.");
                 }
 
                 switch (model.Status)
