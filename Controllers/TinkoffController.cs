@@ -90,7 +90,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                         {
                                             _logger.LogError($"Ошибка: Данные регистрации заказа {model.OrderId} не найдены в кеше.");
 
-                                            if (model.Amount < 50)
+                                            if (model.Amount < 2000)
                                                 return Ok();
 
                                             return BadRequest("Не удалось восстановить данные участников.");
