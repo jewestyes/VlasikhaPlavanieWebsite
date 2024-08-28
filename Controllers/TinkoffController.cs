@@ -68,6 +68,9 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                         var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
                                         if (string.IsNullOrEmpty(registrationDataJson))
                                         {
+                                            if (model.Amount < 50)
+                                                return Ok();
+
                                             _logger.LogError($"Ошибка: Данные регистрации заказа {model.OrderId} не найдены в кеше.");
                                             return BadRequest("Не удалось восстановить данные участников.");
                                         }
