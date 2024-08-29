@@ -41,7 +41,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 if (existingOrder != null)
                 {
                     _logger.LogInformation($"Заказ с OrderId: {model.OrderId} уже существует. Запрос обработан ранее.");
-                    return Ok();
+                    return Ok("OK");
                 }
 
                 // Генерация токена на основе данных, пришедших в запросе
@@ -91,7 +91,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                             _logger.LogError($"Ошибка: Данные регистрации заказа {model.OrderId} не найдены в кеше.");
 
                                             if (model.Amount < 2000)
-                                                return Ok();
+                                                return Ok("OK");
 
                                             return BadRequest("Не удалось восстановить данные участников.");
                                         }
@@ -130,7 +130,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                         return BadRequest("Невозможно создать заказ без успешной оплаты.");
                                     }
 
-                                    return Ok();
+                                    return Ok("OK");
                                 }
                                 catch (Exception ex)
                                 {
@@ -175,7 +175,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
                         break;
                 }
 
-                return Ok();
+                return Ok("OK");
             }
             catch (Exception ex)
             {
