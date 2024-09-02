@@ -81,7 +81,16 @@ public class RegistrationController : Controller
         for (int i = 0; i < model.Participants.Count; i++)
         {
             ModelState.Remove($"Participants[{i}].Order");
+            ModelState.Remove($"Participants[{i}].Rank");
             ModelState.Remove($"Participants[{i}].OrderId");
+        }
+
+        foreach (var participant in model.Participants)
+        {
+            if (string.IsNullOrWhiteSpace(participant.Rank))
+            {
+                participant.Rank = "Без разряда";
+            }
         }
 
         // Логирование всех данных формы
