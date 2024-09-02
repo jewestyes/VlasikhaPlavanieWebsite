@@ -82,6 +82,34 @@
         });
     });
 
+    // Функция для валидации email
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    document.getElementById('registrationForm').addEventListener('submit', function (event) {
+        const emailInputs = document.querySelectorAll('input[type="email"]');
+        let formIsValid = true;
+
+        emailInputs.forEach(function (emailInput) {
+            const errorSpan = emailInput.nextElementSibling; // Находим соответствующий span для отображения ошибки
+
+            if (!isValidEmail(emailInput.value)) {
+                errorSpan.textContent = 'Поле должно быть действительным электронным адресом.';
+                emailInput.classList.add('is-invalid');
+                formIsValid = false;
+            } else {
+                errorSpan.textContent = ''; // Очищаем текст ошибки, если email корректный
+                emailInput.classList.remove('is-invalid');
+            }
+        });
+
+        if (!formIsValid) {
+            event.preventDefault(); // Останавливаем отправку формы, если email неверен
+        }
+    });
+
     // Функция инициализации селектов дисциплин
     function initializeDisciplineSelects() {
         document.querySelectorAll('.discipline-select').forEach(selectElement => {
