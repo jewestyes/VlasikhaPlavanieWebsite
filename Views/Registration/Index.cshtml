@@ -51,8 +51,8 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label asp-for="Participants[i].Phone">Телефон</label>
-                        <input asp-for="Participants[i].Phone" class="form-control" required />
-                        <span asp-validation-for="Participants[i].Phone" class="text-danger"></span>
+                        <input asp-for="Participants[i].Phone" type="tel" class="form-control" required />
+                        <span asp-validation-for="Participants[i].Phone"  class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-row">
