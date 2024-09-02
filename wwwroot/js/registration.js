@@ -90,9 +90,16 @@
         return reRu.test(phone) || reBy.test(phone);
     }
 
+    function isValidTime(time) {
+        const re = /^([0-5][0-9]):([0-5][0-9]):([0-9]{2})$/;
+        return re.test(time);
+    }
+
     document.getElementById('registrationForm').addEventListener('submit', function (event) {
         const emailInputs = document.querySelectorAll('input[type="email"]');
         const phoneInputs = document.querySelectorAll('input[type="tel"]');
+        const timeInputs = document.querySelectorAll('input.time-input');
+
         let formIsValid = true;
 
         emailInputs.forEach(function (emailInput) {
@@ -118,6 +125,19 @@
             } else {
                 errorSpan.textContent = '';
                 phoneInput.classList.remove('is-invalid');
+            }
+        });
+
+        timeInputs.forEach(function (timeInput) {
+            const errorSpan = timeInput.nextElementSibling;
+
+            if (!isValidTime(timeInput.value)) {
+                errorSpan.textContent = 'Введите корректное время в формате MM:SS:SS.';
+                timeInput.classList.add('is-invalid');
+                formIsValid = false;
+            } else {
+                errorSpan.textContent = '';
+                timeInput.classList.remove('is-invalid');
             }
         });
 
