@@ -192,3 +192,7 @@
     }
 }
 
+.text-danger {
+    color: #ff3860; 
+    font-size: 12px; 
+}

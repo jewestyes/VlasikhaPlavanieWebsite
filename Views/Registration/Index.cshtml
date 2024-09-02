@@ -35,7 +35,10 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label asp-for="Participants[i].BirthDate">Дата рождения</label>
-                        <input asp-for="Participants[i].BirthDate" type="date" id="birthDatePicker_@(i)" class="form-control" required />
+                        <input asp-for="Participants[i].BirthDate"
+                               type="date"
+                               class="form-control birthDatePicker"
+                               id="birthDatePicker_@(i)" />
                         <span asp-validation-for="Participants[i].BirthDate" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-4">
@@ -97,7 +100,13 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label asp-for="Participants[i].Disciplines[j].StartDate">Дата старта</label>
-                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" id="startDatePicker_@(i)_@(j)" required />
+                                <input asp-for="Participants[i].Disciplines[j].StartDate"
+                                       type="date"
+                                       class="form-control"
+                                       id="startDatePicker_@(i)_@(j)"
+                                       value="2024-09-29"
+                                       readonly
+                                       disabled />
                                 <span asp-validation-for="Participants[i].Disciplines[j].StartDate" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">

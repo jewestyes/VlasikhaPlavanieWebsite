@@ -44,20 +44,42 @@
         }
     }
 
-    // Скрипт для инициализации сегодняшней даты
-    var birthDatePickers = document.querySelectorAll('input[type="date"][id^="birthDatePicker_"]');
-    var startDatePickers = document.querySelectorAll('input[type="date"][id^="startDatePicker_"]');
+    // Функция для вычисления минимальной допустимой даты рождения
+    function getMinimumBirthDate() {
+        const today = new Date();
+        today.setFullYear(today.getFullYear() - 6);
+        return today.toISOString().split('T')[0]; // Возвращаем в формате 'YYYY-MM-DD'
+    }
+
+    const minBirthDate = getMinimumBirthDate();
+
+    // Скрипт для установки минимальной даты рождения и проверки возраста
+    var birthDatePickers = document.querySelectorAll('input[type="date"]');
 
     birthDatePickers.forEach(function (datePicker) {
-        if (!datePicker.value || datePicker.value === "0001-01-01") {
-            datePicker.valueAsDate = new Date();
-        }
-    });
+        datePicker.setAttribute('max', minBirthDate);
 
-    startDatePickers.forEach(function (datePicker) {
+        // Установка значения по умолчанию, если дата не задана
         if (!datePicker.value || datePicker.value === "0001-01-01") {
-            datePicker.valueAsDate = new Date();
+            datePicker.value = minBirthDate;
         }
+
+        // Проверка возраста при изменении даты
+        datePicker.addEventListener('change', function () {
+            const today = new Date();
+            const birthDate = new Date(this.value);
+            const age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            if (age < 6) {
+                alert('Участник должен быть не младше 6 лет');
+                this.value = ''; // Сбросить неправильное значение
+            }
+        });
     });
 
     // Функция инициализации селектов дисциплин
