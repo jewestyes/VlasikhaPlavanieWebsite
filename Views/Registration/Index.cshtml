@@ -17,48 +17,59 @@
                 <h3>Участник №@(i + 1)</h3>
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label>Фамилия</label>
-                        <input asp-for="Participants[i].LastName" class="form-control" />
+                        <label asp-for="Participants[i].LastName">Фамилия</label>
+                        <input asp-for="Participants[i].LastName" class="form-control" required />
+                        <span asp-validation-for="Participants[i].LastName" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-4">
-                        <label>Имя</label>
-                        <input asp-for="Participants[i].FirstName" class="form-control" />
+                        <label asp-for="Participants[i].FirstName">Имя</label>
+                        <input asp-for="Participants[i].FirstName" class="form-control" required />
+                        <span asp-validation-for="Participants[i].FirstName" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-4">
-                        <label>Отчество</label>
-                        <input asp-for="Participants[i].MiddleName" class="form-control" />
+                        <label asp-for="Participants[i].MiddleName">Отчество</label>
+                        <input asp-for="Participants[i].MiddleName" class="form-control" required />
+                        <span asp-validation-for="Participants[i].MiddleName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label>Дата рождения</label>
-                        <input asp-for="Participants[i].BirthDate" type="date" id="birthDatePicker_@(i)" class="form-control" />
+                        <label asp-for="Participants[i].BirthDate">Дата рождения</label>
+                        <input asp-for="Participants[i].BirthDate"
+                               type="date"
+                               class="form-control birthDatePicker"
+                               id="birthDatePicker_@(i)" />
+                        <span asp-validation-for="Participants[i].BirthDate" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-4">
-                        <label>Пол</label>
-                        <select asp-for="Participants[i].Gender" class="form-control">
+                        <label asp-for="Participants[i].Gender">Пол</label>
+                        <select asp-for="Participants[i].Gender" class="form-control" required>
                             <option value="Мужской">Мужской</option>
                             <option value="Женский">Женский</option>
                         </select>
+                        <span asp-validation-for="Participants[i].Gender" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-4">
-                        <label>Телефон</label>
-                        <input asp-for="Participants[i].Phone" class="form-control" />
+                        <label asp-for="Participants[i].Phone">Телефон</label>
+                        <input asp-for="Participants[i].Phone" type="tel" class="form-control" required />
+                        <span asp-validation-for="Participants[i].Phone"  class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label>Email</label>
-                        <input asp-for="Participants[i].Email" class="form-control" />
+                        <label asp-for="Participants[i].Email">Email</label>
+                        <input asp-for="Participants[i].Email" class="form-control" type="email" required />
+                        <span asp-validation-for="Participants[i].Email" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
-                        <label>Город/команда</label>
-                        <input asp-for="Participants[i].CityOrTeam" class="form-control" />
+                        <label asp-for="Participants[i].CityOrTeam">Город/команда</label>
+                        <input asp-for="Participants[i].CityOrTeam" class="form-control" required />
+                        <span asp-validation-for="Participants[i].CityOrTeam" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label>Разряд</label>
+                        <label asp-for="Participants[i].Rank">Разряд</label>
                         <input asp-for="Participants[i].Rank" class="form-control" />
                     </div>
                 </div>
@@ -69,7 +80,7 @@
                     <div class="discipline-section">
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label>Дисциплина</label>
+                                <label asp-for="Participants[i].Disciplines[j].Name">Дисциплина</label>
                                 <select asp-for="Participants[i].Disciplines[j].Name" class="form-control discipline-select" required>
                                     <option value="На спине">На спине</option>
                                     <option value="Вольный стиль">Вольный стиль</option>
@@ -78,18 +89,27 @@
                                     <option value="Брасс">Брасс</option>
                                     <option value="Баттерфляй">Баттерфляй</option>
                                 </select>
+                                <span asp-validation-for="Participants[i].Disciplines[j].Name" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">
-                                <label>Выберите дистанцию</label>
+                                <label asp-for="Participants[i].Disciplines[j].Distance">Выберите дистанцию</label>
                                 <select asp-for="Participants[i].Disciplines[j].Distance" class="form-control distance-select" data-current-distance="@Model.Participants[i].Disciplines[j].Distance" required>
                                 </select>
+                                <span asp-validation-for="Participants[i].Disciplines[j].Distance" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">
-                                <label>Дата старта</label>
-                                <input asp-for="Participants[i].Disciplines[j].StartDate" type="date" class="form-control" id="startDatePicker_@(i)_@(j)" required />
+                                <label asp-for="Participants[i].Disciplines[j].StartDate">Дата старта</label>
+                                <input asp-for="Participants[i].Disciplines[j].StartDate"
+                                       type="date"
+                                       class="form-control"
+                                       id="startDatePicker_@(i)_@(j)"
+                                       value="2024-09-29"
+                                       readonly
+                                       disabled />
+                                <span asp-validation-for="Participants[i].Disciplines[j].StartDate" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">
-                                <label>Заявочное время</label>
+                                <label asp-for="Participants[i].Disciplines[j].EntryTime">Заявочное время</label>
                                 <input asp-for="Participants[i].Disciplines[j].EntryTime" type="text" class="form-control time-input" placeholder="MM:SS:SS" maxlength="9" required />
                                 <span asp-validation-for="Participants[i].Disciplines[j].EntryTime" class="text-danger"></span>
                             </div>

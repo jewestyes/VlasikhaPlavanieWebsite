@@ -192,3 +192,11 @@
     }
 }
 
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.text-danger {
+    color: #ff3860; 
+    font-size: 12px; 
+}

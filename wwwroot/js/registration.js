@@ -8,7 +8,6 @@
         "Баттерфляй": ["50м"]
     };
 
-    // Функция для получения года рождения
     function getBirthYear(participantSection) {
         const birthDateInput = participantSection.querySelector('input[type="date"]');
         if (birthDateInput && birthDateInput.value) {
@@ -17,7 +16,6 @@
         return null;
     }
 
-    // Функция обновления списка дистанций для выбранной дисциплины
     function updateDistanceOptions(selectElement) {
         const selectedDiscipline = selectElement.value;
         const disciplineSection = selectElement.closest('.discipline-section');
@@ -44,23 +42,110 @@
         }
     }
 
-    // Скрипт для инициализации сегодняшней даты
-    var birthDatePickers = document.querySelectorAll('input[type="date"][id^="birthDatePicker_"]');
-    var startDatePickers = document.querySelectorAll('input[type="date"][id^="startDatePicker_"]');
+    function getMinimumBirthDate() {
+        const today = new Date();
+        today.setFullYear(today.getFullYear() - 6);
+        return today.toISOString().split('T')[0];
+    }
+
+    const minBirthDate = getMinimumBirthDate();
+
+    var birthDatePickers = document.querySelectorAll('input[type="date"]');
 
     birthDatePickers.forEach(function (datePicker) {
+        datePicker.setAttribute('max', minBirthDate);
+
         if (!datePicker.value || datePicker.value === "0001-01-01") {
-            datePicker.valueAsDate = new Date();
+            datePicker.value = minBirthDate;
+        }
+
+        datePicker.addEventListener('change', function () {
+            const today = new Date();
+            const birthDate = new Date(this.value);
+            const age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            if (age < 6) {
+                this.setCustomValidity('Участник должен быть не младше 6 лет');
+                this.reportValidity();
+                this.value = '';
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    });
+
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function isValidPhone(phone) {
+        const reRu = /^(\+7|8)?[\s-]?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
+        const reBy = /^\+375[\s-]?\d{2}[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
+        return reRu.test(phone) || reBy.test(phone);
+    }
+
+    function isValidTime(time) {
+        const re = /^([0-5][0-9]):([0-5][0-9]):([0-9]{2})$/;
+        return re.test(time);
+    }
+
+    document.getElementById('registrationForm').addEventListener('submit', function (event) {
+        const emailInputs = document.querySelectorAll('input[type="email"]');
+        const phoneInputs = document.querySelectorAll('input[type="tel"]');
+        const timeInputs = document.querySelectorAll('input.time-input');
+
+        let formIsValid = true;
+
+        emailInputs.forEach(function (emailInput) {
+            const errorSpan = emailInput.nextElementSibling;
+
+            if (!isValidEmail(emailInput.value)) {
+                errorSpan.textContent = 'Поле должно быть действительным электронным адресом.';
+                emailInput.classList.add('is-invalid');
+                formIsValid = false;
+            } else {
+                errorSpan.textContent = '';
+                emailInput.classList.remove('is-invalid');
+            }
+        });
+
+        phoneInputs.forEach(function (phoneInput) {
+            const errorSpan = phoneInput.nextElementSibling;
+
+            if (!isValidPhone(phoneInput.value)) {
+                errorSpan.textContent = 'Введите корректный номер телефона (Россия или Беларусь).';
+                phoneInput.classList.add('is-invalid');
+                formIsValid = false;
+            } else {
+                errorSpan.textContent = '';
+                phoneInput.classList.remove('is-invalid');
+            }
+        });
+
+        timeInputs.forEach(function (timeInput) {
+            const errorSpan = timeInput.nextElementSibling;
+
+            if (!isValidTime(timeInput.value)) {
+                errorSpan.textContent = 'Введите корректное время в формате MM:SS:SS.';
+                timeInput.classList.add('is-invalid');
+                formIsValid = false;
+            } else {
+                errorSpan.textContent = '';
+                timeInput.classList.remove('is-invalid');
+            }
+        });
+
+        if (!formIsValid) {
+            event.preventDefault();
         }
     });
 
-    startDatePickers.forEach(function (datePicker) {
-        if (!datePicker.value || datePicker.value === "0001-01-01") {
-            datePicker.valueAsDate = new Date();
-        }
-    });
-
-    // Функция инициализации селектов дисциплин
     function initializeDisciplineSelects() {
         document.querySelectorAll('.discipline-select').forEach(selectElement => {
             updateDistanceOptions(selectElement);
@@ -79,22 +164,24 @@
         });
     }
 
-    // Функция скрытия или показа кнопок удаления участников и дисциплин
     function toggleRemoveButtons() {
         document.querySelectorAll('.participant-section').forEach((participantSection, participantIndex) => {
             const disciplinesCount = participantSection.querySelectorAll('.discipline-section').length;
             participantSection.querySelectorAll('.remove-discipline-button').forEach((button, disciplineIndex) => {
-                button.style.display = disciplineIndex > 0 || participantIndex === 0 ? 'inline-block' : 'none';
+                if (button) {
+                    button.style.display = disciplineIndex > 0 || participantIndex === 0 ? 'inline-block' : 'none';
+                }
             });
-            participantSection.querySelector('.remove-participant-button').style.display = participantIndex > 0 ? 'inline-block' : 'none';
+            const removeParticipantButton = participantSection.querySelector('.remove-participant-button');
+            if (removeParticipantButton) {
+                removeParticipantButton.style.display = participantIndex > 0 ? 'inline-block' : 'none';
+            }
         });
     }
 
-    // Инициализация при загрузке документа
     initializeDisciplineSelects();
     toggleRemoveButtons();
 
-    // Обработчики для динамически добавляемых селектов дисциплин и элементов
     document.body.addEventListener('change', function (event) {
         if (event.target.matches('.discipline-select')) {
             updateDistanceOptions(event.target);
