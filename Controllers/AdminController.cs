@@ -243,10 +243,10 @@ namespace VlasikhaPlavanieWebsite.Controllers
             }
         }
 
-
-		[HttpGet]
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
 		[Route("Admin/EditFiles")]
-		public async Task<IActionResult> EditFiles()
+        public async Task<IActionResult> EditFiles()
 		{
 			try
 			{
@@ -295,7 +295,9 @@ namespace VlasikhaPlavanieWebsite.Controllers
 			}
 		}
 
-		[HttpPost]
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
 		[Route("Admin/EditFiles")]
 		public async Task<IActionResult> EditFiles(string buttonName, IFormFile newFile)
 		{
@@ -360,8 +362,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		}
 
 
-
-		[HttpPost]
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
 		[Route("Admin/DeleteFile")]
 		public async Task<IActionResult> DeleteFile(string buttonName)
 		{
@@ -388,7 +390,5 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
 			return RedirectToAction("EditFiles");
 		}
-
-
 	}
 }
