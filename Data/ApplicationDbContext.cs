@@ -13,6 +13,7 @@ namespace VlasikhaPlavanieWebsite.Data
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Discipline> Disciplines { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<FileMapping> FileMappings { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -37,7 +38,7 @@ namespace VlasikhaPlavanieWebsite.Data
                     .Metadata.SetValueComparer(valueComparer);
             });
 
-            // Настройка связи между Participant и Discipline
+            
             builder.Entity<Participant>()
                 .HasKey(p => p.Id);
 
@@ -63,10 +64,12 @@ namespace VlasikhaPlavanieWebsite.Data
                 .Property(d => d.Distance)
                 .IsRequired();
 
-            // Добавляем настройку для свойства Amount в Order
             builder.Entity<Order>()
                 .Property(o => o.Amount)
-                .HasColumnType("decimal(18, 2)"); 
+                .HasColumnType("decimal(18, 2)");
+
+            builder.Entity<FileMapping>()
+                .HasKey(f => f.Id);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,21 @@ namespace VlasikhaPlavanieWebsite.Controllers
     
     public class AdminController : Controller
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ILogger<HomeController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+		private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly string _filesDirectory;
 
-        public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, ILogger<HomeController> logger)
         {
+            _logger = logger;
+			_webHostEnvironment = webHostEnvironment;
             _signInManager = signInManager;
             _userManager = userManager;
 			_context = context;
+			_filesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
         }
 
         [HttpGet]
@@ -235,5 +242,153 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 return File(stream, contentType, fileName);
             }
         }
-    }
+
+
+		[HttpGet]
+		[Route("Admin/EditFiles")]
+		public async Task<IActionResult> EditFiles()
+		{
+			try
+			{
+                var fileMappings = await _context.FileMappings
+                                .Select(f => new
+                                {
+                                    f.ButtonName,
+                                    FileName = f.FileName ?? "#",
+                                    FilePath = f.FilePath ?? "#"
+                                })
+                                .ToListAsync();
+                
+                var buttonFiles = fileMappings.ToDictionary(
+                    f => f.ButtonName,
+                    f => f.FilePath
+                );
+
+                foreach (var key in buttonFiles.Keys.ToList())
+                {
+                    var relativePath = buttonFiles[key];
+
+                    if (!relativePath.StartsWith("http"))
+                    {
+                        var fileName = Path.GetFileName(relativePath);
+                        var fileDirectory = Path.Combine("Files", fileName);
+
+                        var absolutePath = Path.Combine(_webHostEnvironment.WebRootPath, "Files", fileName);
+
+                        if (System.IO.File.Exists(absolutePath))
+                        {
+                            buttonFiles[key] = Url.Content($"~/Files/{fileName}");
+                        }
+                        else
+                        {
+                            buttonFiles[key] = "#";
+                        }
+                    }
+                }
+
+                return View(buttonFiles);
+            }
+			catch (Exception ex)
+			{
+                _logger.LogError($"[HomeController] [Index] ERROR: {ex.Message}");
+                return View(new Dictionary<string, string>());
+			}
+		}
+
+		[HttpPost]
+		[Route("Admin/EditFiles")]
+		public async Task<IActionResult> EditFiles(string buttonName, IFormFile newFile)
+		{
+			if (newFile != null && newFile.Length > 0)
+			{
+				var extension = Path.GetExtension(newFile.FileName);
+				var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx", ".xls", "txt" };
+
+				if (!allowedExtensions.Contains(extension.ToLower()))
+				{
+					ModelState.AddModelError("", "Недопустимый формат файла.");
+					return RedirectToAction("EditFiles");
+				}
+
+				var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "Files");
+
+				if (!Directory.Exists(uploadPath))
+				{
+					Directory.CreateDirectory(uploadPath);
+				}
+
+				var fileName = $"{buttonName}_{DateTime.Now.Ticks}{extension}";
+				var filePath = Path.Combine(uploadPath, fileName);
+
+				var fileMapping = await _context.FileMappings.FirstOrDefaultAsync(f => f.ButtonName == buttonName);
+
+				if (fileMapping != null && !string.IsNullOrEmpty(fileMapping.FilePath))
+				{
+					var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, fileMapping.FilePath);
+					if (System.IO.File.Exists(oldFilePath))
+					{
+						System.IO.File.Delete(oldFilePath);
+					}
+				}
+
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					await newFile.CopyToAsync(stream);
+				}
+
+				if (fileMapping == null)
+				{
+					fileMapping = new FileMapping
+					{
+						ButtonName = buttonName,
+						FileName = newFile.FileName,
+						FilePath = Path.Combine("Files", fileName)
+					};
+					_context.FileMappings.Add(fileMapping);
+				}
+				else
+				{
+					fileMapping.FileName = newFile.FileName;
+					fileMapping.FilePath = Path.Combine("Files", fileName);
+					_context.FileMappings.Update(fileMapping);
+				}
+
+				await _context.SaveChangesAsync();
+			}
+
+			return RedirectToAction("EditFiles");
+		}
+
+
+
+		[HttpPost]
+		[Route("Admin/DeleteFile")]
+		public async Task<IActionResult> DeleteFile(string buttonName)
+		{
+			if (string.IsNullOrEmpty(buttonName))
+			{
+				return BadRequest("ButtonName не может быть пустым.");
+			}
+
+			var fileMapping = await _context.FileMappings.FirstOrDefaultAsync(f => f.ButtonName == buttonName);
+
+			if (fileMapping != null)
+			{
+				if (!string.IsNullOrEmpty(fileMapping.FilePath) && System.IO.File.Exists(fileMapping.FilePath))
+				{
+					System.IO.File.Delete(fileMapping.FilePath);
+				}
+
+				fileMapping.FilePath = "#";
+				fileMapping.FileName = "#";
+				_context.FileMappings.Update(fileMapping);
+
+				await _context.SaveChangesAsync();
+			}
+
+			return RedirectToAction("EditFiles");
+		}
+
+
+	}
 }

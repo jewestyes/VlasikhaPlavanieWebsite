@@ -1,0 +1,63 @@
+﻿@using System.IO;
+@model Dictionary<string, string>
+
+<link rel="stylesheet" href="~/css/edit-files.css" />
+
+<div class="edit-files-container">
+    <h2>Редактирование файлов кнопок</h2>
+
+    <h3>Текущие кнопки и файлы:</h3>
+    @foreach (var item in Model)
+    {
+        <div class="file-item">
+            <div class="file-name">
+                <strong>@item.Key</strong>
+                @if (item.Value != null)
+                {
+                    @if (!item.Value.StartsWith("http"))
+                    {
+                        var filePath = System.IO.Path.Combine("wwwroot", "Files", System.IO.Path.GetFileName(item.Value));
+                        @if (System.IO.File.Exists(filePath))
+                        {
+                            <p>(Размер: @(new FileInfo(filePath).Length / 1024) КБ)</p>
+                        }
+                        else
+                        {
+                            <span style="color: red;">Файл отсутствует на сервере</span>
+                        }
+                    }
+                }
+                else
+                {
+                    <span style="color: red;">Файл отсутствует или не прикреплен</span>
+                }
+            </div>
+
+            <div class="file-actions">
+
+                @if (item.Value != null)
+                {
+                    @if (!item.Value.StartsWith("http"))
+                    {
+                        <a href="@Url.Content("~/Files/" + System.IO.Path.GetFileName(item.Value))" target="_blank" class="btn btn-primary">Открыть</a>
+                    }
+                    else
+                    {
+                        <a href="@item.Value" target="_blank" class="btn btn-primary">Открыть внешний ресурс</a>
+                    }
+                }
+
+                <form asp-controller="Admin" asp-action="DeleteFile" method="post" class="delete-form">
+                    <input type="hidden" name="buttonName" value="@item.Key" />
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+
+                <form asp-controller="Admin" asp-action="EditFiles" method="post" enctype="multipart/form-data" class="replace-form">
+                    <input type="hidden" name="buttonName" value="@item.Key" />
+                    <button type="submit" class="btn btn-warning">Заменить</button>
+                    <input type="file" name="newFile" class="form-control file-input" />
+                </form>
+            </div>
+        </div>
+    }
+</div>
