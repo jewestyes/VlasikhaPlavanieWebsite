@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Dictionary<string, string>
+
+@{
 	ViewData["Title"] = "Главная";
 }
 
@@ -14,57 +16,84 @@
 				</a>
 			</div>
 
-
 			<div id="about" class="tournament-info">
 				<div class="column">
- 					<div class="col-lg-6">
+					<div class="col-lg-6">
 						<div class="box-item">
 							<h4>
-								<a target="_blank" href="~/Files/Kubok_glavy_Vlasikhi.pdf">Положение <i class="fas fa-download"></i>
+								<a target="_blank" href="@Url.Content(Model.ContainsKey("Положение") && !string.IsNullOrEmpty(Model["Положение"]) ?  Model["Положение"] : "#")">
+									Положение <i class="fas fa-download"></i>
 								</a>
-								</h4>
+							</h4>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<div class="box-item">
-							<h4><a target="_blank"  href="~/Files//REGLAMENT_Vlasikha_29_sentyabrya.pdf">Регламент <i class="fas fa-download"></i></a></h4>
+							<h4>
+								<a target="_blank" href="@Url.Content(Model.ContainsKey("Регламент") && !string.IsNullOrEmpty(Model["Регламент"]) ? Model["Регламент"] : "#")">
+									Регламент <i class="fas fa-download"></i>
+								</a>
+							</h4>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<div class="box-item">
-							<h4><a target="_blank"  href="#">Памятка <i class="fas fa-download"></i></a></h4>
+							<h4>
+								<a target="_blank" href="@Url.Content(Model.ContainsKey("Памятка") && !string.IsNullOrEmpty(Model["Памятка"]) ?  Model["Памятка"] : "#")">
+									Памятка <i class="fas fa-download"></i>
+								</a>
+							</h4>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<div class="box-item">
-							<h4><a target="_blank" href="~/Files/pravila_vida_sporta_plavanie_2024.pdf">Правила плавание <i class="fas fa-download"></i></a></h4>
+							<h4>
+								<a target="_blank" href="@Url.Content(Model.ContainsKey("Правила плавание") && !string.IsNullOrEmpty(Model["Правила плавание"]) ?  Model["Правила плавание"] : "#")">
+									Правила плавание <i class="fas fa-download"></i>
+								</a>
+							</h4>
 						</div>
 					</div>
 				</div>
 				<div class="column">
 					<div class="col-lg-6">
 						<div class="box-item">
-							<h4><a target="_blank" href="https://cska-od.ru/2024/VLASIHA/01/">Online результаты <i class="fas fa-download"></i></a></h4>
+							<h4>
+								<a target="_blank" href="https://cska-od.ru/2024/VLASIHA/01/">
+									Online результаты <i class="fas fa-download"></i>
+								</a>
+							</h4>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<div class="box-item">
-							<h4><a target="_blank"  href="#">Первый лист <i class="fas fa-download"></i></a></h4>
+							<h4>
+								<a target="_blank" href="@Url.Content(Model.ContainsKey("Первый лист") && !string.IsNullOrEmpty(Model["Первый лист"]) ?  Model["Первый лист"] : "#")">
+									Первый лист <i class="fas fa-download"></i>
+								</a>
+							</h4>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<div class="box-item">
-							<h4><a target ="_blank" href="#">Список судей <i class="fas fa-download"></i></a></h4>
+							<h4>
+								<a target="_blank" href="@Url.Content(Model.ContainsKey("Список судей") && !string.IsNullOrEmpty(Model["Список судей"]) ?  Model["Список судей"] : "#")">
+									Список судей <i class="fas fa-download"></i>
+								</a>
+							</h4>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<div class="box-item">
-							<h4><a target="_blank" href="~/Files/NORMATIVY.pdf">Нормативы <i class="fas fa-download"></i></a></h4>
+							<h4>
+								<a target="_blank" href="@Url.Content(Model.ContainsKey("Нормативы") && !string.IsNullOrEmpty(Model["Нормативы"]) ?  Model["Нормативы"] : "#")">
+									Нормативы <i class="fas fa-download"></i>
+								</a>
+							</h4>
 						</div>
 					</div>
 				</div>
 			</div>
-
 		</div>
 
 		<div class="row">
@@ -73,7 +102,9 @@
 					<div class="icon"></div>
 					<h4>Именная заявка</h4>
 					<div class="button">
-						<a target="_blank" href="~/Files/imennaya_zayavka.pdf">Ознакомиться<i class="fa fa-arrow-right"></i></a>
+						<a target="_blank" href="@Url.Content(Model.ContainsKey("Именная заявка") && !string.IsNullOrEmpty(Model["Именная заявка"]) ?  Model["Именная заявка"] : "#")">
+							Ознакомиться<i class="fa fa-arrow-right"></i>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -82,7 +113,9 @@
 					<div class="icon"></div>
 					<h4>Заявление на перенос денежных средств</h4>
 					<div class="button">
-						<a target="_blank" href="~/Files/Zayavlenie_na_perenos.pdf">Ознакомиться<i class="fa fa-arrow-right"></i></a>
+						<a target="_blank" href="@Url.Content(Model.ContainsKey("Заявление на перенос денежных средств") && !string.IsNullOrEmpty(Model["Заявление на перенос денежных средств"]) ?  Model["Заявление на перенос денежных средств"] : "#")">
+							Ознакомиться<i class="fa fa-arrow-right"></i>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -91,7 +124,9 @@
 					<div class="icon"></div>
 					<h4>Видеотрансляция</h4>
 					<div class="button">
-						<a href="https://www.youtube.com/@@VLASIHA_KUBOK" target="_blank">Смотреть<i class="fa fa-arrow-right"></i></a>
+						<a href="https://www.youtube.com/@@VLASIHA_KUBOK" target="_blank">
+							Смотреть<i class="fa fa-arrow-right"></i>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -101,7 +136,9 @@
 					<h4>Согласие на обработку персональных данных</h4>
 					<p>До 18 лет</p>
 					<div class="button">
-						<a target="_blank"  href="~/Files/soglasie_person_data_nesovershennolet_2020.pdf">Ознакомиться<i class="fa fa-arrow-right"></i></a>
+						<a target="_blank" href="@Url.Content(Model.ContainsKey("Согласие на обработку персональных данных -18") && !string.IsNullOrEmpty(Model["Согласие на обработку персональных данных -18"]) ?  Model["Согласие на обработку персональных данных -18"] : "#")">
+							Ознакомиться<i class="fa fa-arrow-right"></i>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -111,7 +148,9 @@
 					<h4>Согласие на обработку персональных данных</h4>
 					<p>Старше 18 лет</p>
 					<div class="button">
-						<a target="_blank"  href="~/Files//soglasie_person_data.pdf">Ознакомиться<i class="fa fa-arrow-right"></i></a>
+						<a target="_blank" href="@Url.Content(Model.ContainsKey("Согласие на обработку персональных данных 18+") && !string.IsNullOrEmpty(Model["Согласие на обработку персональных данных 18+"]) ?  Model["Согласие на обработку персональных данных 18+"] : "#")">
+							Ознакомиться<i class="fa fa-arrow-right"></i>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -120,7 +159,9 @@
 					<div class="icon"></div>
 					<h4>Архив протоколов</h4>
 					<div class="button">
-						<a target="_blank" href="https://disk.yandex.com.am/d/gEOavcMPsIVyqg">Ознакомиться<i class="fa fa-arrow-right"></i></a>
+						<a target="_blank" href="https://disk.yandex.com.am/d/gEOavcMPsIVyqg">
+							Ознакомиться<i class="fa fa-arrow-right"></i>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -138,10 +179,8 @@
 			<div class="map-container">
 				<div id="yandex-map" style="width: 100%; height: 100%;"></div>
 			</div>
-
-
-
 		</div>
+
 		<script src="~/js/yandex-map.js" asp-append-version="true"></script>
 	</main>
 </body>
