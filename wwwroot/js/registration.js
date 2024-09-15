@@ -85,8 +85,9 @@
     }
 
     function isValidPhone(phone) {
-        const reRu = /^(\+7|8)?[\s-]?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
-        const reBy = /^\+375[\s-]?\d{2}[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
+        const reRu = /^(\+?7|8)?[\s-]?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
+        const reBy = /^\+?375[\s-]?\d{2}[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
+
         return reRu.test(phone) || reBy.test(phone);
     }
 
@@ -96,55 +97,58 @@
     }
 
     document.getElementById('registrationForm').addEventListener('submit', function (event) {
-        const emailInputs = document.querySelectorAll('input[type="email"]');
-        const phoneInputs = document.querySelectorAll('input[type="tel"]');
-        const timeInputs = document.querySelectorAll('input.time-input');
+        if (event.submitter && event.submitter.id === 'submitBtn') {
+            const emailInputs = document.querySelectorAll('input[type="email"]');
+            const phoneInputs = document.querySelectorAll('input[type="tel"]');
+            const timeInputs = document.querySelectorAll('input.time-input');
 
-        let formIsValid = true;
+            let formIsValid = true;
 
-        emailInputs.forEach(function (emailInput) {
-            const errorSpan = emailInput.nextElementSibling;
+            emailInputs.forEach(function (emailInput) {
+                const errorSpan = emailInput.nextElementSibling;
 
-            if (!isValidEmail(emailInput.value)) {
-                errorSpan.textContent = 'Поле должно быть действительным электронным адресом.';
-                emailInput.classList.add('is-invalid');
-                formIsValid = false;
-            } else {
-                errorSpan.textContent = '';
-                emailInput.classList.remove('is-invalid');
+                if (!isValidEmail(emailInput.value)) {
+                    errorSpan.textContent = 'Поле должно быть действительным электронным адресом.';
+                    emailInput.classList.add('is-invalid');
+                    formIsValid = false;
+                } else {
+                    errorSpan.textContent = '';
+                    emailInput.classList.remove('is-invalid');
+                }
+            });
+
+            phoneInputs.forEach(function (phoneInput) {
+                const errorSpan = phoneInput.nextElementSibling;
+
+                if (!isValidPhone(phoneInput.value)) {
+                    errorSpan.textContent = 'Введите корректный номер телефона (Россия или Беларусь).';
+                    phoneInput.classList.add('is-invalid');
+                    formIsValid = false;
+                } else {
+                    errorSpan.textContent = '';
+                    phoneInput.classList.remove('is-invalid');
+                }
+            });
+
+            timeInputs.forEach(function (timeInput) {
+                const errorSpan = timeInput.nextElementSibling;
+
+                if (!isValidTime(timeInput.value)) {
+                    errorSpan.textContent = 'Введите корректное время в формате MM:SS:SS.';
+                    timeInput.classList.add('is-invalid');
+                    formIsValid = false;
+                } else {
+                    errorSpan.textContent = '';
+                    timeInput.classList.remove('is-invalid');
+                }
+            });
+
+            if (!formIsValid) {
+                event.preventDefault();
             }
-        });
-
-        phoneInputs.forEach(function (phoneInput) {
-            const errorSpan = phoneInput.nextElementSibling;
-
-            if (!isValidPhone(phoneInput.value)) {
-                errorSpan.textContent = 'Введите корректный номер телефона (Россия или Беларусь).';
-                phoneInput.classList.add('is-invalid');
-                formIsValid = false;
-            } else {
-                errorSpan.textContent = '';
-                phoneInput.classList.remove('is-invalid');
-            }
-        });
-
-        timeInputs.forEach(function (timeInput) {
-            const errorSpan = timeInput.nextElementSibling;
-
-            if (!isValidTime(timeInput.value)) {
-                errorSpan.textContent = 'Введите корректное время в формате MM:SS:SS.';
-                timeInput.classList.add('is-invalid');
-                formIsValid = false;
-            } else {
-                errorSpan.textContent = '';
-                timeInput.classList.remove('is-invalid');
-            }
-        });
-
-        if (!formIsValid) {
-            event.preventDefault();
         }
     });
+
 
     function initializeDisciplineSelects() {
         document.querySelectorAll('.discipline-select').forEach(selectElement => {
