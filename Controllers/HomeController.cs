@@ -49,16 +49,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
             return View();
         }
 
-        public IActionResult Photos()
-        {
-            return View();
-        }
         public IActionResult Stats()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
