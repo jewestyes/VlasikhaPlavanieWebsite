@@ -12,7 +12,6 @@ using VlasikhaPlavanieWebsite.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//test
 // Загрузка конфигурации из файла appsettings.json
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
