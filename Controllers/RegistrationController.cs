@@ -6,20 +6,24 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using StackExchange.Redis;
+using Microsoft.EntityFrameworkCore;
+using VlasikhaPlavanieWebsite.Data;
 
 public class RegistrationController : Controller
 {
     private readonly IDistributedCache _cache;
     private readonly ILogger<RegistrationController> _logger;
+    private readonly ApplicationDbContext _context;
 
-    public RegistrationController(IDistributedCache cache, ILogger<RegistrationController> logger)
+    public RegistrationController(IDistributedCache cache, ILogger<RegistrationController> logger, ApplicationDbContext context)
     {
         _cache = cache;
         _logger = logger;
+        _context = context;
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
 		var model = new RegistrationViewModel();
 
@@ -31,7 +35,18 @@ public class RegistrationController : Controller
 			}
 		}
 
-		return View(model);
+
+        var registrationStage = await _context.RegistrationStage.FirstOrDefaultAsync(rs => rs.IsOpen);
+
+        if (registrationStage == null)
+        {
+            _logger.LogWarning("No open registration stage found.");
+            return Content("Не было найдено открытых регистраций.");
+        }
+
+        model.Stage = registrationStage;
+
+        return View(model);
 	}
 
     [HttpPost]
@@ -85,14 +100,6 @@ public class RegistrationController : Controller
             ModelState.Remove($"Participants[{i}].OrderId");
         }
 
-        foreach (var participant in model.Participants)
-        {
-            if (string.IsNullOrWhiteSpace(participant.Rank))
-            {
-                participant.Rank = "Без разряда";
-            }
-        }
-
         // Логирование всех данных формы
         try
         {
@@ -125,7 +132,7 @@ public class RegistrationController : Controller
             var cacheOptions = new DistributedCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromHours(3));
 
-            int maxRetries = 3;
+            int maxRetries = 10;
             for (int attempt = 0; attempt < maxRetries; attempt++)
             {
                 try
@@ -141,7 +148,7 @@ public class RegistrationController : Controller
                     {
                         throw; // Если все попытки провалились, выбрасываем исключение
                     }
-                    await Task.Delay(1000);
+                    await Task.Delay(5000);
                 }
             }
 

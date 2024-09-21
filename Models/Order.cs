@@ -19,5 +19,8 @@
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        public int RegistrationStageId { get; set; }
+        public RegistrationStage RegistrationStage { get; set; }
     }
 }

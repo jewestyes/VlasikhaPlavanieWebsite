@@ -4,15 +4,27 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Таблица заявившихся на турнир 29.09.2024</title>
+    <title>Участники по этапам регистрации</title>
     <link rel="stylesheet" href="~/css/participants.css" asp-append-version="true" />
 </head>
 <body>
     <div class="participants-container">
-        <a href="@Url.Action("DownloadParticipantsExcel", "Admin")" class="download-excel-button">Скачать в формате Excel</a>
         <h1 class="participants-title">
-            Таблица заявившихся на турнир 29.09.2024 Всего участников: @Model.Select(p => new { p.LastName, p.FirstName, p.MiddleName, p.BirthDate }).Distinct().Count()
+            Участники по этапам регистрации
         </h1>
+
+        <!-- Кнопка скачивания -->
+        <a href="#" id="download-button" class="download-excel-button disabled" onclick="return false;">Скачать участников для выбранного этапа</a>
+
+        <!-- Кнопки этапов -->
+        <div class="stages-buttons">
+            @foreach (var stage in Model.Select(p => p.RegistrationStageName).Distinct())
+            {
+                <button class="stage-button" onclick="filterByStage('@stage')">@stage</button>
+            }
+        </div>
+
+        <!-- Таблица участников -->
         <div class="table-responsive">
             <table class="participants-table">
                 <thead>
@@ -32,13 +44,13 @@
                         <th>Заявочное время</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="participants-body">
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr data-stage="@item.RegistrationStageName">
                             <td>@item.CreatedAt.AddHours(3).ToString("dd.MM.yyyy HH:mm")</td>
-                            <td>@item.LastName</td>
                             <td>@item.FirstName</td>
+                            <td>@item.LastName</td>
                             <td>@item.MiddleName</td>
                             <td>@item.BirthDate.ToString("dd.MM.yyyy")</td>
                             <td>@item.Gender</td>
@@ -55,5 +67,30 @@
             </table>
         </div>
     </div>
+
+    <script>
+        var selectedStage = '';
+        var baseDownloadUrl = '@Url.Action("DownloadParticipantsExcelByStage", "Admin")';
+
+        function filterByStage(stage) {
+            selectedStage = stage;
+            var rows = document.querySelectorAll('#participants-body tr');
+            rows.forEach(function (row) {
+                if (row.getAttribute('data-stage') === stage) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Обновление ссылки кнопки скачивания
+            var downloadButton = document.getElementById('download-button');
+            downloadButton.href = baseDownloadUrl + '?stageName=' + encodeURIComponent(stage);
+
+            // Активируем кнопку
+            downloadButton.classList.remove('disabled');
+            downloadButton.onclick = null;
+        }
+    </script>
 </body>
 </html>

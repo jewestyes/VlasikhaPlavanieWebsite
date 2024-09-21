@@ -1,0 +1,62 @@
+﻿@model VlasikhaPlavanieWebsite.Models.ManageStagesViewModel
+
+<link rel="stylesheet" href="~/css/manage-stages.css" />
+
+<div class="manage-stages-container">
+    <h2>Управление этапами регистрации</h2>
+
+    <h3>Создать новый этап</h3>
+    <form asp-action="CreateStage" method="post">
+        <div class="form-group">
+            <label for="StageName">Название этапа</label>
+            <input asp-for="NewStage.StageName" class="form-control stage-input" />
+            <span asp-validation-for="NewStage.StageName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="RegistrationStartDate">Дата начала регистрации</label>
+            <input asp-for="NewStage.RegistrationStartDate" class="form-control stage-input" type="datetime-local" />
+            <span asp-validation-for="NewStage.RegistrationStartDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Создать этап" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <h3>Существующие этапы</h3>
+    <div>
+        @foreach (var stage in Model.Stages)
+        {
+            <div class="stage-item">
+                <div>
+                    <div class="stage-name">@stage.StageName</div>
+                    <div>
+                        @stage.RegistrationStartDate.ToString("yyyy-MM-dd HH:mm")
+                        -
+                        @(stage.RegistrationEndDate.HasValue ? stage.RegistrationEndDate.Value.ToString("yyyy-MM-dd HH:mm") : "Не завершен")
+                    </div>
+                    <div>@(stage.IsOpen ? "Открыта" : "Закрыта")</div>
+                </div>
+                <div class="stage-actions">
+                    @if (stage.IsOpen)
+                    {
+                        <form asp-action="ChangeStageStatus" method="post">
+                            <input type="hidden" name="id" value="@stage.Id" />
+                            <input type="hidden" name="isOpen" value="false" />
+                            <button type="submit" class="btn btn-danger">Закрыть</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="ChangeStageStatus" method="post">
+                            <input type="hidden" name="id" value="@stage.Id" />
+                            <input type="hidden" name="isOpen" value="true" />
+                            <button type="submit" class="btn btn-success">Открыть</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
