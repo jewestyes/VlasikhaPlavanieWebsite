@@ -11,7 +11,6 @@
     <div class="participants-container">
         <h1 class="participants-title">
             Участники по этапам регистрации
-            Всего участников: @Model.Select(p => new { p.LastName, p.FirstName, p.MiddleName, p.BirthDate }).Distinct().Count()
         </h1>
         <a href="#" id="download-button" class="download-excel-button disabled" onclick="return false;">Скачать участников для выбранного этапа</a>
 
