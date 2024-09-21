@@ -111,7 +111,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
                                             Participants = registrationModel.Participants,
                                             Status = OrderStatus.Paid,
                                             CreatedAt = DateTime.UtcNow,
-                                            UpdatedAt = DateTime.UtcNow
+                                            UpdatedAt = DateTime.UtcNow,
+                                            RegistrationStageId = registrationModel.Stage.Id,
                                         };
 
                                         _context.Orders.Add(order);

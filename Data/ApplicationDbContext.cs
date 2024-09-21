@@ -14,6 +14,7 @@ namespace VlasikhaPlavanieWebsite.Data
         public DbSet<Discipline> Disciplines { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<FileMapping> FileMappings { get; set; }
+        public DbSet<RegistrationStage> RegistrationStage { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -69,6 +70,9 @@ namespace VlasikhaPlavanieWebsite.Data
                 .HasColumnType("decimal(18, 2)");
 
             builder.Entity<FileMapping>()
+                .HasKey(f => f.Id);
+
+            builder.Entity<RegistrationStage>()
                 .HasKey(f => f.Id);
         }
     }

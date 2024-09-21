@@ -14,8 +14,7 @@
     border-collapse: collapse;
     margin-bottom: 20px;
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    min-width: 1000px; /* Устанавливаем минимальную ширину таблицы, чтобы она не сжималась */
+    min-width: 1000px; /* Устанавливаем минимальную ширину таблицы */
 }
 
     .participants-table, .participants-table th, .participants-table td {
@@ -42,7 +41,6 @@
                 text-decoration: underline;
             }
 
-
 .download-excel-button {
     display: inline-block;
     padding: 10px 20px;
@@ -64,12 +62,43 @@
     }
 
     .download-excel-button:active {
-        background-color: #1e7e34; 
+        background-color: #1e7e34;
     }
 
     .download-excel-button:focus {
         outline: none;
         box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.5);
+    }
+
+    .download-excel-button.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+.stages-buttons {
+    margin-bottom: 20px;
+}
+
+.stage-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .stage-button:hover {
+        background-color: #0056b3;
+    }
+
+    .stage-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
     }
 
 @media (max-width: 768px) {

@@ -11,6 +11,8 @@
 <div class="form-container new-style">
     <h2>Регистрация на турнир</h2>
     <form asp-action="Submit" method="post" id="registrationForm">
+        <input type="hidden" asp-for="Stage.Id" />
+        <input type="hidden" asp-for="Stage.StageName" />
         @for (int i = 0; i < Model.Participants.Count; i++)
         {
             <div class="participant-section">

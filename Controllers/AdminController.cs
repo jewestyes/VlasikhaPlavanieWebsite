@@ -41,6 +41,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
             return View();
         }
 
+
 		[HttpPost]
 		[Route("Admin/Login")]
 		public async Task<IActionResult> Login(LoginViewModel model)
@@ -126,6 +127,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
                         from order in po.DefaultIfEmpty()
                         join d in _context.Disciplines on p.Id equals d.ParticipantId into pd
                         from discipline in pd.DefaultIfEmpty()
+                        join rs in _context.RegistrationStage on order.RegistrationStageId equals rs.Id into ors
+                        from regStage in ors.DefaultIfEmpty()
                         select new ParticipantOrderViewModel
                         {
                             LastName = p.LastName,
@@ -142,26 +145,36 @@ namespace VlasikhaPlavanieWebsite.Controllers
                             Distance = discipline != null ? discipline.Distance : null,
                             EntryTime = discipline != null ? discipline.EntryTime : null,
                             OrderNumber = order != null ? order.OrderNumber : null,
-                            Amount = order != null ? order.Amount : 0m
+                            Amount = order != null ? order.Amount : 0m,
+                            RegistrationStageName = regStage != null ? regStage.StageName : "Неизвестный этап"
                         };
 
             var result = await query.ToListAsync();
             return View(result);
-
         }
+
+
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("Admin/DownloadParticipantsExcel")]
-        public async Task<IActionResult> DownloadParticipantsExcel()
+        [Route("Admin/DownloadParticipantsExcelByStage")]
+        public async Task<IActionResult> DownloadParticipantsExcelByStage(string stageName)
         {
+            if (string.IsNullOrEmpty(stageName))
+            {
+                return BadRequest("Не указан этап регистрации.");
+            }
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
+            // Выборка участников для указанного этапа
             var query = from p in _context.Participants
                         join o in _context.Orders on p.OrderId equals o.Id into po
                         from order in po.DefaultIfEmpty()
                         join d in _context.Disciplines on p.Id equals d.ParticipantId into pd
                         from discipline in pd.DefaultIfEmpty()
+                        join rs in _context.RegistrationStage on order.RegistrationStageId equals rs.Id
+                        where rs.StageName == stageName
                         select new ParticipantOrderViewModel
                         {
                             LastName = p.LastName,
@@ -178,14 +191,15 @@ namespace VlasikhaPlavanieWebsite.Controllers
                             Distance = discipline != null ? discipline.Distance : null,
                             EntryTime = discipline != null ? discipline.EntryTime : null,
                             OrderNumber = order != null ? order.OrderNumber : null,
-                            Amount = order != null ? order.Amount : 0m
+                            Amount = order != null ? order.Amount : 0m,
+                            RegistrationStageName = rs.StageName
                         };
 
             var participants = await query.ToListAsync();
 
             using (var package = new ExcelPackage())
             {
-                var worksheet = package.Workbook.Worksheets.Add("Participants");
+                var worksheet = package.Workbook.Worksheets.Add("Participants_" + stageName);
 
                 // Заголовки колонок
                 worksheet.Cells[1, 1].Value = "Дата заказа";
@@ -221,7 +235,6 @@ namespace VlasikhaPlavanieWebsite.Controllers
                     worksheet.Cells[i + 2, 13].Value = participant.EntryTime;
                 }
 
-                
                 using (var range = worksheet.Cells[1, 1, 1, 13])
                 {
                     range.Style.Font.Bold = true;
@@ -236,12 +249,13 @@ namespace VlasikhaPlavanieWebsite.Controllers
                 package.SaveAs(stream);
                 stream.Position = 0;
 
-                var fileName = $"Participants_{DateTime.UtcNow.ToString("yyyyMMdd_HHmmss")}.xlsx";
+                var fileName = $"Participants_{stageName}_{DateTime.UtcNow.ToString("yyyyMMdd_HHmmss")}.xlsx";
                 var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
                 return File(stream, contentType, fileName);
             }
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -390,5 +404,59 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
 			return RedirectToAction("EditFiles");
 		}
-	}
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("Admin/ManageStages")]
+        public async Task<IActionResult> ManageStages()
+        {
+            var stages = await _context.RegistrationStage.ToListAsync();
+            var model = new ManageStagesViewModel
+            {
+                Stages = stages,
+                NewStage = new RegistrationStage()
+            };
+            return View(model);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("Admin/CreateStage")]
+        public async Task<IActionResult> CreateStage(ManageStagesViewModel model)
+        {
+            ModelState.Remove("Stages");
+            if (ModelState.IsValid)
+            {
+                model.NewStage.IsOpen = false;
+                _context.RegistrationStage.Add(model.NewStage);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("ManageStages");
+            }
+            model.Stages = await _context.RegistrationStage.ToListAsync();
+            return View("ManageStages", model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("Admin/ChangeStageStatus")]
+        public async Task<IActionResult> ChangeStageStatus(int id, bool isOpen)
+        {
+            var stage = await _context.RegistrationStage.FindAsync(id);
+            if (stage != null)
+            {
+                stage.IsOpen = isOpen;
+                if (!isOpen)
+                {
+                    stage.RegistrationEndDate = DateTime.UtcNow.AddHours(3);
+                }
+                else
+                {
+                    stage.RegistrationEndDate = null;
+                }
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("ManageStages");
+        }
+    }
 }
