@@ -9,15 +9,23 @@
 </head>
 <body>
     <div class="participants-container">
-        <h1 class="participants-title">Участники по этапам регистрации</h1>
+        <h1 class="participants-title">
+            Участники по этапам регистрации
+        </h1>
         <a href="#" id="download-button" class="download-excel-button disabled" onclick="return false;">Скачать участников для выбранного этапа</a>
 
         <!-- Кнопки этапов -->
         <div class="stages-buttons">
-            @foreach (var stageGroup in Model.GroupBy(p => p.RegistrationStageName))
+            @foreach (var stageGroup in Model
+            .GroupBy(p => p.RegistrationStageName)
+            .Select(g => new
             {
-                <button class="stage-button" onclick="filterByStage('@stageGroup.Key')">
-                    @stageGroup.Key (@stageGroup.Count())
+               Stage = g.Key,
+               UniqueParticipants = g.Select(p => new { p.LastName, p.FirstName, p.MiddleName, p.BirthDate }).Distinct().Count()
+            }))
+            {
+                <button class="stage-button" onclick="filterByStage('@stageGroup.Stage')">
+                    @stageGroup.Stage (@stageGroup.UniqueParticipants)
                 </button>
             }
         </div>
