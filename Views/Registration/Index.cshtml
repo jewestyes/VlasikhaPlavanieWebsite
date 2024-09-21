@@ -70,9 +70,22 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label asp-for="Participants[i].Rank">Разряд</label>
-                        <input asp-for="Participants[i].Rank" class="form-control" />
+                        <select asp-for="Participants[i].Rank" class="form-control">
+                            <option value="Б/Р">Б/Р</option>
+                            <option value="IIIюн">IIIюн</option>
+                            <option value="IIюн">IIюн</option>
+                            <option value="Iюн">Iюн</option>
+                            <option value="III">III</option>
+                            <option value="II">II</option>
+                            <option value="I">I</option>
+                            <option value="КМС">КМС</option>
+                            <option value="МС">МС</option>
+                            <option value="МСМК">МСМК</option>
+                            <option value="ЗМС">ЗМС</option>
+                        </select>
                     </div>
                 </div>
+
 
                 <h4>Выберите дисциплину</h4>
                 @for (int j = 0; j < Model.Participants[i].Disciplines.Count; j++)
