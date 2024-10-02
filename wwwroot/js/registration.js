@@ -27,9 +27,6 @@
 
         if (disciplineOptions[selectedDiscipline]) {
             disciplineOptions[selectedDiscipline].forEach(distance => {
-                if ((distance === "25м" && (selectedDiscipline === "На спине" || selectedDiscipline === "Вольный стиль")) && (birthYear < 2016 || birthYear > 2018)) {
-                    return;
-                }
                 const option = document.createElement('option');
                 option.value = distance;
                 option.text = distance;

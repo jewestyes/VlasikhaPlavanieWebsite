@@ -365,7 +365,7 @@ MigrationBackup/
 **/Migrations/
 
 **/Logs/
-
+**/Files/
 appsettings.Production.json
 appsettings.Development.json
 appsettings.Production.json
