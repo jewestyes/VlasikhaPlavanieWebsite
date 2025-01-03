@@ -195,7 +195,7 @@ public class PaymentController : Controller
             totalPrice += disciplinesCount <= 3 ? 2000m : 2000m + 500m * (disciplinesCount - 3);
         }
 
-        return totalPrice * 0.9M;
+        return totalPrice;
     }
 }
 
