@@ -286,7 +286,8 @@ nav {
     cursor: pointer; /* Указатель курсора при наведении */
     transition: background-color 0.3s, transform 0.3s; /* Плавные переходы */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень для кнопки */
-    position: relative; /* Позиционирование относительно контейнера */
+    position: absolute;
+    bottom: 20px; 
 }
 
     .reg-button:hover {
@@ -347,6 +348,11 @@ nav {
 
     .map-container {
         padding-top: 56.25%;
+    }
+
+    .reg-button {
+        position: relative;
+        bottom: 0;
     }
 }
 
@@ -434,14 +440,25 @@ nav {
     padding: 0 10px; /* Внутренние отступы */
 }
 
-.tournament-info .box-item h4 {
+.box-item2 {
+    width: 100%;
+    display: flex; /* Flexbox для центрирования содержимого */
+    align-items: center; /* Вертикальное центрирование */
+    justify-content: space-between; /* Пространство между текстом и значком */
+    text-align: center; /* Центрирование текста */
+    padding: 0 10px; /* Внутренние отступы */
+}
+
+.tournament-info .box-item h4,
+.tournament-info .box-item2 h4 {
     margin: 0; /* Убираем внешние отступы */
     font-size: 18px; /* Размер шрифта */
     flex-grow: 1; /* Заполняет доступное пространство */
     text-align: center; /* Центрирование текста */
 }
 
-.tournament-info .box-item {
+.tournament-info .box-item,
+.tournament-info .box-item2 h4 {
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.07);
     padding: 10px 30px;
     background-color: #fff;
@@ -449,10 +466,11 @@ nav {
     margin-bottom: 30px;
 }
 
-    .tournament-info .box-item h4 a {
+    .tournament-info .box-item h4 a,
+    .tournament-info .box-item2 h4 a{
         display: flex;
-        align-items: center; 
-        justify-content: space-between; 
+        align-items: center;
+        justify-content: space-between;
         width: 100%;
         text-decoration: none;
         color: inherit;
@@ -463,7 +481,8 @@ nav {
             margin-right: 0;
         }
 
-    .tournament-info .box-item:hover h4 a {
+    .tournament-info .box-item:hover h4 a,
+    .tournament-info .box-item2:hover h4 a {
         color: #4b8ef1;
     }
 
