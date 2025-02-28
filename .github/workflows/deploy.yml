@@ -30,12 +30,14 @@ jobs:
     - name: Add SSH key
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY_PEM }}" > ~/.ssh/id_rsa_pem
-        chmod 600 ~/.ssh/id_rsa_pem
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
 
-    - name: Deploy to server
-      run: rsync -avz -e "ssh -i ~/.ssh/id_rsa_pem -o StrictHostKeyChecking=no" ./publish/ root@147.45.235.177:/home/VlasikhaPlavanieWebsite/
+    - name: Deploy application files to server
+      run: rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./publish/ root@147.45.235.177:/home/VlasikhaPlavanieWebsite/bin/Release/net8.0
+
+    - name: Deploy wwwroot to server (excluding Files)
+      run: rsync -avz --exclude='Files/' -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./publish/wwwroot/ root@147.45.235.177:/home/VlasikhaPlavanieWebsite/wwwroot
 
     - name: Restart Kestrel
-      run: ssh -i ~/.ssh/id_rsa_pem -o StrictHostKeyChecking=no root@147.45.235.177 'sudo systemctl restart kestrel.service'
-
+      run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@147.45.235.177 'sudo systemctl restart kestrel.service'
