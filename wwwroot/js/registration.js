@@ -2,8 +2,8 @@
     const disciplineOptions = {
         "На спине": ["50м", "100м"],
         "Вольный стиль": ["50м", "100м"],
-        "Комплексное плавание": ["100м", "200м"],
-        "Брасс": ["50м"],
+        "Комплексное плавание": ["100м"],
+        "Брасс": ["50м", "200м"],
         "Баттерфляй": ["50м"]
     };
 
@@ -40,7 +40,7 @@
 
     function getMinimumBirthDate() {
         const today = new Date();
-        today.setFullYear(today.getFullYear() - 6);
+        today.setFullYear(today.getFullYear() - 5);
         return today.toISOString().split('T')[0];
     }
 
@@ -65,8 +65,8 @@
                 age--;
             }
 
-            if (age < 6) {
-                this.setCustomValidity('Участник должен быть не младше 6 лет');
+            if (age < 5) {
+                this.setCustomValidity('Участник должен быть не младше 5 лет');
                 this.reportValidity();
                 this.value = '';
             } else {
