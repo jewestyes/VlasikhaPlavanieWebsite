@@ -66,7 +66,7 @@
             }
 
             if (age < 5) {
-                this.setCustomValidity('Участник должен быть не младше 5 лет');
+                this.setCustomValidity('Участник должен быть не младше 5 лет!');
                 this.reportValidity();
                 this.value = '';
             } else {
