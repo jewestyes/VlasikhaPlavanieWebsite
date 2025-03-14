@@ -1,5 +1,48 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+.disciplines-list {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.discipline-item {
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+    .discipline-item:last-child {
+        border-bottom: none;
+    }
+
+.discipline-checkbox {
+    transform: scale(1.2);
+    margin-right: 10px;
+}
+
+.discipline-item label {
+    font-weight: bold;
+    flex-grow: 1;
+}
+
+.distance-input {
+    width: 60%;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+    .distance-input:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+    }
+
+
 .manage-stages-container {
     background-color: #fff;
     margin: 50px auto;
@@ -50,7 +93,7 @@
 
 .form-control {
     width: 100%;
-    padding: 10px;
+    padding: 5px 0px;
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 5px;

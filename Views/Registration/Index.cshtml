@@ -8,6 +8,10 @@
 <link rel="stylesheet" href="~/css/registration.css" asp-append-version="true" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css">
 
+<script>
+    window.disciplineOptions = @Html.Raw(Json.Serialize(Model.DisciplineOptions));
+</script>
+
 <div class="form-container new-style">
     <h2>Регистрация на турнир</h2>
     <form asp-action="Submit" method="post" id="registrationForm">
@@ -97,17 +101,17 @@
                             <div class="form-group col-md-4">
                                 <label asp-for="Participants[i].Disciplines[j].Name">Дисциплина</label>
                                 <select asp-for="Participants[i].Disciplines[j].Name" class="form-control discipline-select" required>
-                                    <option value="На спине">На спине</option>
-                                    <option value="Вольный стиль">Вольный стиль</option>
-                                    <option value="Комплексное плавание">Комплексное плавание</option>
-                                    <option value="Брасс">Брасс</option>
-                                    <option value="Баттерфляй">Баттерфляй</option>
+                                    @foreach (var discipline in Model.DisciplineOptions.Where(d => d.Value.Count > 0))
+                                    {
+                                        <option value="@discipline.Key">@discipline.Key</option>
+                                    }
                                 </select>
                                 <span asp-validation-for="Participants[i].Disciplines[j].Name" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">
                                 <label asp-for="Participants[i].Disciplines[j].Distance">Выберите дистанцию</label>
-                                <select asp-for="Participants[i].Disciplines[j].Distance" class="form-control distance-select" data-current-distance="@Model.Participants[i].Disciplines[j].Distance" required>
+                                <select asp-for="Participants[i].Disciplines[j].Distance" class="form-control distance-select"
+                                        data-current-distance="@Model.Participants[i].Disciplines[j].Distance" required>
                                 </select>
                                 <span asp-validation-for="Participants[i].Disciplines[j].Distance" class="text-danger"></span>
                             </div>
@@ -117,8 +121,8 @@
                                        type="date"
                                        class="form-control"
                                        id="startDatePicker_@(i)_@(j)"
-                                       value="2025-04-20"
-                                       readonly/>
+                                       value="@(Model.CompetitionDate?.ToString("yyyy-MM-dd"))"
+                                       readonly />
                                 <span asp-validation-for="Participants[i].Disciplines[j].StartDate" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">

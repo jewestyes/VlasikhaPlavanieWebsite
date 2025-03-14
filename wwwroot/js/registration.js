@@ -1,11 +1,5 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
-    const disciplineOptions = {
-        "На спине": ["50м", "100м"],
-        "Вольный стиль": ["50м", "100м"],
-        "Комплексное плавание": ["100м"],
-        "Брасс": ["50м", "200м"],
-        "Баттерфляй": ["50м"]
-    };
+    const disciplineOptions = window.disciplineOptions
 
     function getBirthYear(participantSection) {
         const birthDateInput = participantSection.querySelector('input[type="date"]');

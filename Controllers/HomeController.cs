@@ -27,14 +27,26 @@ namespace VlasikhaPlavanieWebsite.Controllers
                     .Select(f => new
                     {
                         f.ButtonName,
-                        FilePath = f.FilePath ?? "#"
-                    })
+                        FilePath = f.FilePath ?? "#",
+						f.IsExternalLink
+					})
                     .ToListAsync();
 
                 var buttonFiles = fileMappings.ToDictionary(
                     f => f.ButtonName,
-                    f => f.FilePath
-                );
+					f => (FilePath: f.IsExternalLink ? f.FilePath : Url.Content($"~/Files/{Path.GetFileName(f.FilePath)}"),
+				  IsExternalLink: f.IsExternalLink));
+
+
+                var activeStage = await _context.RegistrationStage
+                    .Where(s => s.IsOpen)
+                    .OrderByDescending(s => s.RegistrationStartDate)
+                    .FirstOrDefaultAsync();
+
+                ViewData["StageName"] = activeStage?.StageName ?? "Неизвестный этап";
+                ViewData["CompetitionDate"] = activeStage?.CompetitionDate?.ToString("dd MMMM yyyy") ?? "Дата не указана";
+                ViewData["CompetitionAddress"] = activeStage?.CompetitionAddress ?? "Адрес не указан";
+
                 return View(buttonFiles);
             }
             catch (Exception ex)
