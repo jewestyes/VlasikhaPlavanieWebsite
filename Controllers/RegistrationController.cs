@@ -56,39 +56,62 @@ public class RegistrationController : Controller
 	}
 
 	[HttpPost]
-	public IActionResult AddParticipant(RegistrationViewModel model)
+	public async Task<IActionResult> AddParticipant(RegistrationViewModel model)
 	{
 		model.Participants.Add(new Participant());
+
+		if (model.Stage != null)
+		{
+			model.DisciplineOptions = await GetDisciplineOptions(model.Stage.Id);
+		}
+
 		return View("Index", model);
 	}
 
 	[HttpPost]
-	public IActionResult AddDiscipline(RegistrationViewModel model, int participantIndex)
+	public async Task<IActionResult> AddDiscipline(RegistrationViewModel model, int participantIndex)
 	{
 		model.Participants[participantIndex].Disciplines.Add(new Discipline());
+
+		if (model.Stage != null)
+		{
+			model.DisciplineOptions = await GetDisciplineOptions(model.Stage.Id);
+		}
+
 		return View("Index", model);
 	}
 
 	[HttpPost]
-	public IActionResult RemoveDiscipline(RegistrationViewModel model, int participantIndex, int disciplineIndex)
+	public async Task<IActionResult> RemoveDiscipline(RegistrationViewModel model, int participantIndex, int disciplineIndex)
 	{
 		if (participantIndex >= 0 && participantIndex < model.Participants.Count)
 		{
 			var participant = model.Participants[participantIndex];
+
 			if (disciplineIndex >= 0 && disciplineIndex < participant.Disciplines.Count)
 			{
 				participant.Disciplines.RemoveAt(disciplineIndex);
+			}
+
+			if (model.Stage != null)
+			{
+				model.DisciplineOptions = await GetDisciplineOptions(model.Stage.Id);
 			}
 		}
 		return View("Index", model);
 	}
 
 	[HttpPost]
-	public IActionResult RemoveParticipant(RegistrationViewModel model, int participantIndex)
+	public async Task<IActionResult> RemoveParticipant(RegistrationViewModel model, int participantIndex)
 	{
 		if (participantIndex >= 0 && participantIndex < model.Participants.Count)
 		{
 			model.Participants.RemoveAt(participantIndex);
+		}
+
+		if (model.Stage != null)
+		{
+			model.DisciplineOptions = await GetDisciplineOptions(model.Stage.Id);
 		}
 		return View("Index", model);
 	}
@@ -166,5 +189,15 @@ public class RegistrationController : Controller
 			return StatusCode(500, "Internal server error");
 		}
 
+	}
+
+	private async Task<Dictionary<string, List<string>>> GetDisciplineOptions(int stageId)
+	{
+		return await _context.StageDisciplines
+			.Where(d => d.StageId == stageId)
+			.ToDictionaryAsync(
+				d => d.Name,
+				d => JsonSerializer.Deserialize<List<string>>(d.DistancesJson) ?? new List<string>()
+			);
 	}
 }

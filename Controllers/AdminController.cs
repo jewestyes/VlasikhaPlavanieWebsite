@@ -22,7 +22,6 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly ApplicationDbContext _context;
-		private readonly string _filesDirectory;
 
 		public AdminController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, ILogger<HomeController> logger)
 		{
@@ -31,7 +30,6 @@ namespace VlasikhaPlavanieWebsite.Controllers
 			_signInManager = signInManager;
 			_userManager = userManager;
 			_context = context;
-			_filesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files");
 		}
 
 		[HttpGet]
