@@ -11,11 +11,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
+using VlasikhaPlavanieWebsite.ViewModels;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
 
-	public class AdminController : Controller
+    public class AdminController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
 		private readonly IWebHostEnvironment _webHostEnvironment;

@@ -5,6 +5,7 @@ using System.Text;
 using VlasikhaPlavanieWebsite.Models;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using VlasikhaPlavanieWebsite.ViewModels;
 
 public class PaymentController : Controller
 {
@@ -197,20 +198,4 @@ public class PaymentController : Controller
 
         return totalPrice;
     }
-}
-
-
-
-public class PaymentResponse
-{
-    public bool Success { get; set; }
-    public string ErrorCode { get; set; }
-    public string TerminalKey { get; set; }
-    public string Status { get; set; }
-    public string PaymentId { get; set; }
-    public string OrderId { get; set; }
-    public int Amount { get; set; }
-    public string PaymentURL { get; set; }
-    public string Message { get; set; }
-
 }

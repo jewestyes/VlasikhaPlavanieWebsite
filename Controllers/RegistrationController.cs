@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using VlasikhaPlavanieWebsite.Models;
-using System;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 using StackExchange.Redis;
 using Microsoft.EntityFrameworkCore;
 using VlasikhaPlavanieWebsite.Data;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
+using VlasikhaPlavanieWebsite.ViewModels;
 
 public class RegistrationController : Controller
 {
@@ -130,6 +127,5 @@ public class RegistrationController : Controller
 			_logger.LogError(ex, "An error occurred while submitting the registration with OrderId: {OrderId}.", orderId);
 			return StatusCode(500, "Internal server error");
 		}
-
 	}
 }

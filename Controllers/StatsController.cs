@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.Data;
-using System.Linq;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {

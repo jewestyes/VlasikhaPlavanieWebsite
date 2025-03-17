@@ -2,7 +2,6 @@
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
-
     public class PaymentInfoController : Controller
     {
         [HttpGet]
@@ -23,5 +22,4 @@ namespace VlasikhaPlavanieWebsite.Controllers
             return View();
         }
     }
-
 }

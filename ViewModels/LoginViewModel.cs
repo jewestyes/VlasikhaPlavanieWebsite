@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace VlasikhaPlavanieWebsite.Models
+namespace VlasikhaPlavanieWebsite.ViewModels
 {
 
     public class LoginViewModel

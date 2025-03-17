@@ -1,4 +1,6 @@
-﻿namespace VlasikhaPlavanieWebsite.Models
+﻿using VlasikhaPlavanieWebsite.Models;
+
+namespace VlasikhaPlavanieWebsite.ViewModels
 {
     public class RegistrationViewModel
     {
@@ -8,7 +10,7 @@
 
         public RegistrationStage Stage { get; set; }
 
-		public DateTime? CompetitionDate { get; set; } = DateTime.UtcNow.AddHours(3);
+        public DateTime? CompetitionDate { get; set; } = DateTime.UtcNow.AddHours(3);
         public string? CompetitionAddress { get; set; } = "";
-	}
+    }
 }

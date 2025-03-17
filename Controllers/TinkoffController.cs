@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Text.Json;
-using System.Threading.Tasks;
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+using VlasikhaPlavanieWebsite.ViewModels;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
