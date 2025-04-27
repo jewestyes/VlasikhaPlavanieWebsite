@@ -2,8 +2,7 @@ name: CI/CD Deploy to Ubuntu
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 env:
   APP_HOME: /home/VlasikhaPlavanieWebsite
@@ -26,35 +25,29 @@ jobs:
           dotnet restore
           dotnet publish -c Release -o ./publish
 
-      - name: Install SSH key
+      - name: Install SSH key & known hosts
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-
-      - name: Add server to known hosts
-        run: |
-          mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      - name: Deploy to new release
+      - name: Deploy, link Files & restart
         run: |
           TIMESTAMP=$(date +%Y%m%d_%H%M%S)
           RELEASE_DIR=$APP_HOME/releases/$TIMESTAMP
 
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} "mkdir -p $RELEASE_DIR"
+          # а) создаём папку под новый релиз
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} \
+            "mkdir -p $RELEASE_DIR"
 
           rsync -avz --delete \
-            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            -e "ssh -i ~/.ssh/id_rsa" \
             ./publish/ \
             root@${{ secrets.HOST }}:$RELEASE_DIR/
 
-      - name: Link Files, switch current & restart service
-        run: |
-          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} "\
-            ln -sfn $APP_HOME/shared/Files $APP_HOME/releases/$TIMESTAMP/wwwroot/Files && \
-            ln -sfn $APP_HOME/releases/$TIMESTAMP $APP_HOME/current && \
-            sudo systemctl restart kestrel.service \
-          "
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} \
+            "ln -sfn $APP_HOME/shared/Files $RELEASE_DIR/wwwroot/Files && \
+             ln -sfn $RELEASE_DIR $APP_HOME/current && \
+             sudo systemctl restart kestrel.service"
