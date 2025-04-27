@@ -33,12 +33,11 @@ jobs:
           ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      - name: Deploy, link Files & restart
+      - name: Deploy, link Files & config & restart
         run: |
           TIMESTAMP=$(date +%Y%m%d_%H%M%S)
           RELEASE_DIR=$APP_HOME/releases/$TIMESTAMP
 
-          # а) создаём папку под новый релиз
           ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} \
             "mkdir -p $RELEASE_DIR"
 
@@ -48,6 +47,7 @@ jobs:
             root@${{ secrets.HOST }}:$RELEASE_DIR/
 
           ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} \
-            "ln -sfn $APP_HOME/shared/Files $RELEASE_DIR/wwwroot/Files && \
-             ln -sfn $RELEASE_DIR $APP_HOME/current && \
+            "ln -sfn $APP_HOME/shared/Files                                      $RELEASE_DIR/wwwroot/Files && \
+             ln -sfn $APP_HOME/shared/appsettings.Production.json                $RELEASE_DIR/appsettings.Production.json && \
+             ln -sfn $RELEASE_DIR                                               $APP_HOME/current && \
              sudo systemctl restart kestrel.service"
