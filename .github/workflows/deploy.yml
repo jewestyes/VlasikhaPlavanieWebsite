@@ -53,4 +53,3 @@ jobs:
           ln -sfn $APP_HOME/shared/Files $RELEASE_DIR/wwwroot/Files
           ln -sfn $RELEASE_DIR $APP_HOME/current
           sudo systemctl restart kestrel.service
-EOF
