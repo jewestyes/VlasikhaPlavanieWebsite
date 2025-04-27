@@ -44,9 +44,9 @@ namespace VlasikhaPlavanieWebsite.Controllers
                     .OrderByDescending(s => s.RegistrationStartDate)
                     .FirstOrDefaultAsync();
 
-                ViewData["StageName"] = activeStage?.StageName ?? "Неизвестный этап";
-                ViewData["CompetitionDate"] = activeStage?.CompetitionDate?.ToString("dd MMMM yyyy") ?? "Дата не указана";
-                ViewData["CompetitionAddress"] = activeStage?.CompetitionAddress ?? "Адрес не указан";
+                ViewData["StageName"] = activeStage?.StageName ?? "РќРµРёР·РІРµСЃС‚РЅС‹Р№ СЌС‚Р°Рї";
+                ViewData["CompetitionDate"] = activeStage?.CompetitionDate?.ToString("dd MMMM yyyy") ?? "Р”Р°С‚Р° РЅРµ СѓРєР°Р·Р°РЅР°";
+                ViewData["CompetitionAddress"] = activeStage?.CompetitionAddress ?? "РђРґСЂРµСЃ РЅРµ СѓРєР°Р·Р°РЅ";
 
                 return View(buttonFiles);
             }
