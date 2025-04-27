@@ -2,7 +2,8 @@ name: CI/CD Deploy to Ubuntu
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
 
 env:
   APP_HOME: /home/VlasikhaPlavanieWebsite
@@ -12,44 +13,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Setup .NET 8
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.x'
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Restore & Publish
-      run: |
-        dotnet restore
-        dotnet publish -c Release -o ./publish
+      - name: Restore & Publish
+        run: |
+          dotnet restore
+          dotnet publish -c Release -o ./publish
 
-    - name: Install SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-    - name: Add server to known hosts
-      run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-        chmod 644 ~/.ssh/known_hosts
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
-    - name: Deploy to new release, link Files, switch current & restart
-      run: |
-        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-        RELEASE_DIR=$APP_HOME/releases/$TIMESTAMP
+      - name: Deploy to new release
+        run: |
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          RELEASE_DIR=$APP_HOME/releases/$TIMESTAMP
 
-        ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} "mkdir -p $RELEASE_DIR"
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} "mkdir -p $RELEASE_DIR"
 
-        rsync -avz --delete \
-          -e "ssh -i ~/.ssh/id_rsa" \
-          ./publish/ \
-          root@${{ secrets.HOST }}:$RELEASE_DIR/
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            ./publish/ \
+            root@${{ secrets.HOST }}:$RELEASE_DIR/
 
-        ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} bash << 'EOF'
-          ln -sfn $APP_HOME/shared/Files $RELEASE_DIR/wwwroot/Files
-          ln -sfn $RELEASE_DIR $APP_HOME/current
-          sudo systemctl restart kestrel.service
+      - name: Link Files, switch current & restart service
+        run: |
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} "\
+            ln -sfn $APP_HOME/shared/Files $APP_HOME/releases/$TIMESTAMP/wwwroot/Files && \
+            ln -sfn $APP_HOME/releases/$TIMESTAMP $APP_HOME/current && \
+            sudo systemctl restart kestrel.service \
+          "
