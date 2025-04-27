@@ -4,6 +4,7 @@ using VlasikhaPlavanieWebsite.Models;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq;
+using System.Reflection.Emit;
 
 namespace VlasikhaPlavanieWebsite.Data
 {
@@ -15,6 +16,7 @@ namespace VlasikhaPlavanieWebsite.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<FileMapping> FileMappings { get; set; }
         public DbSet<RegistrationStage> RegistrationStage { get; set; }
+        public DbSet<StageDiscipline> StageDisciplines { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -73,7 +75,12 @@ namespace VlasikhaPlavanieWebsite.Data
                 .HasKey(f => f.Id);
 
             builder.Entity<RegistrationStage>()
-                .HasKey(f => f.Id);
+            .HasKey(f => f.Id);
+
+
+            builder.Entity<StageDiscipline>()
+            .Property(d => d.DistancesJson)
+            .HasColumnType("NVARCHAR(MAX)");
         }
     }
 }

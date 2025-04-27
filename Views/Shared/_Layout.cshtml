@@ -30,6 +30,22 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @using Microsoft.AspNetCore.Identity
+            @inject SignInManager<ApplicationUser> SignInManager
+            @inject UserManager<ApplicationUser> UserManager
+
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <div class="admin-nav-wrapper">
+                    <div class="admin-nav">
+                        <a href="@Url.Action("Index", "Admin")" class="admin-nav-button">Участники</a>
+                        <a href="@Url.Action("EditFiles", "Admin")" class="admin-nav-button">Файлы</a>
+                        <a href="@Url.Action("ManageStages", "Admin")" class="admin-nav-button">Этапы регистрации</a>
+                        <a href="@Url.Action("Logout", "Admin")" class="admin-nav-button logout">Выход</a>
+                    </div>
+                </div>
+            }
+
             @RenderBody()
         </main>
     </div>
