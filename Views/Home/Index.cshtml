@@ -2,95 +2,109 @@
 
 @{
 	ViewData["Title"] = "Главная";
+
+	var stageName = ViewData["StageName"] as string;
+	var competitionDate = ViewData["CompetitionDate"] as string;
+	var competitionAddress = ViewData["CompetitionAddress"] as string;
+
+	bool hasData = !string.IsNullOrWhiteSpace(stageName)
+			&& !string.IsNullOrWhiteSpace(competitionDate)
+			&& !string.IsNullOrWhiteSpace(competitionAddress);
 }
 
 <body>
 	<main>
 		<div class="registration_section">
 			<div class="registration">
-				<h2>Регистрация на турнир</h2>
-				<h3>@ViewData["StageName"]</h3>
-				<p>@ViewData["CompetitionDate"] / @ViewData["CompetitionAddress"]</p>
-				<a asp-controller="Registration" asp-action="Index">
-					<button class="reg-button">Зарегистрироваться</button>
-				</a>
-			</div>
+			<h2>Регистрация на турнир</h2>
+			<h3>@(stageName ?? "Скоро узнаете название этапа")</h3>
+			<p>
+				@(competitionDate ?? "Дата скоро")
+				/
+				@(competitionAddress ?? "Место скоро")
+			</p>
+			<a asp-controller="Registration" asp-action="Index">
+				<button class="reg-button" @(hasData ? "" : "disabled")>
+					@(hasData ? "Зарегистрироваться" : "Скоро")
+				</button>
+			</a>
+		</div>
 
-			<div id="about" class="tournament-info">
-				<div class="column">
-					@foreach (var key in new[] { "Положение", "Регламент", "Памятка", "Правила плавание" })
+		<div id="about" class="tournament-info">
+			<div class="column">
+				@foreach (var key in new[] { "Положение", "Регламент", "Памятка", "Правила плавание" })
+				{
+					if (Model.ContainsKey(key) && !string.IsNullOrEmpty(Model[key].FilePath))
 					{
-						if (Model.ContainsKey(key) && !string.IsNullOrEmpty(Model[key].FilePath))
-						{
-							var fileData = Model[key];
-							var filePath = fileData.FilePath;
-							var isExternal = fileData.IsExternalLink;
-
-							<div class="col-lg-6">
-								<div class="box-item">
-									<h4>
-										<a target="_blank" href="@(isExternal ? filePath : Url.Content(filePath))">
-											@key <i class="fas fa-download"></i>
-										</a>
-									</h4>
-								</div>
-							</div>
-						}
-					}
-				</div>
-
-				<div class="column">
-					@if (Model.ContainsKey("Online результаты") && !string.IsNullOrEmpty(Model["Online результаты"].FilePath))
-					{
-						var onlineResults = Model["Online результаты"];
+						var fileData = Model[key];
+						var filePath = fileData.FilePath;
+						var isExternal = fileData.IsExternalLink;
 
 						<div class="col-lg-6">
 							<div class="box-item">
 								<h4>
-									<a target="_blank" href="@onlineResults.FilePath">
-										Online результаты <i class="fas fa-download"></i>
+									<a target="_blank" href="@(isExternal ? filePath : Url.Content(filePath))">
+										@key <i class="fas fa-download"></i>
 									</a>
 								</h4>
 							</div>
 						</div>
 					}
+				}
+			</div>
 
-					@foreach (var key in new[] { "Первый лист", "Список судей", "Нормативы" })
-					{
-						if (Model.ContainsKey(key) && !string.IsNullOrEmpty(Model[key].FilePath))
-						{
-							var fileData = Model[key];
-							var filePath = fileData.FilePath;
-							var isExternal = fileData.IsExternalLink;
+			<div class="column">
+				@if (Model.ContainsKey("Online результаты") && !string.IsNullOrEmpty(Model["Online результаты"].FilePath))
+				{
+					var onlineResults = Model["Online результаты"];
 
-							<div class="col-lg-6">
-								<div class="box-item">
-									<h4>
-										<a target="_blank" href="@(isExternal ? filePath : Url.Content(filePath))">
-											@key <i class="fas fa-download"></i>
-										</a>
-									</h4>
-								</div>
-							</div>
-						}
-					}
-				</div>
-
-				<div class="row-info">
-					@if (Model.ContainsKey("Приглашение в судейский корпус") && !string.IsNullOrEmpty(Model["Приглашение в судейский корпус"].FilePath))
-					{
-						var invitationLink = Model["Приглашение в судейский корпус"];
-
-						<div class="box-item2">
+					<div class="col-lg-6">
+						<div class="box-item">
 							<h4>
-								<a target="_blank" href="@invitationLink.FilePath">
-									Приглашаем в судейский корпус 2025
+								<a target="_blank" href="@onlineResults.FilePath">
+									Online результаты <i class="fas fa-download"></i>
 								</a>
 							</h4>
 						</div>
+					</div>
+				}
+
+				@foreach (var key in new[] { "Первый лист", "Список судей", "Нормативы" })
+				{
+					if (Model.ContainsKey(key) && !string.IsNullOrEmpty(Model[key].FilePath))
+					{
+						var fileData = Model[key];
+						var filePath = fileData.FilePath;
+						var isExternal = fileData.IsExternalLink;
+
+						<div class="col-lg-6">
+							<div class="box-item">
+								<h4>
+									<a target="_blank" href="@(isExternal ? filePath : Url.Content(filePath))">
+										@key <i class="fas fa-download"></i>
+									</a>
+								</h4>
+							</div>
+						</div>
 					}
-				</div>
+				}
 			</div>
+
+			<div class="row-info">
+				@if (Model.ContainsKey("Приглашение в судейский корпус") && !string.IsNullOrEmpty(Model["Приглашение в судейский корпус"].FilePath))
+				{
+					var invitationLink = Model["Приглашение в судейский корпус"];
+
+					<div class="box-item2">
+						<h4>
+							<a target="_blank" href="@invitationLink.FilePath">
+								Приглашаем в судейский корпус 2025
+							</a>
+						</h4>
+					</div>
+				}
+			</div>
+		</div>
 
 
 		</div>
