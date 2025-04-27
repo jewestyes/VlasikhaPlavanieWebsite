@@ -77,10 +77,9 @@ builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
+
+app.UseDeveloperExceptionPage();
+
 //else
 //{
 //    app.UseExceptionHandler("/Home/Error");
