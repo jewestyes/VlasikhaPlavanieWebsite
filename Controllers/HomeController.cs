@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
+using VlasikhaPlavanieWebsite.ViewModels;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {

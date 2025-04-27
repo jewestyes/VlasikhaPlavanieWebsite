@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace VlasikhaPlavanieWebsite.ViewModels
 {
-
     public class LoginViewModel
     {
         [Required]
@@ -11,5 +10,4 @@ namespace VlasikhaPlavanieWebsite.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
-
 }
