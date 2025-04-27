@@ -1,43 +1,48 @@
-name: Deploy to Server
+name: CI/CD Deploy to Ubuntu
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up .NET
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x'
 
-    - name: Install dependencies
-      run: dotnet restore
+    - name: Restore & Publish
+      run: |
+        dotnet restore
+        dotnet publish -c Release -o ./publish
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-
-    - name: Publish
-      run: dotnet publish --configuration Release --no-restore -o ./publish
-
-    - name: Add SSH key
+    - name: Install SSH key
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
-    - name: Deploy application files to server
-      run: rsync -avz -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./publish/ root@147.45.235.177:/home/VlasikhaPlavanieWebsite/bin/Release/net8.0
+    - name: Deploy to new release
+      run: |
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} "\
+          mkdir -p /home/VlasikhaPlavanieWebsite/releases/$TIMESTAMP \
+        "
+        rsync -avz --delete \
+          -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+          ./publish/ \
+          root@${{ secrets.HOST }}:/home/VlasikhaPlavanieWebsite/releases/$TIMESTAMP/
 
-    - name: Deploy wwwroot to server (excluding Files)
-      run: rsync -avz --exclude='Files/' -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" ./publish/wwwroot/ root@147.45.235.177:/home/VlasikhaPlavanieWebsite/wwwroot
-
-    - name: Restart Kestrel
-      run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@147.45.235.177 'sudo systemctl restart kestrel.service'
+    - name: Switch current & restart service
+      run: |
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} "\
+          ln -sfn /home/VlasikhaPlavanieWebsite/releases/$TIMESTAMP /home/VlasikhaPlavanieWebsite/current && \
+          sudo systemctl restart kestrel.service \
+        "
