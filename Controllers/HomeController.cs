@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using VlasikhaPlavanieWebsite.Data;
-using VlasikhaPlavanieWebsite.Models;
+using VlasikhaPlavanieWebsite.Application.Interfaces;
 using VlasikhaPlavanieWebsite.ViewModels;
 
 namespace VlasikhaPlavanieWebsite.Controllers
@@ -12,37 +8,21 @@ namespace VlasikhaPlavanieWebsite.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly IHomeService _homeService;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ILogger<HomeController> logger, IHomeService homeService)
         {
             _logger = logger;
-            _context = context;
+            _homeService = homeService;
         }
 
 		public async Task<IActionResult> Index()
 		{
             try
             {
-                var fileMappings = await _context.FileMappings
-                    .Select(f => new
-                    {
-                        f.ButtonName,
-                        FilePath = f.FilePath ?? "#",
-						f.IsExternalLink
-					})
-                    .ToListAsync();
+                var buttonFiles = await _homeService.GetButtonFilesAsync();
 
-                var buttonFiles = fileMappings.ToDictionary(
-                    f => f.ButtonName,
-					f => (FilePath: f.IsExternalLink ? f.FilePath : Url.Content($"~/Files/{Path.GetFileName(f.FilePath)}"),
-				  IsExternalLink: f.IsExternalLink));
-
-
-                var activeStage = await _context.RegistrationStage
-                    .Where(s => s.IsOpen)
-                    .OrderByDescending(s => s.RegistrationStartDate)
-                    .FirstOrDefaultAsync();
+                var activeStage = await _homeService.GetActiveStagesAsync();
 
                 ViewData["StageName"] = activeStage?.StageName ?? "Неизвестный этап";
                 ViewData["CompetitionDate"] = activeStage?.CompetitionDate?.ToString("dd MMMM yyyy") ?? "Дата не указана";
@@ -54,7 +34,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
             {
                 _logger.LogError($"[HomeController] [Index] ERROR: {ex.Message}");
             }
-            return View(new Dictionary<string,string>());
+            return View(new Dictionary<string, string>());
         }
 
 		public IActionResult Registration()
