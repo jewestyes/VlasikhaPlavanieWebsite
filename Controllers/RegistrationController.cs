@@ -1,52 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
-using VlasikhaPlavanieWebsite.Models;
 using System.Text.Json;
-using StackExchange.Redis;
-using Microsoft.EntityFrameworkCore;
-using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.ViewModels;
+using VlasikhaPlavanieWebsite.Application.Interfaces;
 
 public class RegistrationController : Controller
 {
-	private readonly IDistributedCache _cache;
 	private readonly ILogger<RegistrationController> _logger;
-	private readonly ApplicationDbContext _context;
+	private readonly IRegistrationService _registrationService;
 
-	public RegistrationController(IDistributedCache cache, ILogger<RegistrationController> logger, ApplicationDbContext context)
+	public RegistrationController(IRegistrationService registrationService, ILogger<RegistrationController> logger)
 	{
-		_cache = cache;
+		_registrationService = registrationService;
 		_logger = logger;
-		_context = context;
 	}
 	[HttpGet]
 	public async Task<IActionResult> Index()
 	{
-		var registrationStage = await _context.RegistrationStage.FirstOrDefaultAsync(rs => rs.IsOpen);
-		if (registrationStage == null)
+		var model = await _registrationService.BuildIndexModelAsync();
+		if (model == null)
 		{
 			_logger.LogWarning("No open registration stage found.");
 			return Content("Не было найдено открытых регистраций.");
-		}
-
-		Dictionary<string, List<string>> options;
-
-		options = await _context.StageDisciplines
-			.Where(d => d.StageId == registrationStage.Id)
-			.ToDictionaryAsync(
-				d => d.Name,
-				d => JsonSerializer.Deserialize<List<string>>(d.DistancesJson) ?? new List<string>()
-		);
-
-		var model = new RegistrationViewModel { DisciplineOptions = options, Stage = registrationStage, CompetitionDate = registrationStage.CompetitionDate, CompetitionAddress = registrationStage.CompetitionAddress };
-
-
-		foreach (var participant in model.Participants)
-		{
-			if (participant.Disciplines.Count == 0)
-			{
-				participant.Disciplines.Add(new Discipline());
-			}
 		}
 
 		return View(model);
@@ -92,39 +66,16 @@ public class RegistrationController : Controller
 			return View("Index", model);
 		}
 
-		var orderId = Guid.NewGuid().ToString();
-		_logger.LogInformation("Generated OrderId: {OrderId} for registration.", orderId);
 
 		try
 		{
-			var cacheOptions = new DistributedCacheEntryOptions()
-				.SetAbsoluteExpiration(TimeSpan.FromHours(3));
-
-			int maxRetries = 10;
-			for (int attempt = 0; attempt < maxRetries; attempt++)
-			{
-				try
-				{
-					await _cache.SetStringAsync(orderId, JsonSerializer.Serialize(model), cacheOptions);
-					_logger.LogInformation("Registration data cached with OrderId: {OrderId}.", orderId);
-					break;
-				}
-				catch (RedisException ex)
-				{
-					_logger.LogWarning(ex, "Ошибка при попытке записи в Redis, попытка {Attempt} из {MaxRetries}", attempt + 1, maxRetries);
-					if (attempt == maxRetries - 1)
-					{
-						throw; // Если все попытки провалились, выбрасываем исключение
-					}
-					await Task.Delay(5000);
-				}
-			}
+			var orderId = await _registrationService.SubmitAsync(model);
 
 			return RedirectToAction("Payment", "Payment", new { orderId = orderId });
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "An error occurred while submitting the registration with OrderId: {OrderId}.", orderId);
+			_logger.LogError(ex, "An error occurred while submitting the registration");
 			return StatusCode(500, "Internal server error");
 		}
 	}

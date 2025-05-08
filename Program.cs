@@ -7,6 +7,8 @@ using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Interfaces;
 using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.Services;
+using VlasikhaPlavanieWebsite.Application.Interfaces;
+using VlasikhaPlavanieWebsite.Infrastructure.Services.Registration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +73,8 @@ if (dataProtectionConfig.GetValue<bool>("ProtectKeysWithCertificate"))
 }
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IRegistrationCache, RedisRegistrationCache>();
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IRoleInitializer, RoleInitializer>();
 builder.Services.AddHttpClient();
