@@ -446,7 +446,6 @@ nav {
     align-items: center; /* Вертикальное центрирование */
     justify-content: space-between; /* Пространство между текстом и значком */
     text-align: center; /* Центрирование текста */
-    padding: 0 10px; /* Внутренние отступы */
 }
 
 .tournament-info .box-item h4,
