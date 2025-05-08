@@ -9,6 +9,7 @@ using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.Services;
 using VlasikhaPlavanieWebsite.Application.Interfaces;
 using VlasikhaPlavanieWebsite.Infrastructure.Services.Registration;
+using VlasikhaPlavanieWebsite.Infrastructure.Services.Admin;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,8 @@ if (dataProtectionConfig.GetValue<bool>("ProtectKeysWithCertificate"))
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IRegistrationCache, RedisRegistrationCache>();
+builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
+builder.Services.AddScoped<IParticipantExportService, ParticipantExportService>();
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IRoleInitializer, RoleInitializer>();
 builder.Services.AddHttpClient();
