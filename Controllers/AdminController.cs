@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using Serilog;
-using System.Text.Json;
-using VlasikhaPlavanieWebsite.Data;
+using VlasikhaPlavanieWebsite.Application.Interfaces;
 using VlasikhaPlavanieWebsite.Infrastructure.Services.Admin;
 using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.ViewModels;
@@ -21,16 +16,25 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		private readonly ILogger<AdminController> _logger;
 		private readonly IAdminAuthService _adminAuthService;
 		private readonly IParticipantExportService _participantExportService;
-		private readonly ApplicationDbContext _context;
+		private readonly IParticipantService _participantService;
+		private readonly IStageService _stageService;
+		private readonly IFileMappingService _fileMappingService;
 
-		public AdminController(IWebHostEnvironment webHostEnvironment, ILogger<AdminController> logger,
-							IAdminAuthService adminAuthService, IParticipantExportService participantExportService, ApplicationDbContext context)
+		public AdminController(IWebHostEnvironment webHostEnvironment,
+						       ILogger<AdminController> logger,
+							   IAdminAuthService adminAuthService,
+							   IParticipantExportService participantExportService,
+							   IParticipantService participantService,
+							   IStageService stageService,
+							   IFileMappingService fileMappingService)
 		{
-			_logger = logger;
 			_webHostEnvironment = webHostEnvironment;
-			_context = context;
+			_logger = logger;
 			_adminAuthService = adminAuthService;
 			_participantExportService = participantExportService;
+			_participantService = participantService;
+			_stageService = stageService;
+			_fileMappingService = fileMappingService;
 		}
 
 		[HttpGet]
@@ -95,35 +99,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[Route("Admin/Index")]
 		public async Task<IActionResult> Index()
 		{
-			var query = from p in _context.Participants
-						join o in _context.Orders on p.OrderId equals o.Id into po
-						from order in po.DefaultIfEmpty()
-						join d in _context.Disciplines on p.Id equals d.ParticipantId into pd
-						from discipline in pd.DefaultIfEmpty()
-						join rs in _context.RegistrationStage on order.RegistrationStageId equals rs.Id into ors
-						from regStage in ors.DefaultIfEmpty()
-						select new ParticipantOrderViewModel
-						{
-							LastName = p.LastName,
-							FirstName = p.FirstName,
-							MiddleName = p.MiddleName,
-							BirthDate = p.BirthDate,
-							Gender = p.Gender,
-							CityOrTeam = p.CityOrTeam,
-							Rank = p.Rank,
-							Phone = p.Phone,
-							CreatedAt = order.CreatedAt,
-							Email = p.Email,
-							DisciplineName = discipline != null ? discipline.Name : null,
-							Distance = discipline != null ? discipline.Distance : null,
-							EntryTime = discipline != null ? discipline.EntryTime : null,
-							OrderNumber = order != null ? order.OrderNumber : null,
-							Amount = order != null ? order.Amount : 0m,
-							RegistrationStageName = regStage != null ? regStage.StageName : "Неизвестный этап"
-						};
-
-			var result = await query.ToListAsync();
-			return View(result);
+			return View(await _participantService.GetAllParticipantOrdersAsync());
 		}
 
 		[HttpGet]
@@ -149,41 +125,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		{
 			try
 			{
-				var fileMappings = await _context.FileMappings
-								.Select(f => new
-								{
-									f.ButtonName,
-									FileName = f.FileName ?? "#",
-									FilePath = f.FilePath ?? "#",
-									f.IsExternalLink
-								})
-								.ToListAsync();
-
-				var buttonFiles = fileMappings.ToDictionary(
-					f => f.ButtonName,
-					f => (FilePath: f.FilePath, IsExternalLink: f.IsExternalLink)
-				);
-
-				foreach (var key in buttonFiles.Keys.ToList())
-				{
-					var relativePath = buttonFiles[key].FilePath;
-
-					if (!buttonFiles[key].IsExternalLink)
-					{
-						var fileName = Path.GetFileName(relativePath);
-						var fileDirectory = Path.Combine("Files", fileName);
-						var absolutePath = Path.Combine(_webHostEnvironment.WebRootPath, "Files", fileName);
-
-						if (System.IO.File.Exists(absolutePath))
-						{
-							buttonFiles[key] = (Url.Content($"~/Files/{fileName}"), false);
-						}
-						else
-						{
-							buttonFiles[key] = ("#", false);
-						}
-					}
-				}
+				var buttonFiles = await _fileMappingService.GetAllMappingsAsync();
 
 				return View(buttonFiles);
 			}
@@ -198,99 +140,17 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[Route("Admin/EditFiles")]
 		public async Task<IActionResult> EditFiles(string buttonName, IFormFile newFile, string externalLink)
 		{
-			var fileMapping = await _context.FileMappings.FirstOrDefaultAsync(f => f.ButtonName == buttonName);
+			var(succeeded, errors) = await _fileMappingService.SaveMappingAsync(buttonName, newFile, externalLink);
 
-			if (!string.IsNullOrWhiteSpace(externalLink))
+			if (!succeeded)
 			{
-				if (fileMapping == null)
-				{
-					fileMapping = new FileMapping
-					{
-						ButtonName = buttonName,
-						FileName = "External Link",
-						FilePath = externalLink,
-						IsExternalLink = true
-					};
-					_context.FileMappings.Add(fileMapping);
-				}
-				else
-				{
-					fileMapping.FileName = "External Link";
-					fileMapping.FilePath = externalLink;
-					fileMapping.IsExternalLink = true;
-					_context.FileMappings.Update(fileMapping);
-				}
-			}
-			else if (newFile != null && newFile.Length > 0)
-			{
-				var extension = Path.GetExtension(newFile.FileName);
-				var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx", ".xls", ".txt" };
+				foreach (var error in errors)
+					ModelState.AddModelError(string.Empty, error);
 
-				if (!allowedExtensions.Contains(extension.ToLower()))
-				{
-					ModelState.AddModelError("", "Недопустимый формат файла.");
-					return RedirectToAction("EditFiles");
-				}
-
-				var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "Files");
-
-				if (!Directory.Exists(uploadPath))
-				{
-					Directory.CreateDirectory(uploadPath);
-				}
-
-				var fileName = $"{buttonName}_{DateTime.Now.Ticks}{extension}";
-				var filePath = Path.Combine("Files", fileName);
-
-				if (fileMapping != null && !string.IsNullOrEmpty(fileMapping.FilePath) && !fileMapping.IsExternalLink)
-				{
-					var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, fileMapping.FilePath);
-					if (System.IO.File.Exists(oldFilePath))
-					{
-						System.IO.File.Delete(oldFilePath);
-					}
-				}
-
-				using (var stream = new FileStream(Path.Combine(_webHostEnvironment.WebRootPath, filePath), FileMode.Create))
-				{
-					await newFile.CopyToAsync(stream);
-				}
-
-				if (fileMapping == null)
-				{
-					fileMapping = new FileMapping
-					{
-						ButtonName = buttonName,
-						FileName = newFile.FileName,
-						FilePath = filePath,
-						IsExternalLink = false
-					};
-					_context.FileMappings.Add(fileMapping);
-				}
-				else
-				{
-					fileMapping.FileName = newFile.FileName;
-					fileMapping.FilePath = filePath;
-					fileMapping.IsExternalLink = false;
-					_context.FileMappings.Update(fileMapping);
-				}
-			}
-			else
-			{
-				if (fileMapping == null)
-				{
-					fileMapping = new FileMapping
-					{
-						ButtonName = buttonName,
-						FileName = "N/A",
-						FilePath = "#",
-						IsExternalLink = false
-					};
-					_context.FileMappings.Add(fileMapping);
-				}
+				var mappings = await _fileMappingService.GetAllMappingsAsync();
+				return View(mappings);
 			}
 
-			await _context.SaveChangesAsync();
 			return RedirectToAction("EditFiles");
 		}
 
@@ -303,21 +163,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 				return BadRequest("ButtonName не может быть пустым.");
 			}
 
-			var fileMapping = await _context.FileMappings.FirstOrDefaultAsync(f => f.ButtonName == buttonName);
-
-			if (fileMapping != null)
-			{
-				if (!string.IsNullOrEmpty(fileMapping.FilePath) && System.IO.File.Exists(fileMapping.FilePath))
-				{
-					System.IO.File.Delete(fileMapping.FilePath);
-				}
-
-				fileMapping.FilePath = "#";
-				fileMapping.FileName = "#";
-				_context.FileMappings.Update(fileMapping);
-
-				await _context.SaveChangesAsync();
-			}
+			await _fileMappingService.DeleteFileAsync(buttonName);
 
 			return RedirectToAction("EditFiles");
 		}
@@ -326,7 +172,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[Route("Admin/ManageStages")]
 		public async Task<IActionResult> ManageStages()
 		{
-			var stages = await _context.RegistrationStage.ToListAsync();
+			var stages = await _stageService.GetAllAsync();
 			var model = new ManageStagesViewModel
 			{
 				Stages = stages,
@@ -343,44 +189,13 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
 			if (ModelState.IsValid)
 			{
-				model.NewStage.IsOpen = false;
-				_context.RegistrationStage.Add(model.NewStage);
-				await _context.SaveChangesAsync();
-
-				if (model.SelectedDisciplines != null && model.SelectedDisciplines.Any())
-				{
-					var stageDisciplines = new List<StageDiscipline>();
-
-					foreach (var discipline in model.SelectedDisciplines)
-					{
-						if (model.DisciplineDistances.TryGetValue(discipline, out string distances) && !string.IsNullOrWhiteSpace(distances))
-						{
-							var distanceList = distances.Split(';')
-								.Select(d => d.Trim())
-								.Where(d => !string.IsNullOrEmpty(d))
-								.ToList();
-
-							stageDisciplines.Add(new StageDiscipline
-							{
-								StageId = model.NewStage.Id,
-								Name = discipline,
-								DistancesJson = JsonSerializer.Serialize(distanceList)
-							});
-						}
-					}
-
-					if (stageDisciplines.Any())
-					{
-						await _context.StageDisciplines.AddRangeAsync(stageDisciplines);
-						await _context.SaveChangesAsync();
-					}
-				}
+				await _stageService.CreateStageAsync(model);
 
 				return RedirectToAction("ManageStages");
 			}
 
 			// Если валидация не прошла, загружаем существующие этапы и возвращаем форму
-			model.Stages = await _context.RegistrationStage.ToListAsync();
+			model.Stages = await _stageService.GetAllAsync();
 			return View("ManageStages", model);
 		}
 
@@ -388,20 +203,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[Route("Admin/ChangeStageStatus")]
 		public async Task<IActionResult> ChangeStageStatus(int id, bool isOpen)
 		{
-			var stage = await _context.RegistrationStage.FindAsync(id);
-			if (stage != null)
-			{
-				stage.IsOpen = isOpen;
-				if (!isOpen)
-				{
-					stage.RegistrationEndDate = DateTime.UtcNow.AddHours(3);
-				}
-				else
-				{
-					stage.RegistrationEndDate = null;
-				}
-				await _context.SaveChangesAsync();
-			}
+			await _stageService.ChangeStatusAsync(id, isOpen);
+
 			return RedirectToAction("ManageStages");
 		}
 	}
