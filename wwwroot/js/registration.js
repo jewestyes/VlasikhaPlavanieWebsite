@@ -1,4 +1,4 @@
-﻿let defaultStartDate = "";
+let defaultStartDate = "";
 let minBirthDate = "";
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     const paymentForm = document.getElementById('paymentForm');
     paymentForm.addEventListener('submit', function (event) {
         const termsCheck = document.getElementById('termsCheck');
