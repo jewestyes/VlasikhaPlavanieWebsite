@@ -121,11 +121,17 @@ app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
-    context.Database.Migrate();
-    var roleInitializer = services.GetRequiredService<IRoleInitializer>();
-    roleInitializer.Initialize().Wait();
+	var services = scope.ServiceProvider;
+	var context = services.GetRequiredService<ApplicationDbContext>();
+
+	var env = services.GetRequiredService<IWebHostEnvironment>();
+	if (env.IsDevelopment() || env.IsStaging())
+	{
+		context.Database.Migrate();
+	}
+
+	var roleInitializer = services.GetRequiredService<IRoleInitializer>();
+	roleInitializer.Initialize().Wait();
 }
 
 app.Run();
