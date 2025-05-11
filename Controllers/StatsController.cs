@@ -1,143 +1,92 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VlasikhaPlavanieWebsite.Models;
-using VlasikhaPlavanieWebsite.Data;
-using Microsoft.EntityFrameworkCore;
+using VlasikhaPlavanieWebsite.Application.Interfaces;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
     public class StatsController : Controller
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _env;
+	{
+		private readonly IStatService _statService;
 
-        public StatsController(ApplicationDbContext context, IWebHostEnvironment env)
+		public StatsController(IStatService statService)
         {
-            _context = context;
-            _env = env;
-        }
+			_statService = statService;
+		}
 
         public async Task<IActionResult> Index()
         {
-            var stats = await _context.StatItems.ToListAsync();
-            return View(stats);
-        }
+			var stats = await _statService.GetAllAsync();
+			return View(stats);
+		}
 
         [HttpPost]
         public async Task<IActionResult> AddStat(string date, string name, string city)
         {
-            if (string.IsNullOrEmpty(date) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(city))
-            {
-                return BadRequest("Invalid input");
-            }
-
-            var newItem = new StatItem
-            {
-                Date = date,
-                Name = name,
-                City = city
-            };
-
-            _context.StatItems.Add(newItem);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
+			try
+			{
+				await _statService.AddAsync(date, name, city);
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return BadRequest("Invalid input");
+			}
+		}
 
         [HttpPost]
         public async Task<IActionResult> DeleteStat(int id)
         {
-            var stat = await _context.StatItems.FindAsync(id);
-            if (stat == null)
-            {
-                return NotFound();
-            }
-
-            foreach (var file in stat.Files)
-            {
-                var filePath = Path.Combine(_env.WebRootPath, "Files", file);
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-            }
-
-            _context.StatItems.Remove(stat);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
+			try
+			{
+				await _statService.DeleteAsync(id);
+				return RedirectToAction("Index");
+			}
+			catch
+			{
+				return NotFound();
+			}
+		}
 
         public async Task<IActionResult> Details(int id)
         {
-            var stat = await _context.StatItems.FindAsync(id);
-            if (stat == null)
-            {
-                return NotFound();
-            }
-            return View(stat);
-        }
+			var stat = await _statService.GetByIdAsync(id);
+			if (stat == null)
+				return NotFound();
+
+			return View(stat);
+		}
 
         [HttpPost]
         public async Task<IActionResult> AddFile(int id, IFormFile file)
         {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("Invalid file");
-            }
-
-            var stat = await _context.StatItems.FindAsync(id);
-            if (stat == null)
-            {
-                return NotFound();
-            }
-
-            var uploads = Path.Combine(_env.WebRootPath, "Files");
-            if (!Directory.Exists(uploads))
-            {
-                Directory.CreateDirectory(uploads);
-            }
-
-            var filePath = Path.Combine(uploads, file.FileName);
-
-            if (System.IO.File.Exists(filePath))
-            {
-                ModelState.AddModelError("File", "A file with this name already exists.");
-                return View("Details", stat);
-            }
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            stat.Files.Add(file.FileName);
-            _context.StatItems.Update(stat);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Details", new { id = id });
-        }
+			try
+			{
+				await _statService.AddFileAsync(id, file);
+				return RedirectToAction("Details", new { id });
+			}
+			catch (IOException)
+			{
+				ModelState.AddModelError("File", "A file with this name already exists.");
+				var stat = await _statService.GetByIdAsync(id);
+				return View("Details", stat);
+			}
+			catch
+			{
+				return BadRequest("Invalid input");
+			}
+		}
 
         [HttpPost]
         public async Task<IActionResult> DeleteFile(int id, string fileName)
         {
-            if (string.IsNullOrEmpty(fileName))
-            {
-                return BadRequest("Invalid file name");
-            }
-
-            var stat = await _context.StatItems.FindAsync(id);
-            if (stat == null)
-            {
-                return NotFound();
-            }
-
-            stat.Files.Remove(fileName);
-            var filePath = Path.Combine(_env.WebRootPath, "Files", fileName);
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
-            _context.StatItems.Update(stat);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Details", new { id = id });
-        }
+			try
+			{
+				await _statService.DeleteFileAsync(id, fileName);
+				return RedirectToAction("Details", new { id });
+			}
+			catch
+			{
+				return BadRequest("Invalid input");
+			}
+		}
     }
 }

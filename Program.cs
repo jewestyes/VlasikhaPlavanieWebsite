@@ -85,6 +85,8 @@ builder.Services.AddScoped<IStageService, StageService>();
 builder.Services.AddScoped<IFileMappingService, FileMappingService>();
 builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<ITinkoffWebhookService, TinkoffWebhookService>();
+builder.Services.AddScoped<IStatService, StatService>();
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IRoleInitializer, RoleInitializer>();
 builder.Services.AddHttpClient();
