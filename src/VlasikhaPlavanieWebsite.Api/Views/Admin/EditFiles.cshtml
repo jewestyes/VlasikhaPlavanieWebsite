@@ -1,0 +1,108 @@
+﻿@using System.IO;
+@model Dictionary<string, (string FilePath, bool IsExternalLink)>
+
+<link rel="stylesheet" href="~/css/edit-files.css" />
+
+<div class="edit-files-container">
+    <h2>Редактирование файлов кнопок</h2>
+
+    <h3>Текущие кнопки и файлы:</h3>
+    @foreach (var item in Model)
+    {
+        var buttonName = item.Key;
+        var filePath = item.Value.FilePath;
+        var isExternal = item.Value.IsExternalLink;
+
+        <div class="file-item">
+            <div class="file-name">
+                <strong>@buttonName</strong>
+                @if (!string.IsNullOrEmpty(filePath))
+                {
+                    @if (isExternal)
+                    {
+                        <p>(Ссылка: <a href="@filePath" target="_blank">@filePath</a>)</p>
+                    }
+                    else
+                    {
+                        var absoluteFilePath = System.IO.Path.Combine("wwwroot", "Files", System.IO.Path.GetFileName(filePath));
+                        @if (System.IO.File.Exists(absoluteFilePath))
+                        {
+                            <p>(Размер: @(new FileInfo(absoluteFilePath).Length / 1024) КБ)</p>
+                        }
+                        else
+                        {
+                            <span style="color: red;">Файл отсутствует на сервере</span>
+                        }
+                    }
+                }
+                else
+                {
+                    <span style="color: red;">Файл отсутствует или не прикреплен</span>
+                }
+            </div>
+
+            <div class="file-actions">
+                @if (!string.IsNullOrEmpty(filePath))
+                {
+                    @if (isExternal)
+                    {
+                        <a href="@filePath" target="_blank" class="btn btn-primary">Открыть ссылку</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Content("~/Files/" + System.IO.Path.GetFileName(filePath))" target="_blank" class="btn btn-primary">Открыть</a>
+                    }
+                }
+
+                <form asp-controller="Admin" asp-action="DeleteFile" method="post" class="delete-form">
+                    <input type="hidden" name="buttonName" value="@buttonName" />
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+
+                <form asp-controller="Admin" asp-action="EditFiles" method="post" enctype="multipart/form-data" class="replace-form">
+                    <input type="hidden" name="buttonName" value="@buttonName" />
+
+                    <div class="form-group">
+                        <label>Выберите источник:</label>
+                        <select name="sourceType" class="form-control source-type-select">
+                            <option value="file">Файл</option>
+                            <option value="link">Ссылка</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group file-upload-section">
+                        <label>Загрузить файл:</label>
+                        <input type="file" name="newFile" class="form-control file-input" />
+                    </div>
+
+                    <div class="form-group link-input-section" style="display: none;">
+                        <label>Введите ссылку:</label>
+                        <input type="text" name="externalLink" class="form-control" placeholder="https://example.com" />
+                    </div>
+
+                    <button type="submit" class="btn btn-warning">Заменить</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".source-type-select").forEach(function (select) {
+            select.addEventListener("change", function () {
+                var parentForm = this.closest("form");
+                var fileUploadSection = parentForm.querySelector(".file-upload-section");
+                var linkInputSection = parentForm.querySelector(".link-input-section");
+
+                if (this.value === "file") {
+                    fileUploadSection.style.display = "block";
+                    linkInputSection.style.display = "none";
+                } else {
+                    fileUploadSection.style.display = "none";
+                    linkInputSection.style.display = "block";
+                }
+            });
+        });
+    });
+</script>
