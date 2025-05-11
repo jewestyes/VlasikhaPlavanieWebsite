@@ -7,6 +7,11 @@ using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Interfaces;
 using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.Services;
+using VlasikhaPlavanieWebsite.Application.Interfaces;
+using VlasikhaPlavanieWebsite.Infrastructure.Services.Registration;
+using VlasikhaPlavanieWebsite.Infrastructure.Services.Admin;
+using VlasikhaPlavanieWebsite.Infrastructure.Services;
+using VlasikhaPlavanieWebsite.Infrastructure.Services.Payment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +76,17 @@ if (dataProtectionConfig.GetValue<bool>("ProtectKeysWithCertificate"))
 }
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IRegistrationCache, RedisRegistrationCache>();
+builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
+builder.Services.AddScoped<IParticipantExportService, ParticipantExportService>();
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
+builder.Services.AddScoped<IStageService, StageService>();
+builder.Services.AddScoped<IFileMappingService, FileMappingService>();
+builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<ITinkoffWebhookService, TinkoffWebhookService>();
+builder.Services.AddScoped<IStatService, StatService>();
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IRoleInitializer, RoleInitializer>();
 builder.Services.AddHttpClient();

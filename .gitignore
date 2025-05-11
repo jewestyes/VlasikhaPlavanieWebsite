@@ -361,8 +361,6 @@ MigrationBackup/
 
 /bin
 *.swp
-# Entity Framework Migrations
-**/Migrations/
 
 **/Logs/
 **/Files/

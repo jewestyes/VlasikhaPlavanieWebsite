@@ -1,201 +1,94 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
-using VlasikhaPlavanieWebsite.Models;
-using System.Text.Json;
-using Microsoft.Extensions.Caching.Distributed;
 using VlasikhaPlavanieWebsite.ViewModels;
+using VlasikhaPlavanieWebsite.Application.Interfaces;
+using VlasikhaPlavanieWebsite.Infrastructure.Exceptions.Payment;
 
 public class PaymentController : Controller
 {
-    private readonly IDistributedCache _cache;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<PaymentController> _logger;
+	private readonly IPaymentService _paymentService;
+	private readonly ILogger<PaymentController> _logger;
 
-    public PaymentController(IDistributedCache cache, IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<PaymentController> logger)
-    {
-        _cache = cache;
-        _httpClientFactory = httpClientFactory;
-        _configuration = configuration;
-        _logger = logger;
-    }
-
-    [HttpGet("payment/success")]
-    public IActionResult PaymentSuccess()
-    {
-        return View();
-    }
-
-    [HttpGet("payment/failure")]
-    public IActionResult PaymentFailure()
-    {
-        return View();
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Payment(string orderId)
-    {
-        _logger.LogInformation("Начало обработки платежа для OrderId: {OrderId}", orderId);
-
-        var registrationDataJson = await _cache.GetStringAsync(orderId);
-        if (registrationDataJson == null)
-        {
-            _logger.LogWarning("Не удалось найти данные для оплаты по OrderId: {OrderId}", orderId);
-            return NotFound("Не удалось найти данные для оплаты.");
-        }
-
-        var model = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
-
-		decimal amount = CalculateCost(model);
-
-        var firstParticipant = model.Participants.FirstOrDefault();
-        if (firstParticipant == null)
-        {
-            _logger.LogWarning("Не удалось найти участников для OrderId: {OrderId}", orderId);
-            return NotFound("Не удалось найти участников.");
-        }
-
-        var paymentViewModel = new PaymentViewModel
-        {
-            OrderId = orderId,
-            Amount = amount,
-            Description = "Оплата участия",
-            Name = $"{firstParticipant.LastName} {firstParticipant.FirstName} {firstParticipant.MiddleName}",
-            Email = firstParticipant.Email,
-            Phone = firstParticipant.Phone
-        };
-
-        return View(paymentViewModel);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> ProcessPayment(PaymentViewModel model)
-    {
-        _logger.LogInformation("Обработка платежа для OrderId: {OrderId}", model.OrderId);
-
-
-		// Повторное получение и проверка данных заказа из кеша
-		var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
-		if (registrationDataJson == null)
-		{
-			_logger.LogWarning("Не удалось найти данные для оплаты по OrderId: {OrderId}", model.OrderId);
-			return NotFound("Не удалось найти данные для оплаты.");
-		}
-
-		var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
-		decimal expectedAmount = CalculateCost(registrationModel);
-
-		// Проверка соответствия суммы, полученной с клиента
-		if (model.Amount != expectedAmount)
-		{
-			_logger.LogWarning("Несоответствие суммы для OrderId: {OrderId}. Ожидаемая сумма: {ExpectedAmount}, Переданная сумма: {ProvidedAmount}",
-				model.OrderId, expectedAmount, model.Amount);
-			return BadRequest("Несоответствие суммы.");
-		}
-
-		// Преобразуем сумму в копейки
-		decimal amountInKopecksDecimal = model.Amount * 100;
-        int amountInKopecks = (int)amountInKopecksDecimal;
-
-        string token;
-        try
-        {
-            token = GenerateToken(
-                _configuration["Tinkoff:TerminalKey"],
-                amountInKopecks.ToString(),
-                model.OrderId.ToString(),
-                model.Description,
-                _configuration["Tinkoff:SecretKey"]
-            );
-            _logger.LogInformation("Токен для OrderId: {OrderId} успешно сгенерирован", model.OrderId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Ошибка генерации токена для OrderId: {OrderId}", model.OrderId);
-            return View("PaymentFailure");
-        }
-
-        var paymentData = new
-        {
-            TerminalKey = _configuration["Tinkoff:TerminalKey"],
-            Amount = amountInKopecks.ToString(),
-            OrderId = model.OrderId,
-            Description = model.Description,
-            Name = model.Name,
-            Email = model.Email,
-            Phone = model.Phone,
-            Token = token
-        };
-
-        var client = _httpClientFactory.CreateClient();
-        client.BaseAddress = new Uri(_configuration["Tinkoff:ApiUrl"]);
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        var content = new StringContent(JsonSerializer.Serialize(paymentData), Encoding.UTF8, "application/json");
-        var response = await client.PostAsync("Init", content);
-
-        if (response.IsSuccessStatusCode)
-        {
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(responseContent);
-
-            if (paymentResponse.Success)
-            {
-                _logger.LogInformation("Платеж для OrderId: {OrderId} успешно инициализирован", model.OrderId);
-                return Redirect(paymentResponse.PaymentURL);
-            }
-            else
-            {
-                _logger.LogWarning("Ошибка инициализации платежа для OrderId: {OrderId}. Код ошибки: {ErrorCode}, Сообщение: {Message}", paymentResponse.OrderId, paymentResponse.ErrorCode, paymentResponse.Message);
-                ViewBag.ErrorMessage = $"Ошибка при обработке платежа: {paymentResponse.ErrorCode} - {paymentResponse.Message}";
-                return View("PaymentFailure");
-            }
-        }
-        else
-        {
-            var errorContent = await response.Content.ReadAsStringAsync();
-            _logger.LogError("Ошибка при обращении к API Tinkoff для OrderId: {OrderId}. Ответ сервера: {ResponseContent}", model.OrderId, errorContent);
-            ViewBag.ErrorMessage = $"Произошла ошибка при обработке платежа: {errorContent}";
-            return View("PaymentFailure");
-        }
-    }
-
-    private string GenerateToken(string terminalKey, string amount, string orderId, string description, string secretKey)
-    {
-        _logger.LogInformation("Генерация токена для OrderId: {OrderId}", orderId);
-
-        var parameters = new SortedDictionary<string, string>
-        {
-            { "TerminalKey", terminalKey },
-            { "Amount", amount },
-            { "OrderId", orderId },
-            { "Description", description },
-            { "Password", secretKey }
-        };
-
-        var concatenatedString = string.Join(string.Empty, parameters.Values);
-
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            byte[] sourceBytes = Encoding.UTF8.GetBytes(concatenatedString);
-            byte[] hashBytes = sha256Hash.ComputeHash(sourceBytes);
-            return BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLower();
-        }
-    }
-
-    private decimal CalculateCost(RegistrationViewModel model)
+	public PaymentController(IPaymentService paymentService,   ILogger<PaymentController> logger)
 	{
-        List<Participant> participants = model.Participants;
-        decimal totalPrice = 0m;
+		_paymentService = paymentService;
+		_logger = logger;
+	}
 
-        foreach (Participant participant in participants)
-        {
-            int disciplinesCount = participant.Disciplines.Count();
-            totalPrice += disciplinesCount <= 3 ? 2000m : 2000m + 500m * (disciplinesCount - 3);
-        }
+	[HttpGet("payment/success")]
+	public IActionResult PaymentSuccess()
+	{
+		return View();
+	}
 
-        return totalPrice;
-    }
+	[HttpGet("payment/failure")]
+	public IActionResult PaymentFailure()
+	{
+		return View();
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> Payment(string orderId)
+	{
+		var paymentViewModel = new PaymentViewModel();
+
+		try
+		{
+			paymentViewModel = await _paymentService.GetPaymentInfoAsync(orderId);
+		}
+		catch (KeyNotFoundException ex)
+		{
+			_logger.LogWarning(ex, "Payment info not found for {OrderId}", orderId);
+			return NotFound(ex.Message);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Unexpected error while preparing payment for {OrderId}", orderId);
+			return StatusCode(500, "Internal server error");
+		}
+
+		return View(paymentViewModel);
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> ProcessPayment(PaymentViewModel model)
+	{
+		if (!ModelState.IsValid)
+			return View("Payment", model);
+
+		try
+		{
+			var redirectUrl = await _paymentService.InitializePaymentAsync(model);
+			return Redirect(redirectUrl);
+		}
+		catch (PaymentAmountMismatchException ex)
+		{
+			_logger.LogWarning(ex, ex.Message);
+			ModelState.AddModelError("", "Сумма платежа не соответствует ожидаемой.");
+			return View("Payment", model);
+		}
+		catch (TokenGenerationException ex)
+		{
+			_logger.LogError(ex, "Не удалось сгенерировать токен для OrderId={OrderId}", model.OrderId);
+			ViewBag.ErrorMessage = "Ошибка генерации платёжного токена. Пожалуйста, попробуйте позже.";
+			return View("PaymentFailure");
+		}
+		catch (PaymentInitializationException ex)
+		{
+			_logger.LogWarning(ex, "Ошибка инициализации платежа: {Code} / {Msg}", ex.ErrorCode, ex.Message);
+			ViewBag.ErrorMessage = $"Ошибка при инициализации платежа: {ex.Message}";
+			return View("PaymentFailure");
+		}
+		catch (PaymentApiException ex)
+		{
+			_logger.LogError(ex, "Ошибка связи с платёжным API: {Status} {Content}", ex.StatusCode, ex.ResponseContent);
+			ViewBag.ErrorMessage = "Не удалось связаться с платёжным сервисом. Попробуйте позже.";
+			return View("PaymentFailure");
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Неожиданная ошибка при оплате OrderId={OrderId}", model.OrderId);
+			ViewBag.ErrorMessage = "Внутренняя ошибка сервера при оплате. Попробуйте позже.";
+			return View("PaymentFailure");
+		}
+	}
 }
