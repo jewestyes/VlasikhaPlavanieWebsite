@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using VlasikhaPlavanieWebsite.Application.Interfaces;
+using VlasikhaPlavanieWebsite.Infrastructure.Exceptions.Admin;
 using VlasikhaPlavanieWebsite.Infrastructure.Services.Admin;
 using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.ViewModels;
@@ -12,7 +13,6 @@ namespace VlasikhaPlavanieWebsite.Controllers
 	[Authorize(Roles = "Admin")]
 	public class AdminController : Controller
 	{
-		private readonly IWebHostEnvironment _webHostEnvironment;
 		private readonly ILogger<AdminController> _logger;
 		private readonly IAdminAuthService _adminAuthService;
 		private readonly IParticipantExportService _participantExportService;
@@ -21,14 +21,13 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		private readonly IFileMappingService _fileMappingService;
 
 		public AdminController(IWebHostEnvironment webHostEnvironment,
-						       ILogger<AdminController> logger,
+							   ILogger<AdminController> logger,
 							   IAdminAuthService adminAuthService,
 							   IParticipantExportService participantExportService,
 							   IParticipantService participantService,
 							   IStageService stageService,
 							   IFileMappingService fileMappingService)
 		{
-			_webHostEnvironment = webHostEnvironment;
 			_logger = logger;
 			_adminAuthService = adminAuthService;
 			_participantExportService = participantExportService;
@@ -58,14 +57,27 @@ namespace VlasikhaPlavanieWebsite.Controllers
 				return View(model);
 			}
 
-			var (succeeded, errors) = await _adminAuthService.LoginAsync(model, HttpContext);
-
-			if (!succeeded)
+			try
 			{
-				foreach (var error in errors)
-					ModelState.AddModelError(string.Empty, error);
-
-				return View(model);
+				await _adminAuthService.LoginAsync(model, HttpContext);
+				return RedirectToAction("Index", "Admin");
+			}
+			catch (UserNotFoundException ex)
+			{
+				ModelState.AddModelError(string.Empty, ex.Message);
+			}
+			catch (UserNotInRoleException ex)
+			{
+				ModelState.AddModelError(string.Empty, ex.Message);
+			}
+			catch (InvalidPasswordException ex)
+			{
+				ModelState.AddModelError(string.Empty, ex.Message);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex, "Unhandled error during login.");
+				ModelState.AddModelError(string.Empty, "Произошла непредвиденная ошибка.");
 			}
 
 			return RedirectToAction("Index", "Admin");
@@ -140,18 +152,23 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[Route("Admin/EditFiles")]
 		public async Task<IActionResult> EditFiles(string buttonName, IFormFile newFile, string externalLink)
 		{
-			var(succeeded, errors) = await _fileMappingService.SaveMappingAsync(buttonName, newFile, externalLink);
-
-			if (!succeeded)
+			try
 			{
-				foreach (var error in errors)
-					ModelState.AddModelError(string.Empty, error);
-
-				var mappings = await _fileMappingService.GetAllMappingsAsync();
-				return View(mappings);
+				await _fileMappingService.SaveMappingAsync(buttonName, newFile, externalLink);
+				return RedirectToAction("EditFiles");
+			}
+			catch (InvalidFileExtensionException ex)
+			{
+				ModelState.AddModelError(string.Empty, ex.Message);
+			}
+			catch (Exception ex)
+			{
+				ModelState.AddModelError(string.Empty, "Ошибка при сохранении файла.");
+				_logger.LogError(ex, "Unexpected error during file mapping.");
 			}
 
-			return RedirectToAction("EditFiles");
+			var mappings = await _fileMappingService.GetAllMappingsAsync();
+			return View(mappings);
 		}
 
 		[HttpPost]
