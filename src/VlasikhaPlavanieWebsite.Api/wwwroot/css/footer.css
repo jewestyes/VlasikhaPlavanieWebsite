@@ -1,0 +1,34 @@
+.footer {
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 5px 0;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.social-logos {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-right: 20px;
+}
+
+    .social-logos p.phone {
+        font-size: 18px;
+        font-weight: 500;
+        color: #333;
+        margin: 0;
+    }
+
+    .social-logos img {
+        height: 40px;
+        width: auto;
+        transition: transform 0.2s ease;
+    }
+
+        .social-logos img:hover {
+            transform: scale(1.05);
+        }

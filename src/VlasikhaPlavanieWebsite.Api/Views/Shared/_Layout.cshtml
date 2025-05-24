@@ -3,33 +3,41 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Кубок Главы Городского Округа Власиха</title>
-    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - Aqua Olymp</title>
     <link rel="stylesheet" href="~/css/_layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" asp-append-version="true">
 </head>
 
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="@Url.Content("~/images/logos/Vlasiha Logo.png")" alt="Логотип соревнований">
-            <h1 class="name_title">Кубок Главы городского округа Власиха</h1>
-        </div>
-        <nav class="app-navigation">
-            <button class="menu-toggle" onclick="toggleMenu()">
-                ☰
+    <header class="header">
+        <div class="header-inner">
+            <div class="brand">
+                <img src="@Url.Content("~/images/logos/vlasiha_logo.svg")" alt="Логотип" class="logo">
+                <span class="site-title">Aqua Olymp</span>
+            </div>
+
+            <button class="burger" id="burger" onclick="toggleMenu()" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-            <ul class="navigation__list">
-                <li><a class="link_navigate" asp-controller="Home" asp-action="Index" onclick="closeMenu()">Главная</a></li>
-                <li><a class="link_navigate" asp-controller="Stats" asp-action="Index" onclick="closeMenu()">Статистика</a></li>
-            </ul>
-        </nav>
-        <div class="tournament-logo">
-            <img src="@Url.Content("~/images/logos/vlasiha_logo.svg")" alt="Логотип турнира">
+
+            <nav class="nav" id="navMenu">
+                <ul class="nav-list">
+                    <li><a class="nav-link" asp-controller="Home" asp-action="Index" onclick="closeMenu()">Главная</a></li>
+                    <li><a class="nav-link" asp-controller="Stats" asp-action="Index" onclick="closeMenu()">Статистика</a></li>
+                    <li><a class="nav-link" asp-controller="Contacts" asp-action="Index" onclick="closeMenu()">Контакты</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="hero-wrapper">
+        <div class="hero-content">
+            <main role="main" class="pb-3">
             @using Microsoft.AspNetCore.Identity
             @inject SignInManager<ApplicationUser> SignInManager
             @inject UserManager<ApplicationUser> UserManager
@@ -47,11 +55,13 @@
             }
 
             @RenderBody()
-        </main>
+            </main>
+        </div>
     </div>
 
-    <footer>
+    <footer class="footer">
         <div class="social-logos">
+            <p class="phone">+7 925 820 71 41</p>
             <a href="https://vk.com/swimvlasiha" target="_blank">
                 <img src="@Url.Content("~/images/logos/VK Logo.png")" alt="VK">
             </a>
@@ -61,24 +71,21 @@
         </div>
     </footer>
 
+
     @await RenderSectionAsync("Scripts", required: false)
     <script>
-        let menuOpen = false;
-
         function toggleMenu() {
-            menuOpen = !menuOpen;
-            const menu = document.querySelector('.navigation__list');
-            if (menuOpen) {
-                menu.classList.add('open');
-            } else {
-                menu.classList.remove('open');
-            }
+            const menu = document.getElementById('navMenu');
+            const burger = document.getElementById('burger');
+            burger.classList.toggle('open');
+            menu.classList.toggle('open');
         }
 
         function closeMenu() {
-            menuOpen = false;
-            const menu = document.querySelector('.navigation__list');
+            const menu = document.getElementById('navMenu');
+            const burger = document.getElementById('burger');
             menu.classList.remove('open');
+            burger.classList.remove('open');
         }
     </script>
 </body>
