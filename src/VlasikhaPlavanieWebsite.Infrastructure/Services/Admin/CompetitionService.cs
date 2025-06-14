@@ -6,43 +6,43 @@ using VlasikhaPlavanieWebsite.ViewModels;
 
 namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 {
-	public class StageService : IStageService
+	public class CompetitionService : ICompetitionService
 	{
 		private readonly ApplicationDbContext _applicationDbContext;
-		public StageService(ApplicationDbContext applicationDbContext)
+		public CompetitionService(ApplicationDbContext applicationDbContext)
 		{
 			_applicationDbContext = applicationDbContext;
 		}
 		public async Task ChangeStatusAsync(int id, bool isOpen)
 		{
-			var stage = await _applicationDbContext.RegistrationStage.FindAsync(id);
+			var competition = await _applicationDbContext.Competitions.FindAsync(id);
 
-			if (stage != null)
+			if (competition != null)
 			{
-				stage.IsOpen = isOpen;
+				competition.IsOpen = isOpen;
 
 				if (!isOpen)
 				{
-					stage.RegistrationEndDate = DateTime.UtcNow.AddHours(3);
+					competition.RegistrationEndDate = DateTime.UtcNow.AddHours(3);
 				}
 				else
 				{
-					stage.RegistrationEndDate = null;
+					competition.RegistrationEndDate = null;
 				}
 				await _applicationDbContext.SaveChangesAsync();
 			}
 		}
 
-		public async Task CreateStageAsync(ManageStagesViewModel model)
+		public async Task CreateCompetitionAsync(ManageCompetitionsViewModel model)
 		{
 
-			model.NewStage.IsOpen = false;
-			_applicationDbContext.RegistrationStage.Add(model.NewStage);
+			model.NewCompetition.IsOpen = false;
+			_applicationDbContext.Competitions.Add(model.NewCompetition);
 			await _applicationDbContext.SaveChangesAsync();
 
 			if (model.SelectedDisciplines != null && model.SelectedDisciplines.Any())
 			{
-				var stageDisciplines = new List<CompetitionDiscipline>();
+				var competitionDisciplines = new List<CompetitionDiscipline>();
 
 				foreach (var discipline in model.SelectedDisciplines)
 				{
@@ -54,18 +54,18 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 							.Where(d => !string.IsNullOrEmpty(d))
 							.ToList();
 
-						stageDisciplines.Add(new CompetitionDiscipline
+						competitionDisciplines.Add(new CompetitionDiscipline
 						{
-							CompetitionId = model.NewStage.Id,
+							CompetitionId = model.NewCompetition.Id,
 							Name = discipline,
 							DistancesJson = JsonSerializer.Serialize(distanceList)
 						});
 					}
 				}
 
-				if (stageDisciplines.Any())
+				if (competitionDisciplines.Any())
 				{
-					await _applicationDbContext.StageDisciplines.AddRangeAsync(stageDisciplines);
+					await _applicationDbContext.CompetitionDisciplines.AddRangeAsync(competitionDisciplines);
 					await _applicationDbContext.SaveChangesAsync();
 				}
 			}
@@ -73,9 +73,9 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 
 		public async Task<List<Competition>> GetAllAsync()
 		{
-			var stages = await _applicationDbContext.RegistrationStage.ToListAsync();
+			var competitions = await _applicationDbContext.Competitions.ToListAsync();
 
-			return stages;
+			return competitions;
 		}
 	}
 }

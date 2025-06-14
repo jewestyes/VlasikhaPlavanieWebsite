@@ -1,6 +1,6 @@
 ﻿namespace VlasikhaPlavanieWebsite.Models
 {
-    public class TinkoffWebhookModel
+    public class TinkoffWebhook
     {
         public int Amount { get; set; }
         public string TerminalKey { get; set; }

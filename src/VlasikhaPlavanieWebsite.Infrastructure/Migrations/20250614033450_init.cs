@@ -67,7 +67,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RegistrationStage",
+                name: "Registrationcompetition",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -81,7 +81,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RegistrationStage", x => x.Id);
+                    table.PrimaryKey("PK_Registrationcompetition", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -223,15 +223,15 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_RegistrationStage_CompetitionId",
+                        name: "FK_Orders_Registrationcompetition_CompetitionId",
                         column: x => x.CompetitionId,
-                        principalTable: "RegistrationStage",
+                        principalTable: "Registrationcompetition",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "StageDisciplines",
+                name: "competitionDisciplines",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -242,11 +242,11 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StageDisciplines", x => x.Id);
+                    table.PrimaryKey("PK_competitionDisciplines", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StageDisciplines_RegistrationStage_CompetitionId",
+                        name: "FK_competitionDisciplines_Registrationcompetition_CompetitionId",
                         column: x => x.CompetitionId,
-                        principalTable: "RegistrationStage",
+                        principalTable: "Registrationcompetition",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -356,8 +356,8 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StageDisciplines_CompetitionId",
-                table: "StageDisciplines",
+                name: "IX_competitionDisciplines_CompetitionId",
+                table: "competitionDisciplines",
                 column: "CompetitionId");
         }
 
@@ -386,7 +386,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 name: "FileMappings");
 
             migrationBuilder.DropTable(
-                name: "StageDisciplines");
+                name: "competitionDisciplines");
 
             migrationBuilder.DropTable(
                 name: "StatItems");
@@ -404,7 +404,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "RegistrationStage");
+                name: "Registrationcompetition");
         }
     }
 }

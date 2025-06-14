@@ -253,7 +253,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RegistrationStage");
+                    b.ToTable("Registrationcompetition");
                 });
 
             modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.CompetitionDiscipline", b =>
@@ -279,7 +279,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 
                     b.HasIndex("CompetitionId");
 
-                    b.ToTable("StageDisciplines");
+                    b.ToTable("competitionDisciplines");
                 });
 
             modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.Discipline", b =>

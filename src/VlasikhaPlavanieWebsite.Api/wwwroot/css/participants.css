@@ -75,11 +75,11 @@
         opacity: 0.5;
     }
 
-.stages-buttons {
+.competitions-buttons {
     margin-bottom: 20px;
 }
 
-.stage-button {
+.competition-button {
     display: inline-block;
     padding: 10px 20px;
     margin: 5px;
@@ -92,11 +92,11 @@
     transition: background-color 0.3s ease;
 }
 
-    .stage-button:hover {
+    .competition-button:hover {
         background-color: #0056b3;
     }
 
-    .stage-button:focus {
+    .competition-button:focus {
         outline: none;
         box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
     }

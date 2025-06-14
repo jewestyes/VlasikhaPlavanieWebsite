@@ -2,11 +2,11 @@
 
 namespace VlasikhaPlavanieWebsite.ViewModels
 {
-    public class ManageStagesViewModel
+    public class ManageCompetitionsViewModel
     {
-        public Competition NewStage { get; set; }
+        public Competition NewCompetition { get; set; }
         public List<string> SelectedDisciplines { get; set; } = new();
-        public List<Competition> Stages { get; set; }
+        public List<Competition> Competitions { get; set; }
         public Dictionary<string, string> DisciplineDistances { get; set; } = new();
     }
 }

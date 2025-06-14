@@ -14,18 +14,18 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 			_applicationDbContext = applicationDbContext;
 		}
 
-		public async Task<Stream> ExportByStageAsync(string stageName)
+		public async Task<Stream> ExportBycompetitionAsync(string competitionName)
 		{
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-			// Выборка участников для указанного этапа
+			// Выборка участников для указанного соревнования
 			var query = from p in _applicationDbContext.Participants
 						join o in _applicationDbContext.Orders on p.OrderId equals o.Id into po
 						from order in po.DefaultIfEmpty()
 						join d in _applicationDbContext.Disciplines on p.Id equals d.ParticipantId into pd
 						from discipline in pd.DefaultIfEmpty()
-						join rs in _applicationDbContext.RegistrationStage on order.CompetitionId equals rs.Id
-						where rs.Name == stageName
+						join rs in _applicationDbContext.Competitions on order.CompetitionId equals rs.Id
+						where rs.Name == competitionName
 						select new ParticipantOrderViewModel
 						{
 							LastName = p.LastName,
@@ -43,14 +43,14 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 							EntryTime = discipline != null ? discipline.EntryTime : null,
 							OrderNumber = order != null ? order.OrderNumber : null,
 							Amount = order != null ? order.Amount : 0m,
-							RegistrationStageName = rs.Name
+							RegistrationCompetitionName = rs.Name
 						};
 
 			var participants = await query.ToListAsync();
 
 			using (var package = new ExcelPackage())
 			{
-				var worksheet = package.Workbook.Worksheets.Add("Participants_" + stageName);
+				var worksheet = package.Workbook.Worksheets.Add("Participants_" + competitionName);
 
 				// Заголовки колонок
 				worksheet.Cells[1, 1].Value = "Дата заказа";

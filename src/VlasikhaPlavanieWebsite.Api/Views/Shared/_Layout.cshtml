@@ -12,8 +12,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - Aqua Olymp</title>
 	<link rel="stylesheet" href="~/css/_layout.css" asp-append-version="true" />
-	<link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
-	<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" asp-append-version="true">
 </head>
 
@@ -102,7 +100,7 @@
 					<div class="admin-nav">
 						<a href="@Url.Action("Index", "Admin")" class="admin-nav-button">Участники</a>
 						<a href="@Url.Action("EditFiles", "Admin")" class="admin-nav-button">Файлы</a>
-						<a href="@Url.Action("ManageStages", "Admin")" class="admin-nav-button">Этапы регистрации</a>
+						<a href="@Url.Action("ManageCompetitions", "Admin")" class="admin-nav-button">Управление регистрациями</a>
 						<a href="@Url.Action("Logout", "Admin")" class="admin-nav-button logout">Выход</a>
 					</div>
 				</div>

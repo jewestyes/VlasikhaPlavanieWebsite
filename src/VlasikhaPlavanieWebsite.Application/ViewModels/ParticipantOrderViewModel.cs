@@ -19,7 +19,7 @@ namespace VlasikhaPlavanieWebsite.ViewModels
         public string DisciplineName { get; set; }
         public string Distance { get; set; }
         public string EntryTime { get; set; }
-        public string RegistrationStageName { get; set; }
+        public string RegistrationCompetitionName { get; set; }
         public decimal Amount { get; set; }
         public DateTime BirthDate { get; set; }
         public DateTime CreatedAt { get; set; }

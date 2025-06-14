@@ -21,7 +21,7 @@ public class RegistrationController : BaseController
 		var model = await _registrationService.BuildIndexModelAsync();
 		if (model == null)
 		{
-			_logger.LogWarning("No open registration stage found.");
+			_logger.LogWarning("No open registration competition found.");
 			return Content("Не было найдено открытых регистраций.");
 		}
 
@@ -35,7 +35,7 @@ public class RegistrationController : BaseController
 		_logger.LogInformation("Attempting to submit registration.");
 
 
-		ModelState.Remove("Stage.CompetitionAddress");
+		ModelState.Remove("competition.CompetitionAddress");
 
 		for (int i = 0; i < model.Participants.Count; i++)
 		{

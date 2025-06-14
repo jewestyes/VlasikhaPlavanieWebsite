@@ -35,12 +35,12 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 			);
 		}
 
-		public async Task<Competition> GetActiveStagesAsync()
+		public async Task<List<Competition>> GetOpenCompetitionsAsync()
 		{
-			return await _applicationDbContext.RegistrationStage
+			return await _applicationDbContext.Competitions
 					.Where(s => s.IsOpen)
-					.OrderByDescending(s => s.RegistrationStartDate)
-					.FirstOrDefaultAsync();
+					.OrderByDescending(s => s.CompetitionStartDate)
+					.ToListAsync();
 		}
 	}
 }

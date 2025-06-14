@@ -18,7 +18,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 			_webhookService = webhookService;
 		}
 		[HttpPost("webhook")]
-		public async Task<IActionResult> TinkoffWebhook([FromBody] TinkoffWebhookModel model)
+		public async Task<IActionResult> TinkoffWebhook([FromBody] TinkoffWebhook model)
 		{
 			try
 			{

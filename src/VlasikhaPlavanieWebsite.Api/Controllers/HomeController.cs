@@ -15,12 +15,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
 		public async Task<IActionResult> Index()
 		{
-			var activeStage = await _homeService.GetActiveStagesAsync();
-			ViewData["ButtonFiles"] = await _homeService.GetButtonFilesAsync();
-			ViewData["StageName"] = activeStage?.Name ?? "Неизвестный этап";
-			ViewData["CompetitionDate"] = activeStage?.CompetitionStartDate?.ToString("dd MMMM yyyy") ?? "Дата не указана";
-			ViewData["CompetitionAddress"] = activeStage?.Address ?? "Адрес не указан";
-			return View();
+			var openCompetitions = await _homeService.GetOpenCompetitionsAsync();
+			return View(openCompetitions);
 		}
 
 		public IActionResult Registration() => View();

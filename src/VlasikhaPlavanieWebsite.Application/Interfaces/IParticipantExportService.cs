@@ -3,6 +3,6 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 {
 	public interface IParticipantExportService
 	{
-		Task<Stream> ExportByStageAsync(string stageName);
+		Task<Stream> ExportBycompetitionAsync(string competitionName);
 	}
 }

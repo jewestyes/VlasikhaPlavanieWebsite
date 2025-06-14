@@ -6,7 +6,7 @@ namespace VlasikhaPlavanieWebsite.ViewModels
     {
         public Dictionary<string, List<string>> DisciplineOptions { get; set; } = new Dictionary<string, List<string>>();
         public List<Participant> Participants { get; set; } = new List<Participant> { new Participant() };
-        public Competition Stage { get; set; }
+        public Competition Competition { get; set; }
         public DateTime? CompetitionDate { get; set; } = DateTime.UtcNow.AddHours(3);
         public string? CompetitionAddress { get; set; } = "";
     }

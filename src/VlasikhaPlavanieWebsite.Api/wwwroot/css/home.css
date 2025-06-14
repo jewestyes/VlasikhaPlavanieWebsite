@@ -28,6 +28,40 @@ nav a {
     gap: 10px;
 }
 
+.competition-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px;
+    scroll-snap-type: x mandatory;
+}
+
+.competition-card {
+    min-width: 280px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    padding: 16px;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+}
+
+.register-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+    .register-button:hover {
+        background-color: #2c80b4;
+    }
+
+
 /* ------------------------------------------------------
                     Logo Styles
 ------------------------------------------------------ */

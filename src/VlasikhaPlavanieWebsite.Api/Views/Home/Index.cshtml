@@ -1,3 +1,4 @@
+@model List<VlasikhaPlavanieWebsite.Models.Competition>
 @{
 	ViewData["Title"] = "Главная";
 }
@@ -6,15 +7,25 @@
 	<main>
 		<meta charset="utf-8" />
 		<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
-		<div class="registration_section">
-			<div class="registration">
-				<h2>Регистрация на турнир</h2>
-				<h3>@ViewData["StageName"]</h3>
-				<p>@ViewData["CompetitionDate"] / @ViewData["CompetitionAddress"]</p>
-				<a asp-controller="Registration" asp-action="Index">
-					<button class="reg-button">Зарегистрироваться</button>
-				</a>
+
+		@if (Model != null && Model.Any())
+		{
+			<div class="competition-scroll-container">
+				@foreach (var comp in Model)
+				{
+					<div class="competition-card">
+						<h3>@comp.Name</h3>
+						<p>@(comp.CompetitionStartDate?.ToString("dd MMMM yyyy") ?? "дата не указана")</p>
+						<p>@comp.Address</p>
+						<a asp-controller="Registration" asp-action="Index" asp-route-id="@comp.Id" class="register-button">Регистрация</a>
+					</div>
+				}
 			</div>
-		</div>
+		}
+		else
+		{
+			<p style="text-align:center;">На данный момент открытых соревнований нет.</p>
+		}
+
 	</main>
 </body>

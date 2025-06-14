@@ -23,16 +23,16 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
 
         public async Task<RegistrationViewModel?> BuildIndexModelAsync()
         {
-            var stage = await _context.RegistrationStage.FirstOrDefaultAsync(rs => rs.IsOpen);
-            if (stage == null)
+            var competition = await _context.Competitions.FirstOrDefaultAsync(rs => rs.IsOpen);
+            if (competition == null)
             {
                 return null;
             }
 
             Dictionary<string, List<string>> options;
 
-            options = await _context.StageDisciplines
-                .Where(d => d.CompetitionId == stage.Id)
+            options = await _context.CompetitionDisciplines
+                .Where(d => d.CompetitionId == competition.Id)
                 .ToDictionaryAsync(
                     d => d.Name,
                     d => JsonSerializer.Deserialize<List<string>>(d.DistancesJson) ?? new List<string>()
@@ -41,9 +41,9 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
             var model = new RegistrationViewModel
             {
                 DisciplineOptions = options,
-                Stage = stage,
-                CompetitionDate = stage.CompetitionStartDate,
-                CompetitionAddress = stage.Address
+                Competition = competition,
+                CompetitionDate = competition.CompetitionStartDate,
+                CompetitionAddress = competition.Address
             };
 
 

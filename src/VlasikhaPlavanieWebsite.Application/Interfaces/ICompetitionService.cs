@@ -3,11 +3,10 @@ using VlasikhaPlavanieWebsite.ViewModels;
 
 namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 {
-	public interface IStageService
+	public interface ICompetitionService
 	{
-		Task CreateStageAsync(ManageStagesViewModel model);
+		Task CreateCompetitionAsync(ManageCompetitionsViewModel model);
 		Task ChangeStatusAsync(int id, bool isOpen);
-
 		Task<List<Competition>> GetAllAsync();
 	}
 }

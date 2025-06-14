@@ -30,7 +30,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 			_logger = logger;
 			_configuration = configuration;
 		}
-		public async Task<IActionResult> HandleWebhookAsync(TinkoffWebhookModel model)
+		public async Task<IActionResult> HandleWebhookAsync(TinkoffWebhook model)
 		{
 			_logger.LogInformation("Webhook received for OrderId: {OrderId} with status: {Status}", model.OrderId, model.Status);
 
@@ -69,7 +69,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 			return new OkObjectResult("OK");
 		}
 
-		private async Task<IActionResult> HandleConfirmedAsync(TinkoffWebhookModel model)
+		private async Task<IActionResult> HandleConfirmedAsync(TinkoffWebhook model)
 		{
 			using var transaction = await _applicationDbContext.Database.BeginTransactionAsync();
 
@@ -103,7 +103,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 					Status = OrderStatus.Paid,
 					CreatedAt = DateTime.UtcNow,
 					UpdatedAt = DateTime.UtcNow,
-					CompetitionId = registrationModel.Stage.Id,
+					CompetitionId = registrationModel.Competition.Id,
 				};
 
 				_applicationDbContext.Orders.Add(order);
@@ -124,7 +124,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 			}
 		}
 
-		private string GenerateTinkoffToken(TinkoffWebhookModel model)
+		private string GenerateTinkoffToken(TinkoffWebhook model)
 		{
 			var parameters = new SortedDictionary<string, string>
 			{

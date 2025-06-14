@@ -19,9 +19,9 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 						join d in _applicationDbContext.Disciplines
 							on p.Id equals d.ParticipantId into pd
 						from discipline in pd.DefaultIfEmpty()
-						join rs in _applicationDbContext.RegistrationStage
+						join rs in _applicationDbContext.Competitions
 							on order.CompetitionId equals rs.Id into ors
-						from regStage in ors.DefaultIfEmpty()
+						from regcompetition in ors.DefaultIfEmpty()
 						select new ParticipantOrderViewModel
 						{
 							LastName = p.LastName,
@@ -39,7 +39,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 							EntryTime = discipline != null ? discipline.EntryTime : null,
 							OrderNumber = order != null ? order.OrderNumber : null,
 							Amount = order != null ? order.Amount : 0m,
-							RegistrationStageName = regStage != null ? regStage.Name : "Неизвестный этап"
+							RegistrationCompetitionName = regcompetition != null ? regcompetition.Name : "Неизвестное название соревнования"
 						};
 
 			return await query.ToListAsync();

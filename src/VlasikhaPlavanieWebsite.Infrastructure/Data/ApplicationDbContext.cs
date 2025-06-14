@@ -12,8 +12,8 @@ namespace VlasikhaPlavanieWebsite.Data
         public DbSet<Discipline> Disciplines { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<FileMapping> FileMappings { get; set; }
-        public DbSet<Competition> RegistrationStage { get; set; }
-        public DbSet<CompetitionDiscipline> StageDisciplines { get; set; }
+        public DbSet<Competition> Competitions { get; set; }
+        public DbSet<CompetitionDiscipline> CompetitionDisciplines { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

@@ -5,6 +5,6 @@ namespace VlasikhaPlavanieWebsite.Application.Interfaces
 {
 	public interface ITinkoffWebhookService
 	{
-		Task<IActionResult> HandleWebhookAsync(TinkoffWebhookModel model);
+		Task<IActionResult> HandleWebhookAsync(TinkoffWebhook model);
 	}
 }
