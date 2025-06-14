@@ -2,13 +2,15 @@
 using System.Text.Json;
 using VlasikhaPlavanieWebsite.ViewModels;
 using VlasikhaPlavanieWebsite.Application.Interfaces;
+using VlasikhaPlavanieWebsite.Controllers;
 
-public class RegistrationController : Controller
+public class RegistrationController : BaseController
 {
 	private readonly ILogger<RegistrationController> _logger;
 	private readonly IRegistrationService _registrationService;
 
-	public RegistrationController(IRegistrationService registrationService, ILogger<RegistrationController> logger)
+	public RegistrationController(IRegistrationService registrationService, ILogger<RegistrationController> logger, IHomeService homeService)
+			: base(homeService)
 	{
 		_registrationService = registrationService;
 		_logger = logger;

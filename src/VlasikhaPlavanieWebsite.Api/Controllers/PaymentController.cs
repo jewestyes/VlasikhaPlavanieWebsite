@@ -2,14 +2,16 @@
 using VlasikhaPlavanieWebsite.ViewModels;
 using VlasikhaPlavanieWebsite.Application.Interfaces;
 using VlasikhaPlavanieWebsite.Infrastructure.Exceptions.Payment;
+using VlasikhaPlavanieWebsite.Controllers;
 
-public class PaymentController : Controller
+public class PaymentController : BaseController
 {
 	private readonly IPaymentService _paymentService;
 	private readonly ILogger<PaymentController> _logger;
 
-	public PaymentController(IPaymentService paymentService,   ILogger<PaymentController> logger)
-	{
+	public PaymentController(IPaymentService paymentService, IHomeService homeService, ILogger<PaymentController> logger)
+		: base(homeService)
+{
 		_paymentService = paymentService;
 		_logger = logger;
 	}

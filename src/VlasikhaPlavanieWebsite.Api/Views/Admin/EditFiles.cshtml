@@ -1,6 +1,7 @@
 ﻿@using System.IO;
-@model Dictionary<string, (string FilePath, bool IsExternalLink)>
-
+@{
+    var buttons = ViewData["Buttons"] as Dictionary<string, (string FilePath, bool IsExternalLink)> ?? new();
+}
 <link rel="stylesheet" href="~/css/edit-files.css" />
 
 <div class="edit-files-container">
@@ -10,8 +11,8 @@
     @foreach (var item in Model)
     {
         var buttonName = item.Key;
-        var filePath = item.Value.FilePath;
-        var isExternal = item.Value.IsExternalLink;
+        var filePath = item.Value.Item1;
+        var isExternal = item.Value.Item2;
 
         <div class="file-item">
             <div class="file-name">

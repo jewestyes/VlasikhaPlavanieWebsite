@@ -11,7 +11,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 {
 
 	[Authorize(Roles = "Admin")]
-	public class AdminController : Controller
+	public class AdminController : BaseController
 	{
 		private readonly ILogger<AdminController> _logger;
 		private readonly IAdminAuthService _adminAuthService;
@@ -26,7 +26,9 @@ namespace VlasikhaPlavanieWebsite.Controllers
 							   IParticipantExportService participantExportService,
 							   IParticipantService participantService,
 							   IStageService stageService,
-							   IFileMappingService fileMappingService)
+							   IFileMappingService fileMappingService,
+							   IHomeService homeService)
+			: base(homeService)
 		{
 			_logger = logger;
 			_adminAuthService = adminAuthService;
