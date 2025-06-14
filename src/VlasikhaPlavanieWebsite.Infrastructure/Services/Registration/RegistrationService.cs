@@ -32,7 +32,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
             Dictionary<string, List<string>> options;
 
             options = await _context.StageDisciplines
-                .Where(d => d.StageId == stage.Id)
+                .Where(d => d.CompetitionId == stage.Id)
                 .ToDictionaryAsync(
                     d => d.Name,
                     d => JsonSerializer.Deserialize<List<string>>(d.DistancesJson) ?? new List<string>()
@@ -42,8 +42,8 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
             {
                 DisciplineOptions = options,
                 Stage = stage,
-                CompetitionDate = stage.CompetitionDate,
-                CompetitionAddress = stage.CompetitionAddress
+                CompetitionDate = stage.CompetitionStartDate,
+                CompetitionAddress = stage.Address
             };
 
 

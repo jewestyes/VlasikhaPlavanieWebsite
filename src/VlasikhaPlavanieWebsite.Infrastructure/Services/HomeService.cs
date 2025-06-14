@@ -35,7 +35,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 			);
 		}
 
-		public async Task<RegistrationStage> GetActiveStagesAsync()
+		public async Task<Competition> GetActiveStagesAsync()
 		{
 			return await _applicationDbContext.RegistrationStage
 					.Where(s => s.IsOpen)

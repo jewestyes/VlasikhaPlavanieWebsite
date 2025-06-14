@@ -8,6 +8,6 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 		Task CreateStageAsync(ManageStagesViewModel model);
 		Task ChangeStatusAsync(int id, bool isOpen);
 
-		Task<List<RegistrationStage>> GetAllAsync();
+		Task<List<Competition>> GetAllAsync();
 	}
 }

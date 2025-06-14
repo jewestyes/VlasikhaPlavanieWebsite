@@ -1,11 +1,11 @@
 ﻿namespace VlasikhaPlavanieWebsite.Models
 {
-    public class StageDiscipline
+    public class CompetitionDiscipline
     {
         public int Id { get; set; }
-        public int StageId { get; set; }
+        public int CompetitionId { get; set; }
         public string Name { get; set; }
         public string DistancesJson { get; set; }
-        public RegistrationStage Stage { get; set; }
+        public Competition Competition { get; set; }
     }
 }

@@ -103,7 +103,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 					Status = OrderStatus.Paid,
 					CreatedAt = DateTime.UtcNow,
 					UpdatedAt = DateTime.UtcNow,
-					RegistrationStageId = registrationModel.Stage.Id,
+					CompetitionId = registrationModel.Stage.Id,
 				};
 
 				_applicationDbContext.Orders.Add(order);

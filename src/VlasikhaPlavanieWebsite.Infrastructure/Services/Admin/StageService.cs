@@ -42,7 +42,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 
 			if (model.SelectedDisciplines != null && model.SelectedDisciplines.Any())
 			{
-				var stageDisciplines = new List<StageDiscipline>();
+				var stageDisciplines = new List<CompetitionDiscipline>();
 
 				foreach (var discipline in model.SelectedDisciplines)
 				{
@@ -54,9 +54,9 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 							.Where(d => !string.IsNullOrEmpty(d))
 							.ToList();
 
-						stageDisciplines.Add(new StageDiscipline
+						stageDisciplines.Add(new CompetitionDiscipline
 						{
-							StageId = model.NewStage.Id,
+							CompetitionId = model.NewStage.Id,
 							Name = discipline,
 							DistancesJson = JsonSerializer.Serialize(distanceList)
 						});
@@ -71,7 +71,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 			}
 		}
 
-		public async Task<List<RegistrationStage>> GetAllAsync()
+		public async Task<List<Competition>> GetAllAsync()
 		{
 			var stages = await _applicationDbContext.RegistrationStage.ToListAsync();
 

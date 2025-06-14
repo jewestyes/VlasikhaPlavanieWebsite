@@ -10,8 +10,8 @@
 	<form asp-action="CreateStage" method="post">
 		<div class="form-group">
 			<label for="StageName">Название этапа</label>
-			<input asp-for="NewStage.StageName" class="form-control stage-input" />
-			<span asp-validation-for="NewStage.StageName" class="text-danger"></span>
+			<input asp-for="NewStage.Name" class="form-control stage-input" />
+			<span asp-validation-for="NewStage.Name" class="text-danger"></span>
 		</div>
 
 		<div class="form-group">
@@ -36,14 +36,14 @@
 
 		<div class="form-group">
 			<label for="CompetitionDate">Дата проведения соревнований</label>
-			<input asp-for="NewStage.CompetitionDate" class="form-control stage-input" type="date" />
-			<span asp-validation-for="NewStage.CompetitionDate" class="text-danger"></span>
+			<input asp-for="NewStage.CompetitionStartDate" class="form-control stage-input" type="date" />
+			<span asp-validation-for="NewStage.CompetitionStartDate" class="text-danger"></span>
 		</div>
 
 		<div class="form-group">
 			<label for="CompetitionAddress">Адрес соревнований</label>
-			<input asp-for="NewStage.CompetitionAddress" class="form-control stage-input" type="text" placeholder="Введите адрес" />
-			<span asp-validation-for="NewStage.CompetitionAddress" class="text-danger"></span>
+			<input asp-for="NewStage.Address" class="form-control stage-input" type="text" placeholder="Введите адрес" />
+			<span asp-validation-for="NewStage.Address" class="text-danger"></span>
 		</div>
 
 		<div class="form-group">
@@ -57,7 +57,7 @@
 		{
 			<div class="stage-item">
 				<div>
-					<div class="stage-name">@stage.StageName</div>
+					<div class="stage-name">@stage.Name</div>
 					<div>
 						@stage.RegistrationStartDate.ToString("yyyy-MM-dd HH:mm")
 						-

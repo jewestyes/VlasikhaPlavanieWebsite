@@ -15,7 +15,6 @@ using VlasikhaPlavanieWebsite.Infrastructure.Services.Payment;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Загрузка конфигурации из файла appsettings.json
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

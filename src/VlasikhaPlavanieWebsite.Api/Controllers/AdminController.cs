@@ -195,7 +195,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 			var model = new ManageStagesViewModel
 			{
 				Stages = stages,
-				NewStage = new RegistrationStage()
+				NewStage = new Competition()
 			};
 			return View(model);
 		}
