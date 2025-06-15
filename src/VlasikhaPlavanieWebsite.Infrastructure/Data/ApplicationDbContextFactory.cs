@@ -7,17 +7,24 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 {
 	public ApplicationDbContext CreateDbContext(string[] args)
 	{
-		var path = Path.Combine(Directory.GetCurrentDirectory(), "..", "VlasikhaPlavanieWebsite.Api");
+		string path;
+
+#if DEBUG
+		path = Path.Combine(Directory.GetCurrentDirectory(), "..", "VlasikhaPlavanieWebsite.Api");
+#else
+		path = Directory.GetCurrentDirectory();
+#endif
 
 		if (!Directory.Exists(path))
-			throw new DirectoryNotFoundException($"Cannot find Api project directory at {path}");
+			throw new DirectoryNotFoundException($"Cannot find configuration directory at {path}");
 
 		var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
 		var configuration = new ConfigurationBuilder()
 			.SetBasePath(path)
-			.AddJsonFile("appsettings.json", optional: false)
+			.AddJsonFile("appsettings.json", optional: true)
 			.AddJsonFile($"appsettings.{environment}.json", optional: true)
+			.AddJsonFile("appsettings.Production.json", optional: true)
 			.Build();
 
 		var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
