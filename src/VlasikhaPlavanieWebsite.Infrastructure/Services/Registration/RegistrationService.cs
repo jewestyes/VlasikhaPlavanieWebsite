@@ -21,9 +21,9 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
             _registrationCache = registrationCache;
         }
 
-        public async Task<RegistrationViewModel?> BuildIndexModelAsync()
+        public async Task<RegistrationViewModel?> BuildIndexModelAsync(int id)
         {
-            var competition = await _context.Competitions.FirstOrDefaultAsync(rs => rs.IsOpen);
+            var competition = await _context.Competitions.FindAsync(id);
             if (competition == null)
             {
                 return null;

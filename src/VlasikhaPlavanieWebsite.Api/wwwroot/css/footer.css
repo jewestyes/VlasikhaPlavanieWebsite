@@ -3,13 +3,11 @@
 .modern-footer {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-top: 1px solid rgba(0, 0, 0, 0.05);
-    position: relative;
     overflow: hidden;
 }
 
     .modern-footer::before {
         content: '';
-        position: absolute;
         top: 0;
         left: 0;
         width: 100%;
@@ -22,6 +20,16 @@
     position: relative;
     z-index: 2;
 }
+
+.dev-link {
+    text-decoration: underline;
+    color: inherit;
+    cursor: pointer;
+}
+
+    .dev-link:hover {
+        color: #007bff;
+    }
 
 .footer-logo {
     font-size: 1.8rem;

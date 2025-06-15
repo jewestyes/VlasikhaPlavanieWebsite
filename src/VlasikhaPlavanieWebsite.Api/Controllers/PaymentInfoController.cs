@@ -11,6 +11,19 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		{
 
 		}
+
+        [HttpGet]
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
+        [HttpGet]
+		public IActionResult TermsOfUse()
+		{
+			return View();
+		}
+
 		[HttpGet]
 		public IActionResult Information()
 		{

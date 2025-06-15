@@ -15,6 +15,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 		{
 			_applicationDbContext = applicationDbContext;
 		}
+
 		public async Task ChangeStatusAsync(int id, bool isOpen)
 		{
 			var competition = await _applicationDbContext.Competitions.FindAsync(id);
@@ -35,8 +36,6 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 			}
 		}
 
-
-
 		public async Task CreateCompetitionAsync(ManageCompetitionsViewModel model)
 		{
 
@@ -47,8 +46,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 			if (model.ImageFile != null && model.ImageFile.Length > 0)
 			{
 				var folder = Path.Combine("wwwroot", "images", "competitions");
-				var extension = Path.GetExtension(model.ImageFile.FileName);
-				var fileName = $"competitions_{model.NewCompetition.Id}_{model.ImageFile.FileName}{extension}";
+				var fileName = $"competitions_{model.NewCompetition.Id}_{model.ImageFile.FileName}";
 				var fullPath = Path.Combine(folder, fileName);
 
 				Directory.CreateDirectory(folder);
@@ -90,7 +88,6 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 				}
 			}
 		}
-
 		public async Task<List<Competition>> GetAllAsync()
 		{
 			var competitions = await _applicationDbContext.Competitions.ToListAsync();

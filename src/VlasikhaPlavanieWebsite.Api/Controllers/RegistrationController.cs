@@ -16,9 +16,9 @@ public class RegistrationController : BaseController
 		_logger = logger;
 	}
 	[HttpGet]
-	public async Task<IActionResult> Index()
+	public async Task<IActionResult> Index(int id)
 	{
-		var model = await _registrationService.BuildIndexModelAsync();
+		var model = await _registrationService.BuildIndexModelAsync(id);
 		if (model == null)
 		{
 			_logger.LogWarning("No open registration competition found.");
@@ -28,14 +28,12 @@ public class RegistrationController : BaseController
 		return View(model);
 	}
 
-
 	[HttpPost]
 	public async Task<IActionResult> Submit(RegistrationViewModel model)
 	{
 		_logger.LogInformation("Attempting to submit registration.");
 
-
-		ModelState.Remove("competition.CompetitionAddress");
+		ModelState.Remove("Competition.Address");
 
 		for (int i = 0; i < model.Participants.Count; i++)
 		{

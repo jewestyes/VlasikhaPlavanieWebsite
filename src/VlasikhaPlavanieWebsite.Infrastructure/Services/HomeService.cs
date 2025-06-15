@@ -39,7 +39,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 		{
 			return await _applicationDbContext.Competitions
 					.Where(s => s.IsOpen)
-					.OrderByDescending(s => s.CompetitionStartDate)
+					.OrderBy(s => s.CompetitionStartDate)
 					.ToListAsync();
 		}
 	}

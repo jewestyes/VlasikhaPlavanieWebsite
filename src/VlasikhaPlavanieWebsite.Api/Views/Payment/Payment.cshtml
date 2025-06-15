@@ -10,15 +10,18 @@
 <div class="container">
 	<form class="payment-form">
 		<div class="checkbox-group">
-			<label><input type="checkbox" required> Я принимаю условия <a href="#">Пользовательского соглашения</a> и <a href="#">политики конфиденциальности</a></label>
-			<label><input type="checkbox" required> Даю согласие на обработку <a href="#">персональных данных</a></label>
+			<label><input type="checkbox" class="agreement-checkbox" required> Я принимаю условия <a asp-action="TermsOfUse" asp-controller="PaymentInfo">Пользовательского соглашения</a> и <a asp-action="Information" asp-controller="PaymentInfo">политики конфиденциальности</a></label>
+			<label><input type="checkbox" class="agreement-checkbox" required> Даю согласие на обработку <a asp-action="PrivacyPolicy" asp-controller="PaymentInfo">персональных данных</a></label>
+			<p id="agreement-warning" style="color: red; display: none; margin-top: 10px;">
+				Поставьте галочки, чтобы продолжить оплату
+			</p>
 		</div>
+
 		<div class="info-links">
 			<a asp-action="Information" asp-controller="PaymentInfo">Информация о продавце</a>
 			<a asp-action="RefundPolicy" asp-controller="PaymentInfo">Правила возврата</a>
 			<a asp-action="PaymentPolicy" asp-controller="PaymentInfo">Правила оплаты</a>
 		</div>
-		<a href="@Url.Action("Index", "Registration")" class="back-button" formnovalidate>← Вернуться к регистрации</a>
 
 	</form>
 
@@ -31,7 +34,8 @@
 			<input asp-for="Name" class="payform-tinkoff-row" type="text" placeholder="ФИО плательщика">
 			<input asp-for="Email" class="payform-tinkoff-row" type="email" placeholder="E-mail">
 			<input asp-for="Phone" class="payform-tinkoff-row" type="tel" placeholder="Контактный телефон">
-			<input class="payform-tinkoff-row payform-tinkoff-btn" type="submit" value="Оплатить">
+			<input class="payform-tinkoff-row payform-tinkoff-btn" id="submitButton" type="submit" value="Оплатить">
+
 			<div class="payment-methods">
 				<img src="~/images/tbank.png" alt="Payment Methods">
 			</div>

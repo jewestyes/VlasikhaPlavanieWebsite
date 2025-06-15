@@ -3,16 +3,15 @@
 	ViewData["Title"] = "Главная";
 }
 
-
 <meta charset="utf-8" />
 <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 
-@if (Model != null && Model.Any())
-{
-	<div class="carousel-container">
+<div class="carousel-container">
+	@if (Model != null && Model.Any())
+	{
 		@foreach (var comp in Model)
 		{
-			<div class="carousel-card" style="background-image: url('@Url.Content(comp.ImagePath ?? "/images/default.jpg")');">
+			<div class="carousel-card" style="background-image: url('@Url.Content(comp.ImagePath ?? "/images/competitions/default.png")');">
 				<div class="carousel-content">
 					<h2>@comp.Name</h2>
 					<span>@(comp.CompetitionStartDate?.ToString("dd MMMM yyyy") ?? "дата не указана")</span>
@@ -21,12 +20,16 @@
 				</div>
 			</div>
 		}
-	</div>
-}
-else
-{
-	<p style="text-align:center;">На данный момент открытых соревнований нет.</p>
-}
+	}
+	else
+	{
+		<div class="carousel-card" style="background-image: url('@Url.Content("/images/competitions/default.png")');" alt="test image">
+			<div class="carousel-content">
+				<a class="register-button">Нет открытых регистраций</a>
+			</div>
+		</div>
+	}
+</div>
 
 <script>
 	document.addEventListener('DOMContentLoaded', function () {
