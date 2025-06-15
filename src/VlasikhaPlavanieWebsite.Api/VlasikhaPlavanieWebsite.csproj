@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="wwwroot\images\competitions\" />
     <ProjectReference Include="..\VlasikhaPlavanieWebsite.Application\VlasikhaPlavanieWebsite.Application.csproj" />
     <ProjectReference Include="..\VlasikhaPlavanieWebsite.Domain\VlasikhaPlavanieWebsite.Domain.csproj" />
     <ProjectReference Include="..\VlasikhaPlavanieWebsite.Infrastructure\VlasikhaPlavanieWebsite.Infrastructure.csproj" />

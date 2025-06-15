@@ -11,28 +11,29 @@ namespace VlasikhaPlavanieWebsite.Controllers
 {
 
 	[Authorize(Roles = "Admin")]
-	public class AdminController : Controller
+	public class AdminController : BaseController
 	{
 		private readonly ILogger<AdminController> _logger;
 		private readonly IAdminAuthService _adminAuthService;
 		private readonly IParticipantExportService _participantExportService;
 		private readonly IParticipantService _participantService;
-		private readonly IStageService _stageService;
+		private readonly ICompetitionService _competitionService;
 		private readonly IFileMappingService _fileMappingService;
 
-		public AdminController(IWebHostEnvironment webHostEnvironment,
-							   ILogger<AdminController> logger,
+		public AdminController(ILogger<AdminController> logger,
 							   IAdminAuthService adminAuthService,
 							   IParticipantExportService participantExportService,
 							   IParticipantService participantService,
-							   IStageService stageService,
-							   IFileMappingService fileMappingService)
+							   ICompetitionService competitionService,
+							   IFileMappingService fileMappingService,
+							   IHomeService homeService)
+			: base(homeService)
 		{
 			_logger = logger;
 			_adminAuthService = adminAuthService;
 			_participantExportService = participantExportService;
 			_participantService = participantService;
-			_stageService = stageService;
+			_competitionService = competitionService;
 			_fileMappingService = fileMappingService;
 		}
 
@@ -115,17 +116,17 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		}
 
 		[HttpGet]
-		[Route("Admin/DownloadParticipantsExcelByStage")]
-		public async Task<IActionResult> DownloadParticipantsExcelByStage(string stageName)
+		[Route("Admin/DownloadParticipantsExcelBycompetition")]
+		public async Task<IActionResult> DownloadParticipantsExcelBycompetition(string competitionName)
 		{
-			if (string.IsNullOrEmpty(stageName))
+			if (string.IsNullOrEmpty(competitionName))
 			{
-				return BadRequest("Не указан этап регистрации.");
+				return BadRequest("Не указано название соревнования.");
 			}
 
-			var excelBytes = await _participantExportService.ExportByStageAsync(stageName);
+			var excelBytes = await _participantExportService.ExportBycompetitionAsync(competitionName);
 
-			var fileName = $"Participants_{stageName}_{DateTime.UtcNow.ToString("yyyyMMdd_HHmmss")}.xlsx";
+			var fileName = $"Participants_{competitionName}_{DateTime.UtcNow.ToString("yyyyMMdd_HHmmss")}.xlsx";
 			var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 			return File(excelBytes, contentType, fileName);
@@ -186,43 +187,43 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		}
 
 		[HttpGet]
-		[Route("Admin/ManageStages")]
-		public async Task<IActionResult> ManageStages()
+		[Route("Admin/ManageCompetitions")]
+		public async Task<IActionResult> ManageCompetitions()
 		{
-			var stages = await _stageService.GetAllAsync();
-			var model = new ManageStagesViewModel
+			var competitions = await _competitionService.GetAllAsync();
+			var model = new ManageCompetitionsViewModel
 			{
-				Stages = stages,
-				NewStage = new RegistrationStage()
+				Competitions = competitions,
+				NewCompetition = new Competition()
 			};
 			return View(model);
 		}
 
 		[HttpPost]
-		[Route("Admin/CreateStage")]
-		public async Task<IActionResult> CreateStage(ManageStagesViewModel model)
+		[Route("Admin/CreateCompetition")]
+		public async Task<IActionResult> CreateCompetition(ManageCompetitionsViewModel model)
 		{
-			ModelState.Remove("Stages");
+			ModelState.Remove("competitions");
 
 			if (ModelState.IsValid)
 			{
-				await _stageService.CreateStageAsync(model);
+				await _competitionService.CreateCompetitionAsync(model);
 
-				return RedirectToAction("ManageStages");
+				return RedirectToAction("ManageCompetitions");
 			}
 
-			// Если валидация не прошла, загружаем существующие этапы и возвращаем форму
-			model.Stages = await _stageService.GetAllAsync();
-			return View("ManageStages", model);
+			// Если валидация не прошла, загружаем существующие соревнования и возвращаем форму
+			model.Competitions = await _competitionService.GetAllAsync();
+			return View("ManageCompetitions", model);
 		}
 
 		[HttpPost]
-		[Route("Admin/ChangeStageStatus")]
-		public async Task<IActionResult> ChangeStageStatus(int id, bool isOpen)
+		[Route("Admin/ChangeCompetitionStatus")]
+		public async Task<IActionResult> ChangeCompetitionStatus(int id, bool isOpen)
 		{
-			await _stageService.ChangeStatusAsync(id, isOpen);
+			await _competitionService.ChangeStatusAsync(id, isOpen);
 
-			return RedirectToAction("ManageStages");
+			return RedirectToAction("ManageCompetitions");
 		}
 	}
 }

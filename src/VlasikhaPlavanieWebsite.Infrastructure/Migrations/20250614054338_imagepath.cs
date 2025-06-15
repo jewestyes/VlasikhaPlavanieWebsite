@@ -2,28 +2,27 @@
 
 #nullable disable
 
-namespace VlasikhaPlavanieWebsite.Migrations
+namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCompetitionAddress : Migration
+    public partial class imagepath : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "CompetitionAddress",
-                table: "RegistrationStage",
+                name: "ImagePath",
+                table: "Competitions",
                 type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "CompetitionAddress",
-                table: "RegistrationStage");
+                name: "ImagePath",
+                table: "Competitions");
         }
     }
 }

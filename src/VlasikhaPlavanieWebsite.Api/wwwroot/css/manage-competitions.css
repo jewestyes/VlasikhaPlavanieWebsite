@@ -42,7 +42,7 @@
     }
 
 
-.manage-stages-container {
+.manage-competitions-container {
     background-color: #fff;
     margin: 50px auto;
     padding: 20px;
@@ -53,7 +53,7 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.stage-item {
+.competition-item {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -64,19 +64,19 @@
     border-radius: 5px;
 }
 
-.stage-name {
+.competition-name {
     font-weight: bold;
     margin-bottom: 10px;
     font-size: 18px;
 }
 
-.stage-details {
+.competition-details {
     font-size: 14px;
     margin-bottom: 10px;
     color: #6c757d;
 }
 
-.stage-actions {
+.competition-actions {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -151,11 +151,11 @@
 }
 
 @media (max-width: 768px) {
-    .stage-item {
+    .competition-item {
         flex-direction: column;
     }
 
-    .stage-actions {
+    .competition-actions {
         width: 100%;
     }
 

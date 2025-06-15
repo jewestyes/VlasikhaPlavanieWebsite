@@ -1,12 +1,14 @@
-﻿using VlasikhaPlavanieWebsite.Models;
+﻿using Microsoft.AspNetCore.Http;
+using VlasikhaPlavanieWebsite.Models;
 
 namespace VlasikhaPlavanieWebsite.ViewModels
 {
-    public class ManageStagesViewModel
+    public class ManageCompetitionsViewModel
     {
-        public RegistrationStage NewStage { get; set; }
+        public Competition NewCompetition { get; set; }
+		public IFormFile? ImageFile { get; set; }
         public List<string> SelectedDisciplines { get; set; } = new();
-        public List<RegistrationStage> Stages { get; set; }
+        public List<Competition> Competitions { get; set; }
         public Dictionary<string, string> DisciplineDistances { get; set; } = new();
-    }
+	}
 }

@@ -1,85 +1,225 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+	var buttonFiles = ViewData["Buttons"] as Dictionary<string, (string FilePath, bool IsExternalLink)> ?? new();
+	string GenerateLink(string key) => buttonFiles.ContainsKey(key) ? (buttonFiles[key].IsExternalLink ? buttonFiles[key].FilePath : Url.Content(buttonFiles[key].FilePath)) : "#";
+}
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Кубок Главы Городского Округа Власиха</title>
-    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/_layout.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" asp-append-version="true">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Aqua Olymp</title>
+	<link rel="stylesheet" href="~/css/_layout.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" asp-append-version="true">
 </head>
 
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="@Url.Content("~/images/logos/Vlasiha Logo.png")" alt="Логотип соревнований">
-            <h1 class="name_title">Кубок Главы городского округа Власиха</h1>
-        </div>
-        <nav class="app-navigation">
-            <button class="menu-toggle" onclick="toggleMenu()">
-                ☰
-            </button>
-            <ul class="navigation__list">
-                <li><a class="link_navigate" asp-controller="Home" asp-action="Index" onclick="closeMenu()">Главная</a></li>
-                <li><a class="link_navigate" asp-controller="Stats" asp-action="Index" onclick="closeMenu()">Статистика</a></li>
-            </ul>
-        </nav>
-        <div class="tournament-logo">
-            <img src="@Url.Content("~/images/logos/vlasiha_logo.svg")" alt="Логотип турнира">
-        </div>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @using Microsoft.AspNetCore.Identity
-            @inject SignInManager<ApplicationUser> SignInManager
-            @inject UserManager<ApplicationUser> UserManager
+	<header class="header">
+		<div class="header-inner">
+			<a asp-controller="Home" asp-action="Index" class="brand logo-glacier">
+				<img src="@Url.Content("~/images/logos/vlasiha_logo.svg")" alt="Логотип" class="logo" />
+				<h1 class="logo-word">
+					@foreach (var c in "Aqua Olymp")
+					{
+						if (c == ' ')
+						{
+							<span class="char space">&nbsp;</span>
+						}
+						else
+						{
+							<span class="char">@c</span>
+						}
+					}
+				</h1>
+			</a>
 
-            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-            {
-                <div class="admin-nav-wrapper">
-                    <div class="admin-nav">
-                        <a href="@Url.Action("Index", "Admin")" class="admin-nav-button">Участники</a>
-                        <a href="@Url.Action("EditFiles", "Admin")" class="admin-nav-button">Файлы</a>
-                        <a href="@Url.Action("ManageStages", "Admin")" class="admin-nav-button">Этапы регистрации</a>
-                        <a href="@Url.Action("Logout", "Admin")" class="admin-nav-button logout">Выход</a>
-                    </div>
-                </div>
-            }
+			<button class="burger" id="burger" onclick="toggleMenu()" aria-label="Меню">
+				<span></span>
+				<span></span>
+				<span></span>
+			</button>
 
-            @RenderBody()
-        </main>
-    </div>
+			<nav class="nav" id="navMenu">
+				<ul class="nav-list">
+					<li><a class="nav-link" asp-controller="Stats" asp-action="Index" onclick="closeMenu()">Статистика</a></li>
 
-    <footer>
-        <div class="social-logos">
-            <a href="https://vk.com/swimvlasiha" target="_blank">
-                <img src="@Url.Content("~/images/logos/VK Logo.png")" alt="VK">
-            </a>
-            <a href="https://t.me/vlasiha_plavanie_kubok" target="_blank">
-                <img src="@Url.Content("~/images/logos/TG Logo.png")" alt="TG">
-            </a>
-        </div>
-    </footer>
+					<li class="nav-dropdown">
+						<span class="nav-link">Файлы</span>
+						<ul class="dropdown-list">
+							@foreach (var key in new[] { "Положение", "Регламент", "Памятка", "Правила плавание", "Online результаты", "Первый лист", "Список судей", "Нормативы" })
+							{
+								if (buttonFiles.TryGetValue(key, out var file) && !string.IsNullOrEmpty(file.FilePath))
+								{
+									var url = file.IsExternalLink ? file.FilePath : Url.Content(file.FilePath);
+									<li><a href="@url" target="_blank">@key</a></li>
+								}
+							}
+						</ul>
+					</li>
 
-    @await RenderSectionAsync("Scripts", required: false)
-    <script>
-        let menuOpen = false;
+					<li class="nav-dropdown">
+						<span class="nav-link">Согласия</span>
+						<ul class="dropdown-list">
+							@foreach (var key in new[] { "Согласие на обработку персональных данных -18", "Согласие на обработку персональных данных 18+" })
+							{
+								if (buttonFiles.TryGetValue(key, out var file) && !string.IsNullOrEmpty(file.FilePath))
+								{
+									var url = file.IsExternalLink ? file.FilePath : Url.Content(file.FilePath);
+									<li><a href="@url" target="_blank">@key</a></li>
+								}
+							}
+						</ul>
+					</li>
 
-        function toggleMenu() {
-            menuOpen = !menuOpen;
-            const menu = document.querySelector('.navigation__list');
-            if (menuOpen) {
-                menu.classList.add('open');
-            } else {
-                menu.classList.remove('open');
-            }
-        }
+					<li class="nav-dropdown">
+						<span class="nav-link">Прочее</span>
+						<ul class="dropdown-list">
+							@if (buttonFiles.TryGetValue("Именная заявка", out var form) && !string.IsNullOrEmpty(form.FilePath))
+							{
+								var url = form.IsExternalLink ? form.FilePath : Url.Content(form.FilePath);
+								<li><a href="@url" target="_blank">Именная заявка</a></li>
+							}
 
-        function closeMenu() {
-            menuOpen = false;
-            const menu = document.querySelector('.navigation__list');
-            menu.classList.remove('open');
-        }
-    </script>
+							@if (buttonFiles.TryGetValue("Заявление на перенос денежных средств", out var transfer) && !string.IsNullOrEmpty(transfer.FilePath))
+							{
+								var url = transfer.IsExternalLink ? transfer.FilePath : Url.Content(transfer.FilePath);
+								<li><a href="@url" target="_blank">Перенос средств</a></li>
+							}
+
+							<li><a href="https://www.youtube.com/@@VLASIHA_KUBOK" target="_blank">Видеотрансляция</a></li>
+
+							<li><a href="https://disk.yandex.com.am/d/gEOavcMPsIVyqg" target="_blank">Архив протоколов</a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="hero-wrapper">
+		<main role="main" class="pb-3">
+			@using Microsoft.AspNetCore.Identity
+			@inject SignInManager<ApplicationUser> SignInManager
+			@inject UserManager<ApplicationUser> UserManager
+
+			@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+			{
+				<div class="admin-nav-wrapper">
+					<div class="admin-nav">
+						<a href="@Url.Action("Index", "Admin")" class="admin-nav-button">Участники</a>
+						<a href="@Url.Action("EditFiles", "Admin")" class="admin-nav-button">Файлы</a>
+						<a href="@Url.Action("ManageCompetitions", "Admin")" class="admin-nav-button">Управление регистрациями</a>
+						<a href="@Url.Action("Logout", "Admin")" class="admin-nav-button logout">Выход</a>
+					</div>
+				</div>
+			}
+
+			@RenderBody()
+		</main>
+	</div>
+
+	<footer class="modern-footer pt-5">
+		<div class="container footer-content">
+			<div class="row-footer g-4 mb-5">
+				<!-- Company Info -->
+				<div class="col-lg-4 col-md-6">
+					<a href="#" class="footer-logo d-block mb-4">
+						Aqua Olymp<span class="text-primary"></span>
+					</a>
+					<ul class="contact-info mb-4">
+						<li>
+							<i class="fas fa-phone"></i>
+							<span>+7 (925) 820-71-41</span>
+						</li>
+						<li>
+							<i class="fas fa-envelope"></i>
+							<span>plavanievlasiha@yandex.ru</span>
+						</li>
+					</ul>
+				</div>
+
+				<!-- Quick Links -->
+				<div class="col-lg-4 col-md-6">
+					<h3 class="footer-title">Полезная информация</h3>
+					<ul class="quick-links">
+						<li><a class="nav-link" asp-controller="Privacy" asp-action="Index">Политика конфиденциальности</a></li>
+						<li><a class="nav-link" asp-controller="Contacts" asp-action="Index">Контакты</a></li>
+					</ul>
+				</div>
+
+				<!-- Newsletter -->
+				<div class="col-lg-4 col-md-12">
+					<h3 class="footer-title">Оставаться с нами на связи</h3>
+					<div class="social-links">
+						<a href="https://vk.com/swimvlasiha" class="social-icon"><i class="fab fa-vk"></i></a>
+						<a href="https://t.me/vlasiha_plavanie_kubok" class="social-icon"><i class="fab fa-telegram-plane"></i></a>
+						<a href="https://www.youtube.com/@@VLASIHA_KUBOK" class="social-icon"><i class="fab fa-youtube"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer Bottom -->
+		<div class="footer-bottom">
+			<div class="container">
+				<div class="row-footer py-4">
+					<div class="col-md-6 text-center text-md-start">
+						<p>
+							&copy; 2025 Aqua Olymp. Сделано с любовью.
+							<a href="https://t.me/jewestyes" target="_blank" class="dev-link">Заказать сайт</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+	@await RenderSectionAsync("Scripts", required: false)
+	<script>
+		function toggleMenu() {
+			const menu = document.getElementById('navMenu');
+			const burger = document.getElementById('burger');
+			burger.classList.toggle('open');
+			menu.classList.toggle('open');
+		}
+
+		function closeMenu() {
+			const menu = document.getElementById('navMenu');
+			const burger = document.getElementById('burger');
+			menu.classList.remove('open');
+			burger.classList.remove('open');
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+			const dropdowns = document.querySelectorAll('.nav-dropdown');
+
+			dropdowns.forEach(dropdown => {
+				const trigger = dropdown.querySelector('.nav-link');
+
+				trigger.addEventListener('click', e => {
+					if (trigger.tagName === 'A' && trigger.getAttribute('href')) return;
+
+					e.preventDefault();
+					e.stopPropagation();
+
+					dropdowns.forEach(d => {
+						if (d !== dropdown) d.classList.remove('open');
+					});
+
+					dropdown.classList.toggle('open');
+				});
+			});
+
+			document.addEventListener('click', () => {
+				dropdowns.forEach(d => d.classList.remove('open'));
+			});
+		});
+	</script>
 </body>
 </html>

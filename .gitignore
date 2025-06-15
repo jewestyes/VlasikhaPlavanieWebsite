@@ -364,6 +364,9 @@ MigrationBackup/
 
 **/Logs/
 **/Files/
+**/images/
+
 appsettings.Production.json
 appsettings.Development.json
 appsettings.Production.json
+/src/VlasikhaPlavanieWebsite.Api/appsettings.json

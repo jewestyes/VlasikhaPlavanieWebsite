@@ -2,38 +2,38 @@
 using System.Text.Json;
 using VlasikhaPlavanieWebsite.ViewModels;
 using VlasikhaPlavanieWebsite.Application.Interfaces;
+using VlasikhaPlavanieWebsite.Controllers;
 
-public class RegistrationController : Controller
+public class RegistrationController : BaseController
 {
 	private readonly ILogger<RegistrationController> _logger;
 	private readonly IRegistrationService _registrationService;
 
-	public RegistrationController(IRegistrationService registrationService, ILogger<RegistrationController> logger)
+	public RegistrationController(IRegistrationService registrationService, ILogger<RegistrationController> logger, IHomeService homeService)
+			: base(homeService)
 	{
 		_registrationService = registrationService;
 		_logger = logger;
 	}
 	[HttpGet]
-	public async Task<IActionResult> Index()
+	public async Task<IActionResult> Index(int id)
 	{
-		var model = await _registrationService.BuildIndexModelAsync();
+		var model = await _registrationService.BuildIndexModelAsync(id);
 		if (model == null)
 		{
-			_logger.LogWarning("No open registration stage found.");
+			_logger.LogWarning("No open registration competition found.");
 			return Content("Не было найдено открытых регистраций.");
 		}
 
 		return View(model);
 	}
 
-
 	[HttpPost]
 	public async Task<IActionResult> Submit(RegistrationViewModel model)
 	{
 		_logger.LogInformation("Attempting to submit registration.");
 
-
-		ModelState.Remove("Stage.CompetitionAddress");
+		ModelState.Remove("Competition.Address");
 
 		for (int i = 0; i < model.Participants.Count; i++)
 		{

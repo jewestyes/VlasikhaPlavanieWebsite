@@ -9,11 +9,11 @@ using VlasikhaPlavanieWebsite.Data;
 
 #nullable disable
 
-namespace VlasikhaPlavanieWebsite.Migrations
+namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240921121017_InitCreate")]
-    partial class InitCreate
+    [Migration("20250614054338_imagepath")]
+    partial class imagepath
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,6 +223,68 @@ namespace VlasikhaPlavanieWebsite.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.Competition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CompetitionStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RegistrationEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RegistrationStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Competitions");
+                });
+
+            modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.CompetitionDiscipline", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompetitionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DistancesJson")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(MAX)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetitionId");
+
+                    b.ToTable("CompetitionDisciplines");
+                });
+
             modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.Discipline", b =>
                 {
                     b.Property<int>("Id")
@@ -276,6 +338,9 @@ namespace VlasikhaPlavanieWebsite.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsExternalLink")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("FileMappings");
@@ -292,6 +357,9 @@ namespace VlasikhaPlavanieWebsite.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18, 2)");
 
+                    b.Property<int>("CompetitionId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -306,6 +374,8 @@ namespace VlasikhaPlavanieWebsite.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompetitionId");
 
                     b.ToTable("Orders");
                 });
@@ -443,6 +513,17 @@ namespace VlasikhaPlavanieWebsite.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.CompetitionDiscipline", b =>
+                {
+                    b.HasOne("VlasikhaPlavanieWebsite.Models.Competition", "Competition")
+                        .WithMany()
+                        .HasForeignKey("CompetitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competition");
+                });
+
             modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.Discipline", b =>
                 {
                     b.HasOne("VlasikhaPlavanieWebsite.Models.Participant", null)
@@ -450,6 +531,17 @@ namespace VlasikhaPlavanieWebsite.Migrations
                         .HasForeignKey("ParticipantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.Order", b =>
+                {
+                    b.HasOne("VlasikhaPlavanieWebsite.Models.Competition", "Competition")
+                        .WithMany()
+                        .HasForeignKey("CompetitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competition");
                 });
 
             modelBuilder.Entity("VlasikhaPlavanieWebsite.Models.Participant", b =>

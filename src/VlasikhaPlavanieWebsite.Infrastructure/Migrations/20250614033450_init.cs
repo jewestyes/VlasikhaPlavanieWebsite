@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace VlasikhaPlavanieWebsite.Migrations
+namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitCreate : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -58,7 +58,8 @@ namespace VlasikhaPlavanieWebsite.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ButtonName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsExternalLink = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,20 +67,21 @@ namespace VlasikhaPlavanieWebsite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Registrationcompetition",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegistrationStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegistrationEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CompetitionStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsOpen = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_Registrationcompetition", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,21 +207,66 @@ namespace VlasikhaPlavanieWebsite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompetitionId = table.Column<int>(type: "int", nullable: false),
+                    OrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Registrationcompetition_CompetitionId",
+                        column: x => x.CompetitionId,
+                        principalTable: "Registrationcompetition",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "competitionDisciplines",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompetitionId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DistancesJson = table.Column<string>(type: "NVARCHAR(MAX)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_competitionDisciplines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_competitionDisciplines_Registrationcompetition_CompetitionId",
+                        column: x => x.CompetitionId,
+                        principalTable: "Registrationcompetition",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Participants",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CityOrTeam = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rank = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: true)
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,11 +284,11 @@ namespace VlasikhaPlavanieWebsite.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ParticipantId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Distance = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EntryTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ParticipantId = table.Column<int>(type: "int", nullable: false)
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -299,9 +346,19 @@ namespace VlasikhaPlavanieWebsite.Migrations
                 column: "ParticipantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_CompetitionId",
+                table: "Orders",
+                column: "CompetitionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Participants_OrderId",
                 table: "Participants",
                 column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_competitionDisciplines_CompetitionId",
+                table: "competitionDisciplines",
+                column: "CompetitionId");
         }
 
         /// <inheritdoc />
@@ -329,6 +386,9 @@ namespace VlasikhaPlavanieWebsite.Migrations
                 name: "FileMappings");
 
             migrationBuilder.DropTable(
+                name: "competitionDisciplines");
+
+            migrationBuilder.DropTable(
                 name: "StatItems");
 
             migrationBuilder.DropTable(
@@ -342,6 +402,9 @@ namespace VlasikhaPlavanieWebsite.Migrations
 
             migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Registrationcompetition");
         }
     }
 }

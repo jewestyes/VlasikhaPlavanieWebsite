@@ -15,7 +15,6 @@ using VlasikhaPlavanieWebsite.Infrastructure.Services.Payment;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Загрузка конфигурации из файла appsettings.json
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -31,13 +30,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Admin/Login";
 });
 
-// Настройка Serilog для логирования
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 builder.Host.UseSerilog();
 
-// Подключение к Redis для сессий
 var redisConnection = builder.Configuration.GetConnectionString("RedisConnection");
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -45,7 +42,6 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.InstanceName = "VlasikhaPlavanieWebsite_";
 });
 
-// Настройка сессий с использованием Redis
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("Session:IdleTimeoutMinutes"));
@@ -81,7 +77,7 @@ builder.Services.AddScoped<IRegistrationCache, RedisRegistrationCache>();
 builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
 builder.Services.AddScoped<IParticipantExportService, ParticipantExportService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
-builder.Services.AddScoped<IStageService, StageService>();
+builder.Services.AddScoped<ICompetitionService, CompetitionService>();
 builder.Services.AddScoped<IFileMappingService, FileMappingService>();
 builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();

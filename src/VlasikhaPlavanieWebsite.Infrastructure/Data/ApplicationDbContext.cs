@@ -12,8 +12,8 @@ namespace VlasikhaPlavanieWebsite.Data
         public DbSet<Discipline> Disciplines { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<FileMapping> FileMappings { get; set; }
-        public DbSet<RegistrationStage> RegistrationStage { get; set; }
-        public DbSet<StageDiscipline> StageDisciplines { get; set; }
+        public DbSet<Competition> Competitions { get; set; }
+        public DbSet<CompetitionDiscipline> CompetitionDisciplines { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -71,11 +71,11 @@ namespace VlasikhaPlavanieWebsite.Data
             builder.Entity<FileMapping>()
                 .HasKey(f => f.Id);
 
-            builder.Entity<RegistrationStage>()
+            builder.Entity<Competition>()
             .HasKey(f => f.Id);
 
 
-            builder.Entity<StageDiscipline>()
+            builder.Entity<CompetitionDiscipline>()
             .Property(d => d.DistancesJson)
             .HasColumnType("NVARCHAR(MAX)");
         }

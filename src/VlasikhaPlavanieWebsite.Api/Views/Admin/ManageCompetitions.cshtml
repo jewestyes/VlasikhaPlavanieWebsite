@@ -1,0 +1,108 @@
+﻿@model VlasikhaPlavanieWebsite.ViewModels.ManageCompetitionsViewModel
+
+<link rel="stylesheet" href="~/css/manage-competitions.css" asp-append-version="true" />
+
+<div class="manage-competitions-container">
+	<h2>Управление регистрациями</h2>
+
+	<h3>Создать новое соревнование</h3>
+
+	<form asp-action="CreateCompetition" method="post" enctype="multipart/form-data">
+		<div class="form-group">
+			<label for="competitionName">Название соревнования</label>
+			<input asp-for="NewCompetition.Name" class="form-control competition-input" />
+			<span asp-validation-for="NewCompetition.Name" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label for="RegistrationStartDate">Дата начала регистрации</label>
+			<input asp-for="NewCompetition.RegistrationStartDate" class="form-control competition-input" type="datetime-local" />
+			<span asp-validation-for="NewCompetition.RegistrationStartDate" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label>Фон соревнования</label>
+			<input type="file" name="ImageFile" class="form-control file-input" />
+		</div>
+
+		<h4>Выберите дисциплины и укажите дистанции</h4>
+
+		<div class="disciplines-list">
+			@foreach (var discipline in new List<string> { "Вольный стиль", "Брасс", "Баттерфляй", "На спине", "Комплексное плавание" })
+			{
+				<div class="discipline-item">
+					<input type="checkbox" name="SelectedDisciplines" value="@discipline" class="discipline-checkbox" />
+					<label>@discipline</label>
+					<input type="text" name="DisciplineDistances[@discipline]" placeholder="Введите дистанции через ;"
+						   class="form-control distance-input" disabled />
+				</div>
+			}
+		</div>
+
+		<div class="form-group">
+			<label for="CompetitionDate">Дата проведения соревнований</label>
+			<input asp-for="NewCompetition.CompetitionStartDate" class="form-control competition-input" type="date" />
+			<span asp-validation-for="NewCompetition.CompetitionStartDate" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label for="CompetitionAddress">Адрес соревнований</label>
+			<input asp-for="NewCompetition.Address" class="form-control competition-input" type="text" placeholder="Введите адрес" />
+			<span asp-validation-for="NewCompetition.Address" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<input type="submit" value="Создать соревнование" class="btn btn-primary" />
+		</div>
+	</form>
+
+	<h3>Существующие соревнования</h3>
+	<div>
+		@foreach (var competition in Model.Competitions)
+		{
+			<div class="competition-item">
+				<div>
+					<div class="competition-name">@competition.Name</div>
+					<div>
+						@competition.RegistrationStartDate.ToString("yyyy-MM-dd HH:mm")
+						-
+						@(competition.RegistrationEndDate.HasValue ? competition.RegistrationEndDate.Value.ToString("yyyy-MM-dd HH:mm") : "Не завершен")
+					</div>
+					<div>@(competition.IsOpen ? "Открыта" : "Закрыта")</div>
+				</div>
+				<div class="competition-actions">
+					@if (competition.IsOpen)
+					{
+						<form asp-action="ChangeCompetitionStatus" method="post">
+							<input type="hidden" name="id" value="@competition.Id" />
+							<input type="hidden" name="isOpen" value="false" />
+							<button type="submit" class="btn btn-danger">Закрыть</button>
+						</form>
+					}
+					else
+					{
+						<form asp-action="ChangeCompetitionStatus" method="post">
+							<input type="hidden" name="id" value="@competition.Id" />
+							<input type="hidden" name="isOpen" value="true" />
+							<button type="submit" class="btn btn-success">Открыть</button>
+						</form>
+					}
+				</div>
+			</div>
+		}
+	</div>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		document.querySelectorAll(".discipline-checkbox").forEach(function (checkbox) {
+			checkbox.addEventListener("change", function () {
+				var input = this.closest(".discipline-item").querySelector(".distance-input");
+				input.disabled = !this.checked;
+				if (!this.checked) {
+					input.value = "";
+				}
+			});
+		});
+	});
+</script>

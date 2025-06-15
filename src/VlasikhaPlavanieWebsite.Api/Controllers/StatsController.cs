@@ -3,11 +3,12 @@ using VlasikhaPlavanieWebsite.Application.Interfaces;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
-    public class StatsController : Controller
+    public class StatsController : BaseController
 	{
 		private readonly IStatService _statService;
 
-		public StatsController(IStatService statService)
+		public StatsController(IStatService statService, IHomeService homeService)
+			: base(homeService)
         {
 			_statService = statService;
 		}
