@@ -369,3 +369,4 @@ appsettings.Production.json
 appsettings.Development.json
 appsettings.Production.json
 /src/VlasikhaPlavanieWebsite.Api/appsettings.json
+/src/VlasikhaPlavanieWebsite.Api/wwwroot/images/competitions/default.png
