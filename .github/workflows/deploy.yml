@@ -49,6 +49,7 @@ jobs:
 
           ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} \
             "ln -sfn $APP_HOME/shared/Files                                      $RELEASE_DIR/wwwroot/Files && \
+             ln -sfn $APP_HOME/shared/images/competitions                        $RELEASE_DIR/wwwroot/images/competitions  && \
              ln -sfn $APP_HOME/shared/appsettings.Production.json                $RELEASE_DIR/appsettings.Production.json && \
              ln -sfn $RELEASE_DIR                                               $APP_HOME/current && \
              sudo systemctl restart kestrel.service"
