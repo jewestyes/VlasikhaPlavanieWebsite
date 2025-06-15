@@ -271,18 +271,6 @@ nav a {
 }
 
 @media (max-width: 768px) {
-
-    .carousel-card .carousel-content {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.5s ease;
-    }
-
-    .carousel-card.visible .carousel-content {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
     .carousel-container {
         display: flex;
         flex-direction: column;
@@ -299,6 +287,10 @@ nav a {
         min-width: unset;
         height: auto;
         border-radius: 12px;
+        transition: none;
+        box-shadow: 1px 5px 15px #1e0e3e;
+        transform: none;
+        cursor: default;
     }
 
     .carousel-content {
@@ -309,17 +301,14 @@ nav a {
         justify-content: normal;
     }
 
-        .carousel-content h2 {
-            font-size: 1.2rem;
-        }
+    .carousel-card:hover {
+        flex: 0 0 380px;
+        transform: none;
+        box-shadow: 1px 5px 15px #1e0e3e;
+    }
 
-        .carousel-content span,
-        .carousel-content p {
-            font-size: 0.9rem;
-        }
-
-        .carousel-content .register-button {
-            margin-top: 12px;
-            font-size: 1rem;
+        .carousel-card:hover .carousel-content {
+            transform: none;
+            opacity: 1;
         }
 }
