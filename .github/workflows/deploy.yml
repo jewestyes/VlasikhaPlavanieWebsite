@@ -3,6 +3,7 @@ name: CI/CD Deploy to Ubuntu
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
 
 env:
   APP_HOME: /home/VlasikhaPlavanieWebsite
