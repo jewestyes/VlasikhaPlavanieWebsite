@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Text.Json;
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Models;
@@ -33,12 +35,30 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 			}
 		}
 
+
+
 		public async Task CreateCompetitionAsync(ManageCompetitionsViewModel model)
 		{
 
 			model.NewCompetition.IsOpen = false;
 			_applicationDbContext.Competitions.Add(model.NewCompetition);
 			await _applicationDbContext.SaveChangesAsync();
+
+			if (model.ImageFile != null && model.ImageFile.Length > 0)
+			{
+				var folder = Path.Combine("wwwroot", "images", "competitions");
+				var extension = Path.GetExtension(model.ImageFile.FileName);
+				var fileName = $"competitions_{model.NewCompetition.Id}_{model.ImageFile.FileName}{extension}";
+				var fullPath = Path.Combine(folder, fileName);
+
+				Directory.CreateDirectory(folder);
+
+				using var stream = new FileStream(fullPath, FileMode.Create);
+
+				await model.ImageFile.CopyToAsync(stream);
+				model.NewCompetition.ImagePath = $"/images/competitions/{fileName}";
+				await _applicationDbContext.SaveChangesAsync();
+			}
 
 			if (model.SelectedDisciplines != null && model.SelectedDisciplines.Any())
 			{

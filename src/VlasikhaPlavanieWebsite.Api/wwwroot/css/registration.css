@@ -54,23 +54,23 @@
     }
 
 /* Колонки с различной шириной */
-.col-md-4,
-.col-md-6,
-.col-md-12 {
+.form-col-md-4,
+.form-col-md-6,
+.form-col-md-12 {
     flex: 0 0 auto;
     padding: 0 15px;
     box-sizing: border-box;
 }
 
-.col-md-4 {
+.form-col-md-4 {
     width: 33.333333%;
 }
 
-.col-md-6 {
+.form-col-md-6 {
     width: 50%;
 }
 
-.col-md-12 {
+.form-col-md-12 {
     width: 100%;
 }
 
@@ -174,7 +174,7 @@
         width: 100%;
     }
 
-    .col-md-4, .col-md-6, .col-md-12 {
+    .form-col-md-4, .form-col-md-6, .form-col-md-12 {
         width: 100%;
         padding: 0;
     }

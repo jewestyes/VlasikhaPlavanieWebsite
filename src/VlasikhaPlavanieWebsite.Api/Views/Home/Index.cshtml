@@ -3,29 +3,47 @@
 	ViewData["Title"] = "Главная";
 }
 
-<body>
-	<main>
-		<meta charset="utf-8" />
-		<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
 
-		@if (Model != null && Model.Any())
+<meta charset="utf-8" />
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+
+@if (Model != null && Model.Any())
+{
+	<div class="carousel-container">
+		@foreach (var comp in Model)
 		{
-			<div class="competition-scroll-container">
-				@foreach (var comp in Model)
-				{
-					<div class="competition-card">
-						<h3>@comp.Name</h3>
-						<p>@(comp.CompetitionStartDate?.ToString("dd MMMM yyyy") ?? "дата не указана")</p>
-						<p>@comp.Address</p>
-						<a asp-controller="Registration" asp-action="Index" asp-route-id="@comp.Id" class="register-button">Регистрация</a>
-					</div>
-				}
+			<div class="carousel-card" style="background-image: url('@Url.Content(comp.ImagePath ?? "/images/default.jpg")');">
+				<div class="carousel-content">
+					<h2>@comp.Name</h2>
+					<span>@(comp.CompetitionStartDate?.ToString("dd MMMM yyyy") ?? "дата не указана")</span>
+					<p>@comp.Address</p>
+					<a asp-controller="Registration" asp-action="Index" asp-route-id="@comp.Id" class="register-button">Регистрация</a>
+				</div>
 			</div>
 		}
-		else
-		{
-			<p style="text-align:center;">На данный момент открытых соревнований нет.</p>
-		}
+	</div>
+}
+else
+{
+	<p style="text-align:center;">На данный момент открытых соревнований нет.</p>
+}
 
-	</main>
-</body>
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const cards = document.querySelectorAll('.carousel-card');
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('visible');
+				}
+			});
+		}, {
+			threshold: 0.3
+		});
+
+		cards.forEach(card => {
+			observer.observe(card);
+		});
+	});
+</script>

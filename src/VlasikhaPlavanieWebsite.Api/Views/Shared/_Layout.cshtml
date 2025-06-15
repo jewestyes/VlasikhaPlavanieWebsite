@@ -12,16 +12,30 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - Aqua Olymp</title>
 	<link rel="stylesheet" href="~/css/_layout.css" asp-append-version="true" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" asp-append-version="true">
+	<link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" asp-append-version="true">
 </head>
 
 <body>
 	<header class="header">
 		<div class="header-inner">
-			<div class="brand">
-				<img src="@Url.Content("~/images/logos/vlasiha_logo.svg")" alt="Логотип" class="logo">
-				<span class="site-title">Aqua Olymp</span>
-			</div>
+			<a asp-controller="Home" asp-action="Index" class="brand logo-glacier">
+				<img src="@Url.Content("~/images/logos/vlasiha_logo.svg")" alt="Логотип" class="logo" />
+				<h1 class="logo-word">
+					@foreach (var c in "Aqua Olymp")
+					{
+						if (c == ' ')
+						{
+							<span class="char space">&nbsp;</span>
+						}
+						else
+						{
+							<span class="char">@c</span>
+						}
+					}
+				</h1>
+			</a>
 
 			<button class="burger" id="burger" onclick="toggleMenu()" aria-label="Меню">
 				<span></span>
@@ -31,9 +45,7 @@
 
 			<nav class="nav" id="navMenu">
 				<ul class="nav-list">
-					<li><a class="nav-link" asp-controller="Home" asp-action="Index" onclick="closeMenu()">Главная</a></li>
 					<li><a class="nav-link" asp-controller="Stats" asp-action="Index" onclick="closeMenu()">Статистика</a></li>
-					<li><a class="nav-link" asp-controller="Contacts" asp-action="Index" onclick="closeMenu()">Контакты</a></li>
 
 					<li class="nav-dropdown">
 						<span class="nav-link">Файлы</span>
@@ -110,18 +122,60 @@
 		</main>
 	</div>
 
-	<footer class="footer">
-		<div class="social-logos">
-			<p class="phone">+7 925 820 71 41</p>
-			<a href="https://vk.com/swimvlasiha" target="_blank">
-				<img src="@Url.Content("~/images/logos/VK Logo.png")" alt="VK">
-			</a>
-			<a href="https://t.me/vlasiha_plavanie_kubok" target="_blank">
-				<img src="@Url.Content("~/images/logos/TG Logo.png")" alt="TG">
-			</a>
+	<footer class="modern-footer pt-5">
+		<div class="container footer-content">
+			<div class="row-footer g-4 mb-5">
+				<!-- Company Info -->
+				<div class="col-lg-4 col-md-6">
+					<a href="#" class="footer-logo d-block mb-4">
+						Aqua Olymp<span class="text-primary"></span>
+					</a>
+					<ul class="contact-info mb-4">
+						<li>
+							<i class="fas fa-phone"></i>
+							<span>+7 (925) 820-71-41</span>
+						</li>
+						<li>
+							<i class="fas fa-envelope"></i>
+							<span>plavanievlasiha@yandex.ru</span>
+						</li>
+					</ul>
+				</div>
+
+				<!-- Quick Links -->
+				<div class="col-lg-4 col-md-6">
+					<h3 class="footer-title">Полезная информация</h3>
+					<ul class="quick-links">
+						<li><a class="nav-link" asp-controller="Privacy" asp-action="Index">Политика конфиденциальности</a></li>
+						<li><a class="nav-link" asp-controller="Contacts" asp-action="Index">Контакты</a></li>
+					</ul>
+				</div>
+
+				<!-- Newsletter -->
+				<div class="col-lg-4 col-md-12">
+					<h3 class="footer-title">Оставаться с нами на связи</h3>
+					<div class="social-links">
+						<a href="https://vk.com/swimvlasiha" class="social-icon"><i class="fab fa-vk"></i></a>
+						<a href="https://t.me/vlasiha_plavanie_kubok" class="social-icon"><i class="fab fa-telegram-plane"></i></a>
+						<a href="https://www.youtube.com/@@VLASIHA_KUBOK" class="social-icon"><i class="fab fa-youtube"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer Bottom -->
+		<div class="footer-bottom">
+			<div class="container">
+				<div class="row-footer py-4">
+					<div class="col-md-6 text-center text-md-start">
+						<p>&copy; 2025 Aqua Olymp. All rights reserved.</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</footer>
 
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 	<script>
