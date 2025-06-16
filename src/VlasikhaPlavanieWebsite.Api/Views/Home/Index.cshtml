@@ -1,32 +1,60 @@
 @model List<VlasikhaPlavanieWebsite.Models.Competition>
 @{
-	ViewData["Title"] = "Главная";
+    ViewData["Title"] = "Главная";
 }
 
 <meta charset="utf-8" />
 <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<div class="carousel-container">
-	@if (Model != null && Model.Any())
-	{
-		@foreach (var comp in Model)
-		{
-			<div class="carousel-card" style="background-image: url('@Url.Content(comp.ImagePath ?? "/images/competitions/default.png")');">
-				<div class="carousel-content">
-					<h2>@comp.Name</h2>
-					<span>@(comp.CompetitionStartDate?.ToString("dd MMMM yyyy") ?? "дата не указана")</span>
-					<p>@comp.Address</p>
-					<a asp-controller="Registration" asp-action="Index" asp-route-id="@comp.Id" class="register-button">Регистрация</a>
-				</div>
-			</div>
-		}
-	}
-	else
-	{
-		<div class="carousel-card" style="background-image: url('@Url.Content("/images/competitions/default.png")');" alt="test image">
-			<div class="carousel-content">
-				<a class="register-button">Нет открытых регистраций</a>
-			</div>
-		</div>
-	}
-</div>
+<body class="home-image-background">
+
+    <div class="carousel-container">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var comp in Model)
+            {
+                <div class="carousel-card" style="background-image: url('@Url.Content(comp.ImagePath ?? "/images/competitions/default.png")');">
+                    <div class="carousel-content">
+                        <h2>@comp.Name</h2>
+                        <span>@(comp.CompetitionStartDate?.ToString("dd MMMM yyyy") ?? "дата не указана")</span>
+                        <p>@comp.Address</p>
+                        <a asp-controller="Registration" asp-action="Index" asp-route-id="@comp.Id" class="register-button">Регистрация</a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="carousel-card" style="background-image: url('@Url.Content("/images/competitions/default.png")');">
+                <div class="carousel-content">
+                    <a class="register-button">Нет открытых регистраций</a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="features-section">
+        <div class="feature-item">
+            <i class="fa fa-trophy"></i>
+            <h3>Турниры</h3>
+            <p>Регулярные соревнования для всех возрастов</p>
+        </div>
+        <div class="feature-item">
+            <i class="fa fa-swimmer"></i>
+            <h3>Профессиональные тренеры</h3>
+            <p>Опытные специалисты по обучению и подготовке</p>
+        </div>
+        <div class="feature-item">
+            <i class="fa fa-heartbeat"></i>
+            <h3>Здоровье</h3>
+            <p>Занятия для поддержания отличной физической формы</p>
+        </div>
+    </div>
+
+    <div class="about-section">
+        <h2>О клубе</h2>
+        <p>Наш клуб объединяет любителей и профессионалов плавания. Мы стремимся к развитию спорта, популяризации здорового образа жизни и достижению новых рекордов.</p>
+    </div>
+
+</body>

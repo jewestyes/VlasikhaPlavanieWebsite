@@ -270,6 +270,46 @@ nav a {
     margin-bottom: 10px;
 }
 
+.features-section {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 30px;
+    padding: 60px 20px;
+    flex-wrap: wrap;
+    background-color: #ffffffcc;
+}
+
+.feature-item {
+    flex: 1 1 250px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+    .feature-item i {
+        font-size: 40px;
+        color: #3498db;
+        margin-bottom: 10px;
+    }
+
+.about-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    margin-top: 40px;
+}
+
+    .about-section h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
 @media (max-width: 768px) {
     .carousel-container {
         display: flex;
