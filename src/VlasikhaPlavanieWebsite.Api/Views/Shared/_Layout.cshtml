@@ -90,6 +90,12 @@
 								<li><a href="@url" target="_blank">Перенос средств</a></li>
 							}
 
+							@if (buttonFiles.TryGetValue("Приглашение в судейский корпус", out var judgeInvitation) && !string.IsNullOrEmpty(judgeInvitation.FilePath))
+							{
+								var url = judgeInvitation.IsExternalLink ? judgeInvitation.FilePath : Url.Content(judgeInvitation.FilePath);
+								<li><a href="@url" target="_blank">Приглашение в судейский корпус</a></li>
+							}
+
 							<li><a href="https://www.youtube.com/@@VLASIHA_KUBOK" target="_blank">Видеотрансляция</a></li>
 
 							<li><a href="https://disk.yandex.com.am/d/gEOavcMPsIVyqg" target="_blank">Архив протоколов</a></li>
