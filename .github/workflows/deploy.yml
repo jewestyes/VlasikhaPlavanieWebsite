@@ -49,6 +49,8 @@ jobs:
 
           ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} \
             "ln -sfn $APP_HOME/shared/Files                                      $RELEASE_DIR/wwwroot/Files && \
+             ln -sfn $APP_HOME/shared/yandex_e63abf38e137cd80.html $RELEASE_DIR/wwwroot/ && \
+             ln -sfn $APP_HOME/shared/googleff5ef1b226fa7036.html $RELEASE_DIR/wwwroot/ && \
              ln -sfn $APP_HOME/shared/images/competitions                        $RELEASE_DIR/wwwroot/images/competitions  && \
              ln -sfn $APP_HOME/shared/appsettings.Production.json                $RELEASE_DIR/appsettings.Production.json && \
              ln -sfn $RELEASE_DIR                                               $APP_HOME/current && \
