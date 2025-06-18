@@ -22,7 +22,6 @@
 }
 
     .participant-section h3 {
-        margin-top: 0;
         font-size: 20px;
         color: #555;
     }
@@ -157,6 +156,46 @@
     display: inline-block;
     margin-top: 10px;
 }
+
+.header-banner {
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+    position: relative;
+    width: 100%;
+}
+
+.header-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.header-link {
+    padding: 12px 24px;
+    font-size: 18px;
+    color: white;
+    border: 2px solid white;
+    border-radius: 5px;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+    .header-link:hover {
+        background-color: white;
+        color: black;
+    }
+
 
 /* Мобильные стили */
 @media (max-width: 768px) {

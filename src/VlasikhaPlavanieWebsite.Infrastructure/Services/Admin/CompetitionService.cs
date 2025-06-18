@@ -43,20 +43,29 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 			_applicationDbContext.Competitions.Add(model.NewCompetition);
 			await _applicationDbContext.SaveChangesAsync();
 
-			if (model.ImageFile != null && model.ImageFile.Length > 0)
-			{
-				var folder = Path.Combine("wwwroot", "images", "competitions");
-				var fileName = $"competitions_{model.NewCompetition.Id}_{model.ImageFile.FileName}";
-				var fullPath = Path.Combine(folder, fileName);
+			await SaveUploadedFileAsync(
+				model.ImageFile,
+				"images",
+				"ImageFilePath",
+				model.NewCompetition,
+				$"competitions_{model.NewCompetition.Id}_{model.ImageFile?.FileName}"
+			);
 
-				Directory.CreateDirectory(folder);
+			await SaveUploadedFileAsync(
+				model.RulesFile,
+				"Files",
+				"RulesFilePath",
+				model.NewCompetition,
+				$"competitions_{model.NewCompetition.Id}_{model.RulesFile?.FileName}"
+			);
 
-				using var stream = new FileStream(fullPath, FileMode.Create);
-
-				await model.ImageFile.CopyToAsync(stream);
-				model.NewCompetition.ImagePath = $"/images/competitions/{fileName}";
-				await _applicationDbContext.SaveChangesAsync();
-			}
+			await SaveUploadedFileAsync(
+				model.RegulationFile,
+				"Files",
+				"RegulationFilePath",
+				model.NewCompetition,
+				$"competitions_{model.NewCompetition.Id}_{model.RegulationFile?.FileName}"
+			);
 
 			if (model.SelectedDisciplines != null && model.SelectedDisciplines.Any())
 			{
@@ -88,11 +97,35 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 				}
 			}
 		}
+		
 		public async Task<List<Competition>> GetAllAsync()
 		{
 			var competitions = await _applicationDbContext.Competitions.ToListAsync();
 
 			return competitions;
+		}
+
+		private async Task SaveUploadedFileAsync(IFormFile file, string folderType, string propertyName, Competition competition, string fileName)
+		{
+			if (file == null || file.Length == 0)
+				return;
+
+			var folderPath = Path.Combine("wwwroot", folderType, "competitions");
+			var fullPath = Path.Combine(folderPath, fileName);
+
+			Directory.CreateDirectory(folderPath);
+
+			using var stream = new FileStream(fullPath, FileMode.Create);
+			await file.CopyToAsync(stream);
+
+			var relativePath = $"/{folderType}/competitions/{fileName}";
+
+			var property = typeof(Competition).GetProperty(propertyName);
+			if (property != null && property.CanWrite)
+			{
+				property.SetValue(competition, relativePath);
+				await _applicationDbContext.SaveChangesAsync();
+			}
 		}
 	}
 }

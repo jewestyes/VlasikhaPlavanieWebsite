@@ -190,31 +190,33 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[Route("Admin/ManageCompetitions")]
 		public async Task<IActionResult> ManageCompetitions()
 		{
-			var competitions = await _competitionService.GetAllAsync();
-			var model = new ManageCompetitionsViewModel
+			return View(new ManageCompetitionsViewModel
 			{
-				Competitions = competitions,
-				NewCompetition = new Competition()
-			};
-			return View(model);
+				Competitions = await _competitionService.GetAllAsync()
+			});
 		}
 
 		[HttpPost]
+		[RequestSizeLimit(52_428_800)]
+		[RequestFormLimits(MultipartBodyLengthLimit = 52_428_800)]
 		[Route("Admin/CreateCompetition")]
-		public async Task<IActionResult> CreateCompetition(ManageCompetitionsViewModel model)
+		public async Task<IActionResult> CreateCompetition(ManageCompetitionsViewModel viewModel)
 		{
-			ModelState.Remove("competitions");
+			if (Request.ContentLength > 52_428_800)
+			{
+				_logger.LogWarning("Large request rejected: {0} bytes", Request.ContentLength);
+			}
+
+			ModelState.Remove("Competitions");
 
 			if (ModelState.IsValid)
 			{
-				await _competitionService.CreateCompetitionAsync(model);
+				await _competitionService.CreateCompetitionAsync(viewModel);
 
 				return RedirectToAction("ManageCompetitions");
 			}
 
-			// Если валидация не прошла, загружаем существующие соревнования и возвращаем форму
-			model.Competitions = await _competitionService.GetAllAsync();
-			return View("ManageCompetitions", model);
+			return View("ManageCompetitions");
 		}
 
 		[HttpPost]

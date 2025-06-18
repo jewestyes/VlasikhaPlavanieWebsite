@@ -12,8 +12,12 @@ using VlasikhaPlavanieWebsite.Infrastructure.Services.Registration;
 using VlasikhaPlavanieWebsite.Infrastructure.Services.Admin;
 using VlasikhaPlavanieWebsite.Infrastructure.Services;
 using VlasikhaPlavanieWebsite.Infrastructure.Services.Payment;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var supportedCultures = new[] { new CultureInfo("ru-RU") };
 
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
@@ -88,6 +92,14 @@ builder.Services.AddTransient<IRoleInitializer, RoleInitializer>();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+	DefaultRequestCulture = new RequestCulture("ru-RU"),
+	SupportedCultures = supportedCultures,
+	SupportedUICultures = supportedCultures
+});
+
 
 if (app.Environment.IsDevelopment())
 {

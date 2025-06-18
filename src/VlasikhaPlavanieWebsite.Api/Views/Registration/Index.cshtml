@@ -14,6 +14,22 @@
 
 <div class="form-container new-style">
 	<h2>Регистрация на турнир</h2>
+
+	<div class="header-banner" style="background-image: url('@Model.Competition.ImageFilePath');">
+		<div class="header-overlay">
+			<div class="header-buttons">
+				@if (!string.IsNullOrWhiteSpace(Model.Competition.RegulationFilePath))
+				{
+					<a href="@Model.Competition.RegulationFilePath" class="header-link" target="_blank">Положение</a>
+				}
+				@if (!string.IsNullOrWhiteSpace(Model.Competition.RulesFilePath))
+				{
+					<a href="@Model.Competition.RulesFilePath" class="header-link" target="_blank">Регламент</a>
+				}
+			</div>
+		</div>
+	</div>
+
 	<form asp-action="Submit" method="post" id="registrationForm">
 		<input type="hidden" asp-for="Competition.Id" />
 		<input type="hidden" asp-for="Competition.Name" />
