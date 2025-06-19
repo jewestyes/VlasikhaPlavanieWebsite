@@ -113,7 +113,8 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 			var folderPath = Path.Combine("wwwroot", folderType, "competitions");
 			var fullPath = Path.Combine(folderPath, fileName);
 
-			Directory.CreateDirectory(folderPath);
+			if (!Directory.Exists(folderPath))
+				Directory.CreateDirectory(folderPath);
 
 			using var stream = new FileStream(fullPath, FileMode.Create);
 			await file.CopyToAsync(stream);
