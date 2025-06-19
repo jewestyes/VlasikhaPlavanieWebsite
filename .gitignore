@@ -364,10 +364,9 @@ MigrationBackup/
 
 **/Logs/
 **/Files/
-**/images/competitions/
+/src/VlasikhaPlavanieWebsite.Api/wwwroot/images/competitions/
 
 appsettings.Production.json
 appsettings.Development.json
 appsettings.Production.json
 /src/VlasikhaPlavanieWebsite.Api/appsettings.json
-/src/VlasikhaPlavanieWebsite.Api/wwwroot/images/competitions/competitions_8_background.png
