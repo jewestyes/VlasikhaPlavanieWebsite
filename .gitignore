@@ -364,7 +364,7 @@ MigrationBackup/
 
 **/Logs/
 **/Files/
-**/images/
+**/images/competitions/
 
 appsettings.Production.json
 appsettings.Development.json
