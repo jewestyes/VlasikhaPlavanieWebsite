@@ -154,12 +154,10 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Payment
 			foreach (Participant participant in participants)
 			{
 				int disciplinesCount = participant.Disciplines.Count();
-				totalPrice += disciplinesCount <= 3 ? 2000m : 2000m + 500m * (disciplinesCount - 3);
+				totalPrice += disciplinesCount <= 3 ? 2300m : 2300m + 500m * (disciplinesCount - 3);
 			}
 
-			//return totalPrice;
-
-			return 1m;
+			return totalPrice;
 		}
 	}
 }
