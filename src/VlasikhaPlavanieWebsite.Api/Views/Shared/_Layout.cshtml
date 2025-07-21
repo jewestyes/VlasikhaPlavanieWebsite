@@ -96,9 +96,17 @@
 								<li><a href="@url" target="_blank">Приглашение в судейский корпус</a></li>
 							}
 
-							<li><a href="https://www.youtube.com/@@VLASIHA_KUBOK" target="_blank">Видеотрансляция</a></li>
+							@if (buttonFiles.TryGetValue("Видеотрансляция", out var videoBroadcast) && !string.IsNullOrEmpty(videoBroadcast.FilePath))
+							{
+								var url = videoBroadcast.IsExternalLink ? videoBroadcast.FilePath : Url.Content(videoBroadcast.FilePath);
+								<li><a href="@url" target="_blank">Видеотрансляция</a></li>
+							}
 
-							<li><a href="https://disk.yandex.com.am/d/gEOavcMPsIVyqg" target="_blank">Архив протоколов</a></li>
+							@if (buttonFiles.TryGetValue("Архив протоколов", out var archive) && !string.IsNullOrEmpty(archive.FilePath))
+							{
+								var url = archive.IsExternalLink ? archive.FilePath : Url.Content(archive.FilePath);
+								<li><a href="@url" target="_blank">Архив протоколов</a></li>
+							}
 						</ul>
 					</li>
 				</ul>
