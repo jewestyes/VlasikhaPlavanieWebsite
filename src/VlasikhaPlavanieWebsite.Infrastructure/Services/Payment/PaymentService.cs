@@ -9,44 +9,45 @@ using VlasikhaPlavanieWebsite.Application.Interfaces;
 using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.ViewModels;
 using VlasikhaPlavanieWebsite.Infrastructure.Exceptions.Payment;
+using Microsoft.EntityFrameworkCore;
+using VlasikhaPlavanieWebsite.Data;
 
 namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Payment
 {
 	public class PaymentService : IPaymentService
 	{
-		private readonly IDistributedCache _cache;
+		private readonly ApplicationDbContext _context;
 		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly IConfiguration _configuration;
 		private readonly ILogger<PaymentService> _logger;
-		public PaymentService(IDistributedCache cache, IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<PaymentService> logger)
+		public PaymentService(ApplicationDbContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<PaymentService> logger)
 		{
-			_cache = cache;
+			_context = context;
 			_httpClientFactory = httpClientFactory;
 			_configuration = configuration;
 			_logger = logger;
 		}
 
+
 		public async Task<PaymentViewModel> GetPaymentInfoAsync(string orderId)
 		{
 			_logger.LogInformation("Начало обработки платежа для OrderId: {OrderId}", orderId);
 
-			var registrationDataJson = await _cache.GetStringAsync(orderId);
-			if (registrationDataJson == null)
-			{
-				_logger.LogWarning("Не удалось найти данные для оплаты по OrderId:", orderId);
+			var order = await _context.Orders
+				.Include(o => o.Participants)
+				.ThenInclude(p => p.Disciplines)
+				.FirstOrDefaultAsync(o => o.OrderNumber == orderId);
 
+			if (order == null)
+			{
 				throw new PaymentDataNotFoundException(orderId);
 			}
 
-			var viewModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
+			var amount = order.Amount;
 
-			decimal amount = CalculateCost(viewModel);
-
-			var firstParticipant = viewModel.Participants.FirstOrDefault();
+			var firstParticipant = order.Participants.FirstOrDefault();
 			if (firstParticipant == null)
 			{
-				_logger.LogWarning("Не удалось найти участников для OrderId: {orderId}", orderId);
-
 				throw new ParticipantNotFoundException(orderId);
 			}
 
@@ -67,7 +68,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Payment
 		{
 			_logger.LogInformation("Инициация платежа для OrderId={OrderId}", viewModel.OrderId);
 
-			await ValidateCacheAsync(viewModel.OrderId, viewModel.Amount);
+			await ValidateOrderAsync(viewModel.OrderId, viewModel.Amount);
 
 			var amountKopecks = (int)(viewModel.Amount * 100);
 			var token = GenerateToken(
@@ -80,15 +81,18 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Payment
 			return await SendInitRequestAsync(viewModel, amountKopecks, token);
 		}
 
-		private async Task ValidateCacheAsync(string orderId, decimal providedAmount)
+		private async Task ValidateOrderAsync(string orderId, decimal providedAmount)
 		{
-			var json = await _cache.GetStringAsync(orderId)
-				?? throw new PaymentDataNotFoundException(orderId);
+			var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderNumber == orderId);
+			if (order == null)
+			{
+				throw new PaymentDataNotFoundException(orderId);
+			}
 
-			var reg = JsonSerializer.Deserialize<RegistrationViewModel>(json)!;
-			var expected = CalculateCost(reg);
-			if (providedAmount != expected)
-				throw new PaymentAmountMismatchException(orderId, expected, providedAmount);
+			if (order.Amount != providedAmount)
+			{
+				throw new PaymentAmountMismatchException(orderId, order.Amount, providedAmount);
+			}
 		}
 
 		private async Task<string> SendInitRequestAsync(PaymentViewModel viewModel, int amountKopecks, string token)
@@ -146,18 +150,5 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Payment
 			}
 		}
 
-		private decimal CalculateCost(RegistrationViewModel viewModel)
-		{
-			List<Participant> participants = viewModel.Participants;
-			decimal totalPrice = 0m;
-
-			foreach (Participant participant in participants)
-			{
-				int disciplinesCount = participant.Disciplines.Count();
-				totalPrice += disciplinesCount <= 3 ? 2300m : 2300m + 500m * (disciplinesCount - 3);
-			}
-
-			return totalPrice;
-		}
 	}
 }

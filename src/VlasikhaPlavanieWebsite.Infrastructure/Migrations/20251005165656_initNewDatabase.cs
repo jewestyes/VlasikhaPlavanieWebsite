@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initNewDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,6 +51,27 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Competitions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageFilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RulesFilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegulationFilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegistrationStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegistrationEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CompetitionStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsOpen = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Competitions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FileMappings",
                 columns: table => new
                 {
@@ -64,24 +85,6 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FileMappings", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Registrationcompetition",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RegistrationStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RegistrationEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CompetitionStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsOpen = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Registrationcompetition", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -207,31 +210,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CompetitionId = table.Column<int>(type: "int", nullable: false),
-                    OrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_Registrationcompetition_CompetitionId",
-                        column: x => x.CompetitionId,
-                        principalTable: "Registrationcompetition",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "competitionDisciplines",
+                name: "CompetitionDisciplines",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -242,11 +221,35 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_competitionDisciplines", x => x.Id);
+                    table.PrimaryKey("PK_CompetitionDisciplines", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_competitionDisciplines_Registrationcompetition_CompetitionId",
+                        name: "FK_CompetitionDisciplines_Competitions_CompetitionId",
                         column: x => x.CompetitionId,
-                        principalTable: "Registrationcompetition",
+                        principalTable: "Competitions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompetitionId = table.Column<int>(type: "int", nullable: false),
+                    OrderNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Competitions_CompetitionId",
+                        column: x => x.CompetitionId,
+                        principalTable: "Competitions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -341,6 +344,11 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CompetitionDisciplines_CompetitionId",
+                table: "CompetitionDisciplines",
+                column: "CompetitionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Disciplines_ParticipantId",
                 table: "Disciplines",
                 column: "ParticipantId");
@@ -351,14 +359,15 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 column: "CompetitionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_OrderNumber",
+                table: "Orders",
+                column: "OrderNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Participants_OrderId",
                 table: "Participants",
                 column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_competitionDisciplines_CompetitionId",
-                table: "competitionDisciplines",
-                column: "CompetitionId");
         }
 
         /// <inheritdoc />
@@ -380,13 +389,13 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CompetitionDisciplines");
+
+            migrationBuilder.DropTable(
                 name: "Disciplines");
 
             migrationBuilder.DropTable(
                 name: "FileMappings");
-
-            migrationBuilder.DropTable(
-                name: "competitionDisciplines");
 
             migrationBuilder.DropTable(
                 name: "StatItems");
@@ -404,7 +413,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Registrationcompetition");
+                name: "Competitions");
         }
     }
 }

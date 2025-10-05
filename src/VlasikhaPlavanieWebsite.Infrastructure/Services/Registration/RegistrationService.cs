@@ -10,15 +10,13 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
 {
     public class RegistrationService : IRegistrationService
     {
-        private readonly IRegistrationCache _registrationCache;
         private readonly ILogger<RegistrationService> _logger;
         private readonly ApplicationDbContext _context;
 
-        public RegistrationService(ILogger<RegistrationService> logger, ApplicationDbContext context, IRegistrationCache registrationCache)
+        public RegistrationService(ILogger<RegistrationService> logger, ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
-            _registrationCache = registrationCache;
         }
 
         public async Task<RegistrationViewModel?> BuildIndexModelAsync(int id)
@@ -58,11 +56,41 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
             return model;
         }
 
-        public async Task<string> SubmitAsync(RegistrationViewModel viewModel)
-        {
-            var orderId = await _registrationCache.CacheAsync(viewModel);
+		public async Task<string> SubmitAsync(RegistrationViewModel viewModel)
+		{
+			var orderNumber = Guid.NewGuid().ToString();
 
-            return orderId;
-        }
-    }
+            decimal totalPrice = CalculateCost(viewModel);
+
+			var order = new Order
+			{
+				OrderNumber = orderNumber,
+				Amount = totalPrice,
+				Participants = viewModel.Participants,
+				Status = OrderStatus.Pending,
+				CreatedAt = DateTime.UtcNow,
+				UpdatedAt = DateTime.UtcNow,
+				CompetitionId = viewModel.Competition.Id
+			};
+
+			_context.Orders.Add(order);
+			await _context.SaveChangesAsync();
+
+			return orderNumber;
+		}
+
+		private decimal CalculateCost(RegistrationViewModel viewModel)
+		{
+			List<Participant> participants = viewModel.Participants;
+			decimal totalPrice = 0m;
+
+			foreach (Participant participant in participants)
+			{
+				int disciplinesCount = participant.Disciplines.Count();
+				totalPrice += disciplinesCount <= 3 ? 2300m : 2300m + 500m * (disciplinesCount - 3);
+			}
+
+			return totalPrice;
+		}
+	}
 }

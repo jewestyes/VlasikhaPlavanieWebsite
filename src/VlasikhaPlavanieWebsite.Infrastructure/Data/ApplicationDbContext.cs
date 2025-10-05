@@ -68,7 +68,15 @@ namespace VlasikhaPlavanieWebsite.Data
                 .Property(o => o.Amount)
                 .HasColumnType("decimal(18, 2)");
 
-            builder.Entity<FileMapping>()
+			builder.Entity<Order>()
+	            .Property(o => o.OrderNumber)
+	            .IsRequired();
+
+			builder.Entity<Order>()
+				.HasIndex(o => o.OrderNumber)
+				.IsUnique();
+
+			builder.Entity<FileMapping>()
                 .HasKey(f => f.Id);
 
             builder.Entity<Competition>()

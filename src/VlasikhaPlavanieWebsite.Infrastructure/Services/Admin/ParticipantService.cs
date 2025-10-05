@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VlasikhaPlavanieWebsite.Application.Interfaces;
 using VlasikhaPlavanieWebsite.Data;
+using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.ViewModels;
 
 namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
@@ -22,6 +23,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 						join rs in _applicationDbContext.Competitions
 							on order.CompetitionId equals rs.Id into ors
 						from regcompetition in ors.DefaultIfEmpty()
+						where order != null && order.Status == OrderStatus.Paid
 						select new ParticipantOrderViewModel
 						{
 							LastName = p.LastName,
