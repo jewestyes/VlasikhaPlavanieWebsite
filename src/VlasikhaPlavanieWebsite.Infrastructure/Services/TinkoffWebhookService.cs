@@ -16,17 +16,14 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 	public class TinkoffWebhookService : ITinkoffWebhookService
 	{
 		private readonly ApplicationDbContext _applicationDbContext;
-		private readonly IDistributedCache _cache;
 		private readonly ILogger<TinkoffWebhookService> _logger;
 		private readonly IConfiguration _configuration;
 		public TinkoffWebhookService(
 			ApplicationDbContext context,
-			IDistributedCache cache,
 			ILogger<TinkoffWebhookService> logger,
 			IConfiguration configuration)
 		{
 			_applicationDbContext = context;
-			_cache = cache;
 			_logger = logger;
 			_configuration = configuration;
 		}
@@ -35,16 +32,13 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 			_logger.LogInformation("Webhook received for OrderId: {OrderId} with status: {Status}", model.OrderId, model.Status);
 
 			var existingOrder = await _applicationDbContext.Orders.FirstOrDefaultAsync(o => o.OrderNumber == model.OrderId);
-			if (existingOrder != null)
-			{
-				_logger.LogInformation("Order already exists: {OrderId}", model.OrderId);
-				return new OkObjectResult("OK");
-			}
+
 
 			string calculatedToken = GenerateTinkoffToken(model);
 			if (calculatedToken != model.Token)
 			{
 				_logger.LogError("Invalid token. Calculated: {Calc}, Provided: {Provided}, OrderId: {OrderId}", calculatedToken, model.Token, model.OrderId);
+				return new BadRequestObjectResult("Invalid token");
 			}
 
 			switch (model.Status)
@@ -78,42 +72,45 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 				if (!model.Success)
 				{
 					_logger.LogWarning("Order not successful for OrderId: {OrderId}", model.OrderId);
-					return new BadRequestObjectResult("Невозможно создать заказ без успешной оплаты.");
+					return new BadRequestObjectResult("Оплата неуспешна.");
 				}
 
-				var registrationDataJson = await _cache.GetStringAsync(model.OrderId);
-				if (string.IsNullOrEmpty(registrationDataJson))
+				var order = await _applicationDbContext.Orders
+					.FirstOrDefaultAsync(o => o.OrderNumber == model.OrderId);
+
+				if (order == null)
 				{
-					_logger.LogError("Registration data not found in cache for OrderId: {OrderId}", model.OrderId);
-					return new BadRequestObjectResult("Не удалось восстановить данные участников.");
+					_logger.LogError("Order not found in DB for OrderId: {OrderId}", model.OrderId);
+					return new BadRequestObjectResult("Заказ не найден.");
 				}
 
-				var registrationModel = JsonSerializer.Deserialize<RegistrationViewModel>(registrationDataJson);
-				if (registrationModel == null)
+				var expectedKopecks = checked((int)(order.Amount * 100m));
+				if (expectedKopecks != model.Amount)
 				{
-					_logger.LogError("Failed to deserialize registration data for OrderId: {OrderId}", model.OrderId);
-					return new BadRequestObjectResult("Не удалось восстановить данные участников.");
+					_logger.LogError("Amount mismatch for OrderId: {OrderId}. Expected: {ExpectedKop}, Actual: {ActualKop}",
+						model.OrderId, expectedKopecks, model.Amount);
+					return new BadRequestObjectResult("Несоответствие суммы.");
 				}
 
-				var order = new Order
+				if (order.Status == OrderStatus.Paid)
 				{
-					OrderNumber = model.OrderId,
-					Amount = model.Amount / 100m,
-					Participants = registrationModel.Participants,
-					Status = OrderStatus.Paid,
-					CreatedAt = DateTime.UtcNow,
-					UpdatedAt = DateTime.UtcNow,
-					CompetitionId = registrationModel.Competition.Id,
-				};
+					_logger.LogInformation("Order {OrderId} already paid. Idempotent OK.", model.OrderId);
+					return new OkObjectResult("OK");
+				}
 
-				_applicationDbContext.Orders.Add(order);
+				if (order.Status != OrderStatus.Pending)
+				{
+					_logger.LogWarning("Order {OrderId} has unexpected status {Status} on CONFIRMED.", model.OrderId, order.Status);
+					return new OkObjectResult("OK");
+				}
+
+				order.Status = OrderStatus.Paid;
+				order.UpdatedAt = DateTime.UtcNow;
+
 				await _applicationDbContext.SaveChangesAsync();
-
-				await _cache.RemoveAsync(model.OrderId);
-				await _cache.RemoveAsync($"{model.OrderId}_amount");
-
 				await transaction.CommitAsync();
-				_logger.LogInformation("Order {OrderId} created and cache cleared.", model.OrderId);
+
+				_logger.LogInformation("Order {OrderId} marked as Paid.", model.OrderId);
 				return new OkObjectResult("OK");
 			}
 			catch (Exception ex)
@@ -123,6 +120,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 				return new StatusCodeResult(500);
 			}
 		}
+
 
 		private string GenerateTinkoffToken(TinkoffWebhook model)
 		{

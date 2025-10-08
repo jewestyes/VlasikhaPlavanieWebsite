@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using StackExchange.Redis;
 using Microsoft.AspNetCore.DataProtection;
 using VlasikhaPlavanieWebsite.Data;
 using VlasikhaPlavanieWebsite.Interfaces;
@@ -39,13 +38,6 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
-var redisConnection = builder.Configuration.GetConnectionString("RedisConnection");
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = redisConnection;
-    options.InstanceName = "VlasikhaPlavanieWebsite_";
-});
-
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("Session:IdleTimeoutMinutes"));
@@ -54,30 +46,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = builder.Configuration.GetValue<bool>("Session:CookieIsEssential");
 });
 
-// Настройка Data Protection
-var dataProtectionConfig = builder.Configuration.GetSection("DataProtection");
-if (dataProtectionConfig.GetValue<bool>("UseRedis"))
-{
-    builder.Services.AddDataProtection()
-        .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnection), dataProtectionConfig.GetValue<string>("RedisKey"))
-        .SetApplicationName(dataProtectionConfig.GetValue<string>("ApplicationName"));
-}
-else if (dataProtectionConfig.GetValue<bool>("PersistKeysToFileSystem"))
-{
-    builder.Services.AddDataProtection()
-        .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionConfig.GetValue<string>("KeyFilePath")))
-        .SetApplicationName(dataProtectionConfig.GetValue<string>("ApplicationName"));
-}
-
-if (dataProtectionConfig.GetValue<bool>("ProtectKeysWithCertificate"))
-{
-    builder.Services.AddDataProtection()
-        .ProtectKeysWithCertificate(dataProtectionConfig.GetValue<string>("CertificateThumbprint"));
-}
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
-builder.Services.AddScoped<IRegistrationCache, RedisRegistrationCache>();
 builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
 builder.Services.AddScoped<IParticipantExportService, ParticipantExportService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();

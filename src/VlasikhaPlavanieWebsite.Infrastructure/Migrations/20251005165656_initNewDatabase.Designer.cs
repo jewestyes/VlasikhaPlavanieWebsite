@@ -12,8 +12,8 @@ using VlasikhaPlavanieWebsite.Data;
 namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250614054338_imagepath")]
-    partial class imagepath
+    [Migration("20251005165656_initNewDatabase")]
+    partial class initNewDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -238,7 +238,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                     b.Property<DateTime?>("CompetitionStartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("ImageFilePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsOpen")
@@ -253,6 +253,12 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 
                     b.Property<DateTime>("RegistrationStartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("RegulationFilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RulesFilePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -365,7 +371,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -376,6 +382,9 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompetitionId");
+
+                    b.HasIndex("OrderNumber")
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
