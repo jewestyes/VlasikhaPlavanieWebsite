@@ -22,7 +22,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
         public async Task<RegistrationViewModel?> BuildIndexModelAsync(int id)
         {
             var competition = await _context.Competitions.FindAsync(id);
-            if (competition == null)
+            if (competition == null || competition?.IsOpen == false)
             {
                 return null;
             }
