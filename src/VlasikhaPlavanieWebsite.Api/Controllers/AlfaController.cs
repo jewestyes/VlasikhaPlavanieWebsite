@@ -4,7 +4,7 @@ using VlasikhaPlavanieWebsite.Application.Interfaces;
 
 namespace VlasikhaPlavanieWebsite.Controllers
 {
-    [Route("tinkoff")]
+    [Route("alfa")]
     public class AlfaController : Controller
     {
         private readonly ILogger<AlfaController> _logger;
@@ -18,7 +18,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 			_webhookService = webhookService;
 		}
 		[HttpPost("webhook")]
-		public async Task<IActionResult> AlfaWebhook([FromBody] TinkoffWebhook model)
+		public async Task<IActionResult> TinkoffWebhook([FromBody] TinkoffWebhook model)
 		{
 			try
 			{
