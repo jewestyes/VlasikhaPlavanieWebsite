@@ -5,13 +5,13 @@ using VlasikhaPlavanieWebsite.Application.Interfaces;
 namespace VlasikhaPlavanieWebsite.Controllers
 {
     [Route("tinkoff")]
-    public class AlfaController : Controller
+    public class TinkoffController : Controller
     {
-        private readonly ILogger<AlfaController> _logger;
+        private readonly ILogger<TinkoffController> _logger;
 		private readonly ITinkoffWebhookService _webhookService;
 
-		public AlfaController(
-			ILogger<AlfaController> logger,
+		public TinkoffController(
+			ILogger<TinkoffController> logger,
 			ITinkoffWebhookService webhookService)
         {
             _logger = logger;
