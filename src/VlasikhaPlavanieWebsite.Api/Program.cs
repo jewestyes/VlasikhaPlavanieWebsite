@@ -55,10 +55,8 @@ builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<ICompetitionService, CompetitionService>();
 builder.Services.AddScoped<IFileMappingService, FileMappingService>();
 builder.Services.AddScoped<IHomeService, HomeService>();
-builder.Services.AddScoped<IPaymentService, AlphaPaymentService>();
-builder.Services.AddScoped<IAlfaWebhookService, AlfaWebhookService>();
-//builder.Services.AddScoped<IPaymentService, TinkoffPaymentService>();
-//builder.Services.AddScoped<ITinkoffWebhookService, TinkoffWebhookService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<ITinkoffWebhookService, TinkoffWebhookService>();
 builder.Services.AddScoped<IStatService, StatService>();
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IRoleInitializer, RoleInitializer>();
@@ -106,6 +104,10 @@ using (var scope = app.Services.CreateScope())
 	var context = services.GetRequiredService<ApplicationDbContext>();
 
 	var env = services.GetRequiredService<IWebHostEnvironment>();
+	if (env.IsDevelopment() || env.IsStaging())
+	{
+		context.Database.Migrate();
+	}
 
 	var roleInitializer = services.GetRequiredService<IRoleInitializer>();
 	roleInitializer.Initialize().Wait();

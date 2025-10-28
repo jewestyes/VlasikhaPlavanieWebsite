@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VlasikhaPlavanieWebsite.Application.Interfaces;
 using VlasikhaPlavanieWebsite.Models;
 
 namespace VlasikhaPlavanieWebsite.Controllers
@@ -9,25 +9,50 @@ namespace VlasikhaPlavanieWebsite.Controllers
 	public class AlfaController : Controller
 	{
 		private readonly ILogger<AlfaController> _logger;
-		private readonly IAlfaWebhookService _alfaWebhookService;
 
-		public AlfaController(ILogger<AlfaController> logger, IAlfaWebhookService alfaWebhookService)
+		public AlfaController(ILogger<AlfaController> logger)
 		{
 			_logger = logger;
-			_alfaWebhookService = alfaWebhookService;
 		}
 
 
 		[HttpGet("webhook")]
 		[AllowAnonymous]
 		[IgnoreAntiforgeryToken]
-		public IActionResult AlfaWebhook([FromQuery] AlfaCallbackQuery model)
+		public IActionResult AlfaWebhook(
+			[FromQuery] string mdOrder,
+			[FromQuery] string orderNumber,
+			[FromQuery] string checksum,
+			[FromQuery] string callbackCreationDate,
+			[FromQuery] string operation,
+			[FromQuery] string status,
+			[FromQuery] string bindingId,
+			[FromQuery] string clientId,
+			[FromQuery] string enabled,
+			[FromQuery] string operationRefundedAmount,
+			[FromQuery] string operationRefundedAmountFormatted
+)
 		{
-			Console.WriteLine($"{model.orderNumber}\n{model.checksum}\n{model.mdOrder}\n{model.operation}\n{model.status}");
+			_logger.LogInformation(
+				"Alfa GET webhook: mdOrder={mdOrder}, orderNumber={orderNumber}," +
+				" checksum={checksum}, callbackCreationDate={callbackCreationDate}," +
+				" operation={operation}, status={status}, bindingId={bindingId}," +
+				" clientId={clientId}, enabled={enabled}, operationRefundedAmount={operationRefundedAmount}," +
+				" operationRefundedAmountFormatted={operationRefundedAmountFormatted}",
+				mdOrder,
+				orderNumber,
+				checksum,
+				callbackCreationDate,
+				operation,
+				status,
+				bindingId,
+				clientId,
+				enabled,
+				operationRefundedAmount,
+				operationRefundedAmountFormatted
+			);
 
-			var result = _alfaWebhookService.HandleWebhookAsync(model, Request.Query).GetAwaiter().GetResult();
-
-			return result;
+			return Ok("OK");
 		}
 
 	}
