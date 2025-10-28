@@ -14,13 +14,13 @@ using VlasikhaPlavanieWebsite.Data;
 
 namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Payment
 {
-	public class PaymentService : IPaymentService
+	public class TinkoffPaymentService : IPaymentService
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly IConfiguration _configuration;
-		private readonly ILogger<PaymentService> _logger;
-		public PaymentService(ApplicationDbContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<PaymentService> logger)
+		private readonly ILogger<TinkoffPaymentService> _logger;
+		public TinkoffPaymentService(ApplicationDbContext context, IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<TinkoffPaymentService> logger)
 		{
 			_context = context;
 			_httpClientFactory = httpClientFactory;

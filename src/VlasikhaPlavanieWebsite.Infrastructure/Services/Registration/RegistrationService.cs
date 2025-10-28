@@ -22,8 +22,8 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
         public async Task<RegistrationViewModel?> BuildIndexModelAsync(int id)
         {
             var competition = await _context.Competitions.FindAsync(id);
-            if (competition == null)
-            {
+			if (competition == null || competition?.IsOpen == false)
+			{
                 return null;
             }
 
@@ -90,7 +90,8 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
 				totalPrice += disciplinesCount <= 3 ? 2300m : 2300m + 500m * (disciplinesCount - 3);
 			}
 
-			return totalPrice;
+			//return totalPrice;
+			return 10m;
 		}
 	}
 }
