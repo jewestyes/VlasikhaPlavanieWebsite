@@ -3,6 +3,7 @@ name: CI/CD Deploy to Ubuntu
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
 
 env:
   APP_HOME: /home/VlasikhaPlavanieWebsite
@@ -47,7 +48,12 @@ jobs:
             root@${{ secrets.HOST }}:$RELEASE_DIR/
 
           ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} \
-            "ln -sfn $APP_HOME/shared/Files                                      $RELEASE_DIR/wwwroot/Files && \
+            "sudo systemctl stop kestrel.service && \
+             ln -sfn $APP_HOME/shared/Files                                      $RELEASE_DIR/wwwroot/Files && \
+             cp -f $APP_HOME/shared/yandex_e63abf38e137cd80.html                                      $RELEASE_DIR/wwwroot/ && \
+             cp -f $APP_HOME/shared/googleff5ef1b226fa7036.html                                      $RELEASE_DIR/wwwroot/ && \
+             cp -f $APP_HOME/shared/favicon.ico                                      $RELEASE_DIR/wwwroot/favicon.ico && \
+             ln -sfn $APP_HOME/shared/images/competitions                        $RELEASE_DIR/wwwroot/images/competitions  && \
              ln -sfn $APP_HOME/shared/appsettings.Production.json                $RELEASE_DIR/appsettings.Production.json && \
              ln -sfn $RELEASE_DIR                                               $APP_HOME/current && \
-             sudo systemctl restart kestrel.service"
+             sudo systemctl start kestrel.service"
