@@ -23,7 +23,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[IgnoreAntiforgeryToken]
 		public IActionResult AlfaWebhook([FromQuery] AlfaCallbackQuery model)
 		{
-			Console.WriteLine($"{model.orderNumber}\n{model.checksum}\n{model.mdOrder}\n{model.operation}\n{model.status}");
+			//Console.WriteLine($"{model.orderNumber}\n{model.checksum}\n{model.mdOrder}\n{model.operation}\n{model.status}");
 
 			var result = _alfaWebhookService.HandleWebhookAsync(model, Request.Query).GetAwaiter().GetResult();
 

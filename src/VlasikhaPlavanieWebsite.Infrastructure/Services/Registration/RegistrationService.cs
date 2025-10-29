@@ -90,8 +90,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
 				totalPrice += disciplinesCount <= 3 ? 2300m : 2300m + 500m * (disciplinesCount - 3);
 			}
 
-			//return totalPrice;
-			return 10m;
+			return totalPrice;
 		}
 	}
 }
