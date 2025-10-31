@@ -2,6 +2,7 @@
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using VlasikhaPlavanieWebsite.Data;
+using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.ViewModels;
 
 namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
@@ -25,7 +26,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 						join d in _applicationDbContext.Disciplines on p.Id equals d.ParticipantId into pd
 						from discipline in pd.DefaultIfEmpty()
 						join rs in _applicationDbContext.Competitions on order.CompetitionId equals rs.Id
-						where rs.Name == competitionName
+						where rs.Name == competitionName && order != null && order.Status == OrderStatus.Paid
 						select new ParticipantOrderViewModel
 						{
 							LastName = p.LastName,
