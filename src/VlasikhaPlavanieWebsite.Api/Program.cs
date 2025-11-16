@@ -7,7 +7,6 @@ using VlasikhaPlavanieWebsite.Interfaces;
 using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.Services;
 using VlasikhaPlavanieWebsite.Application.Interfaces;
-using VlasikhaPlavanieWebsite.Infrastructure.Services.Registration;
 using VlasikhaPlavanieWebsite.Infrastructure.Services.Admin;
 using VlasikhaPlavanieWebsite.Infrastructure.Services;
 using VlasikhaPlavanieWebsite.Infrastructure.Services.Payment;
