@@ -12,5 +12,6 @@
         public DateTime? RegistrationEndDate { get; set; }
 		public DateTime? CompetitionStartDate { get; set; } = DateTime.UtcNow.AddHours(3);
 		public bool IsOpen { get; set; }
+		public decimal Price { get; set; }
     }
 }

@@ -62,6 +62,12 @@
 		</div>
 
 		<div class="form-group">
+			<label for="CompetitionPrice">Цена участия</label>
+			<input asp-for="NewCompetition.Price" class="form-control competition-input" type="number" placeholder="Введите цену" />
+			<span asp-validation-for="NewCompetition.Price" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
 			<input type="submit" value="Создать соревнование" class="btn btn-primary" />
 		</div>
 	</form>
@@ -79,6 +85,7 @@
 						@(competition.RegistrationEndDate.HasValue ? competition.RegistrationEndDate.Value.ToString("yyyy-MM-dd HH:mm") : "Не завершен")
 					</div>
 					<div>@(competition.IsOpen ? "Открыта" : "Закрыта")</div>
+					<div>Цена участия: @competition.Price</div>
 				</div>
 				<div class="competition-actions">
 					@if (competition.IsOpen)

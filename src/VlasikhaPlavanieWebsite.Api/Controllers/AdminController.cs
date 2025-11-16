@@ -190,9 +190,16 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[Route("Admin/ManageCompetitions")]
 		public async Task<IActionResult> ManageCompetitions()
 		{
+			var competitions = await _competitionService.GetAllAsync();
+
+			var orderedCompetitions = competitions
+				.OrderByDescending(c => c.IsOpen)
+				.ThenByDescending(c => c.RegistrationStartDate)
+				.ToList();
+
 			return View(new ManageCompetitionsViewModel
 			{
-				Competitions = await _competitionService.GetAllAsync()
+				Competitions = orderedCompetitions
 			});
 		}
 

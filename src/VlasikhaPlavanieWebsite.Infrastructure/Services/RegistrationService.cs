@@ -6,7 +6,7 @@ using VlasikhaPlavanieWebsite.Models;
 using VlasikhaPlavanieWebsite.ViewModels;
 using VlasikhaPlavanieWebsite.Data;
 
-namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
+namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 {
     public class RegistrationService : IRegistrationService
     {
@@ -22,8 +22,8 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
         public async Task<RegistrationViewModel?> BuildIndexModelAsync(int id)
         {
             var competition = await _context.Competitions.FindAsync(id);
-			if (competition == null || competition?.IsOpen == false)
-			{
+            if (competition == null || competition?.IsOpen == false)
+            {
                 return null;
             }
 
@@ -56,41 +56,50 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Registration
             return model;
         }
 
-		public async Task<string> SubmitAsync(RegistrationViewModel viewModel)
-		{
-			var orderNumber = Guid.NewGuid().ToString();
+        public async Task<string> SubmitAsync(RegistrationViewModel viewModel)
+        {
+			var competition = await _context.Competitions
+		        .AsNoTracking()
+		        .FirstOrDefaultAsync(c => c.Id == viewModel.Competition.Id);
 
-            decimal totalPrice = CalculateCost(viewModel);
-
-			var order = new Order
+			if (competition == null || competition.IsOpen == false)
 			{
-				OrderNumber = orderNumber,
-				Amount = totalPrice,
-				Participants = viewModel.Participants,
-				Status = OrderStatus.Pending,
-				CreatedAt = DateTime.UtcNow,
-				UpdatedAt = DateTime.UtcNow,
-				CompetitionId = viewModel.Competition.Id
-			};
-
-			_context.Orders.Add(order);
-			await _context.SaveChangesAsync();
-
-			return orderNumber;
-		}
-
-		private decimal CalculateCost(RegistrationViewModel viewModel)
-		{
-			List<Participant> participants = viewModel.Participants;
-			decimal totalPrice = 0m;
-
-			foreach (Participant participant in participants)
-			{
-				int disciplinesCount = participant.Disciplines.Count();
-				totalPrice += disciplinesCount <= 3 ? 2300m : 2300m + 500m * (disciplinesCount - 3);
+				throw new InvalidOperationException("Соревнование недоступно для регистрации.");
 			}
 
-			return totalPrice;
-		}
-	}
+			var orderNumber = Guid.NewGuid().ToString();
+
+            decimal totalPrice = CalculateCost(viewModel, competition.Price);
+
+            var order = new Order
+            {
+                OrderNumber = orderNumber,
+                Amount = totalPrice,
+                Participants = viewModel.Participants,
+                Status = OrderStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                CompetitionId = viewModel.Competition.Id
+            };
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            return orderNumber;
+        }
+
+        private decimal CalculateCost(RegistrationViewModel viewModel, decimal price)
+        {
+            List<Participant> participants = viewModel.Participants;
+            decimal totalPrice = 0m;
+
+            foreach (Participant participant in participants)
+            {
+                int disciplinesCount = participant.Disciplines.Count();
+                totalPrice += disciplinesCount <= 3 ? price : price + 500m * (disciplinesCount - 3);
+            }
+
+            return totalPrice;
+        }
+    }
 }
