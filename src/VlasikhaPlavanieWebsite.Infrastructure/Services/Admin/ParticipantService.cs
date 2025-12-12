@@ -23,20 +23,21 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 						join rs in _applicationDbContext.Competitions
 							on order.CompetitionId equals rs.Id into ors
 						from regcompetition in ors.DefaultIfEmpty()
-						where order != null && order.Status == OrderStatus.Paid
-						select new ParticipantOrderViewModel
-						{
-							LastName = p.LastName,
-							FirstName = p.FirstName,
+                                                where order != null && order.Status == OrderStatus.Paid
+                                                select new ParticipantOrderViewModel
+                                                {
+                                                        LastName = p.LastName,
+                                                        FirstName = p.FirstName,
 							MiddleName = p.MiddleName,
 							BirthDate = p.BirthDate,
 							Gender = p.Gender,
 							CityOrTeam = p.CityOrTeam,
 							Rank = p.Rank,
-							Phone = p.Phone,
-							CreatedAt = order.CreatedAt,
-							Email = p.Email,
-							DisciplineName = discipline != null ? discipline.Name : null,
+                                                        Phone = p.Phone,
+                                                        OrderId = order.Id,
+                                                        CreatedAt = order.CreatedAt,
+                                                        Email = p.Email,
+                                                        DisciplineName = discipline != null ? discipline.Name : null,
 							Distance = discipline != null ? discipline.Distance : null,
 							EntryTime = discipline != null ? discipline.EntryTime : null,
 							OrderNumber = order != null ? order.OrderNumber : null,
