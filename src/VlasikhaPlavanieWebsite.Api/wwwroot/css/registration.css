@@ -1,4 +1,4 @@
-/* Основные стили контейнера формы */
+/* ГЋГ±Г­Г®ГўГ­Г»ГҐ Г±ГІГЁГ«ГЁ ГЄГ®Г­ГІГҐГ©Г­ГҐГ°Г  ГґГ®Г°Г¬Г» */
 .form-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -14,7 +14,7 @@
         color: #333;
     }
 
-/* Секция участника */
+/* Г‘ГҐГЄГ¶ГЁГї ГіГ·Г Г±ГІГ­ГЁГЄГ  */
 .participant-section {
     border-bottom: 1px solid #ddd;
     padding-bottom: 20px;
@@ -26,7 +26,7 @@
         color: #555;
     }
 
-/* Секция дисциплины */
+/* Г‘ГҐГЄГ¶ГЁГї Г¤ГЁГ±Г¶ГЁГЇГ«ГЁГ­Г» */
 .discipline-section {
     margin-bottom: 15px;
     padding: 10px;
@@ -35,14 +35,14 @@
     position: relative;
 }
 
-/* Строка формы для гибкой компоновки */
+/* Г‘ГІГ°Г®ГЄГ  ГґГ®Г°Г¬Г» Г¤Г«Гї ГЈГЁГЎГЄГ®Г© ГЄГ®Г¬ГЇГ®Г­Г®ГўГЄГЁ */
 .form-row {
     display: flex;
     flex-wrap: wrap;
     margin: 0 -15px;
 }
 
-/* Группа формы */
+/* ГѓГ°ГіГЇГЇГ  ГґГ®Г°Г¬Г» */
 .form-group {
     padding: 0 15px;
     margin-bottom: 1rem;
@@ -52,7 +52,7 @@
         font-weight: bold;
     }
 
-/* Колонки с различной шириной */
+/* ГЉГ®Г«Г®Г­ГЄГЁ Г± Г°Г Г§Г«ГЁГ·Г­Г®Г© ГёГЁГ°ГЁГ­Г®Г© */
 .form-col-md-4,
 .form-col-md-6,
 .form-col-md-12 {
@@ -73,7 +73,18 @@
     width: 100%;
 }
 
-/* Поля ввода и селекты */
+        padding: 6px 10px;
+        min-height: 42px;
+        font-size: 16px;
+        line-height: 1.2;
+    }
+
+    .form-group input[type="date"]::-webkit-date-and-time-value {
+        text-align: left;
+    }
+
+    .form-group input[type="date"]::-webkit-datetime-edit {
+        padding: 0;
 .form-group input,
 .form-group select {
     width: 100%;
@@ -87,7 +98,7 @@
         padding: 6px;
     }
 
-/* Кнопки */
+/* ГЉГ­Г®ГЇГЄГЁ */
 .btn {
     padding: 10px 20px;
     border: none;
@@ -132,7 +143,7 @@
 }
 
 
-/* Дополнительные кнопки */
+/* Г„Г®ГЇГ®Г«Г­ГЁГІГҐГ«ГјГ­Г»ГҐ ГЄГ­Г®ГЇГЄГЁ */
 .add-discipline-button,
 .add-participant-button {
     margin-top: 10px;
@@ -197,7 +208,7 @@
     }
 
 
-/* Мобильные стили */
+/* ГЊГ®ГЎГЁГ«ГјГ­Г»ГҐ Г±ГІГЁГ«ГЁ */
 @media (max-width: 768px) {
     .form-container {
         padding: 15px;
