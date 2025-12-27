@@ -35,6 +35,7 @@
                 <thead>
                     <tr>
                         <th>Дата заказа</th>
+                        <th>OrderId</th>
                         <th>Имя</th>
                         <th>Фамилия</th>
                         <th>Отчество</th>
@@ -54,6 +55,7 @@
                     {
                         <tr data-competition="@item.RegistrationCompetitionName">
                             <td>@item.CreatedAt.AddHours(3).ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@item.OrderId</td>
                             <td>@item.FirstName</td>
                             <td>@item.LastName</td>
                             <td>@item.MiddleName</td>

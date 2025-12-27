@@ -21,6 +21,18 @@ h1.stats-title {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.stats-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+}
+
+    .stats-table-wrapper .stats-table {
+        min-width: 640px;
+        margin-bottom: 0;
+    }
+
     .stats-table, .stats-table th, .stats-table td {
         border: 1px solid #ddd;
     }
@@ -142,6 +154,10 @@ form {
         padding: 15px;
     }
 
+    .stats-table-wrapper {
+        border-radius: 8px;
+    }
+
     .stats-table th, .stats-table td {
         padding: 10px;
     }
@@ -156,6 +172,22 @@ form {
         padding: 12px;
         margin-top: 10px;
     }
+
+    ul.stats-list li {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    ul.stats-list li form {
+        display: block;
+        width: 100%;
+    }
+
+    ul.stats-list li .btn {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -166,6 +198,10 @@ form {
 
     .stats-table, .stats-table th, .stats-table td {
         font-size: 14px;
+    }
+
+    .stats-table-wrapper .stats-table {
+        min-width: 520px;
     }
 
     .stats-form input[type="text"], .stats-form input[type="email"], .stats-form input[type="date"], .stats-form select, .stats-form input[type="file"] {
