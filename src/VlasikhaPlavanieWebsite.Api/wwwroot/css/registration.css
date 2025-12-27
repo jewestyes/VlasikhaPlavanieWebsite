@@ -1,10 +1,3 @@
-/* Общие настройки и сброс */
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
 /* Основные стили контейнера формы */
 .form-container {
     max-width: 1000px;
@@ -57,8 +50,6 @@
 
     .form-group label {
         font-weight: bold;
-        display: block;
-        margin-bottom: 6px;
     }
 
 /* Колонки с различной шириной */
@@ -67,6 +58,7 @@
 .form-col-md-12 {
     flex: 0 0 auto;
     padding: 0 15px;
+    box-sizing: border-box;
 }
 
 .form-col-md-4 {
@@ -83,14 +75,12 @@
 
 /* Поля ввода и селекты */
 .form-group input,
-.form-group select,
-.form-group textarea {
+.form-group select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 15px;
 }
 
     .form-group input[type="date"] {
@@ -188,7 +178,6 @@
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    justify-content: center;
 }
 
 .header-link {
@@ -208,28 +197,7 @@
     }
 
 
-/* Состояние невалидности */
-.is-invalid {
-    border-color: #dc3545;
-}
-
-.text-danger {
-    color: #ff3860;
-    font-size: 12px;
-}
-
-/* Правки для intl-tel-input и мобильных телефонов */
-.form-group input[type="tel"],
-.iti {
-    width: 100%;
-}
-
-.iti input {
-    width: 100%;
-    padding-left: 58px; /* чтобы флаг не перекрывал текст */
-}
-
-/* Мобильная адаптация */
+/* Мобильные стили */
 @media (max-width: 768px) {
     .form-container {
         padding: 15px;
@@ -245,17 +213,14 @@
         width: 100%;
     }
 
-    .form-col-md-4,
-    .form-col-md-6,
-    .form-col-md-12 {
+    .form-col-md-4, .form-col-md-6, .form-col-md-12 {
         width: 100%;
         padding: 0;
     }
 
-    /* Кнопки растягиваются под ширину экрана на мобилке */
     .btn {
         width: 100%;
-        margin: 6px 0;
+        margin-bottom: 10px;
     }
 
     .add-discipline-button,
@@ -263,55 +228,14 @@
     .remove-discipline-button,
     .remove-participant-button {
         width: 100%;
-        padding: 12px;
-        box-sizing: border-box;
-    }
-
-    /* Уменьшаем высоту баннера на маленьких экранах */
-    .header-banner {
-        height: 180px;
-    }
-
-    .header-link {
-        padding: 10px 16px;
-        font-size: 16px;
-    }
-
-    .form-container h2 {
-        font-size: 20px;
-    }
-
-    .participant-section h3 {
-        font-size: 18px;
-    }
-
-    /* Временной ввод подстраивается под ширину */
-    .time-input {
-        width: 100%;
-        text-align: left;
-    }
-
-    /* Увеличим размеры элементов для удобства касания */
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        font-size: 17px;
-        padding: 10px;
     }
 }
 
-/* Дальнейшая оптимизация для очень узких экранов */
-@media (max-width: 420px) {
-    .header-banner {
-        height: 140px;
-    }
+.is-invalid {
+    border-color: #dc3545;
+}
 
-    .header-link {
-        font-size: 14px;
-        padding: 8px 12px;
-    }
-
-    .form-container {
-        padding: 12px;
-    }
+.text-danger {
+    color: #ff3860; 
+    font-size: 12px; 
 }
