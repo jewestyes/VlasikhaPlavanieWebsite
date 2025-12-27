@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VlasikhaPlavanieWebsite.ViewModels.ParticipantOrderViewModel>
+﻿@model VlasikhaPlavanieWebsite.ViewModels.AdminParticipantsViewModel
 
 <!DOCTYPE html>
 <html>
@@ -14,18 +14,26 @@
         </h1>
         <a href="#" id="download-button" class="download-excel-button disabled" onclick="return false;">Скачать участников для выбранного соревнования</a>
 
-        <!-- Кнопки соревнований -->
-        <div class="competitions-buttons">
-            @foreach (var competitionGroup in Model
-            .GroupBy(p => p.RegistrationCompetitionName)
-            .Select(g => new
+        <div class="filter-row">
+            <label>
+                <input type="checkbox" id="hide-finished" checked />
+                Не показывать завершенные соревнования
+            </label>
+        </div>
+
+        <div class="competitions-buttons" id="competitions-buttons">
+            @{
+                var counts = Model.Participants
+                    .GroupBy(p => p.RegistrationCompetitionName)
+                    .ToDictionary(g => g.Key, g => g.Select(p => new { p.LastName, p.FirstName, p.MiddleName, p.BirthDate }).Distinct().Count());
+            }
+
+            @foreach (var competition in Model.Competitions)
             {
-               competition = g.Key,
-               UniqueParticipants = g.Select(p => new { p.LastName, p.FirstName, p.MiddleName, p.BirthDate }).Distinct().Count()
-            }))
-            {
-                <button class="competition-button" onclick="filterBycompetition('@competitionGroup.competition')">
-                    @competitionGroup.competition (@competitionGroup.UniqueParticipants)
+                var count = counts.ContainsKey(competition.Name) ? counts[competition.Name] : 0;
+                var isFinished = !competition.IsOpen || (competition.RegistrationEndDate.HasValue && competition.RegistrationEndDate.Value < DateTime.UtcNow);
+                <button class="competition-button" data-finished="@(isFinished.ToString().ToLower())" onclick="filterBycompetition('@competition.Name')">
+                    @competition.Name (@count)
                 </button>
             }
         </div>
@@ -51,7 +59,7 @@
                     </tr>
                 </thead>
                 <tbody id="participants-body">
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Participants)
                     {
                         <tr data-competition="@item.RegistrationCompetitionName">
                             <td data-label="Дата заказа">@item.CreatedAt.AddHours(3).ToString("dd.MM.yyyy HH:mm")</td>
@@ -78,6 +86,7 @@
     <script>
         var selectedcompetition = '';
         var baseDownloadUrl = '@Url.Action("DownloadParticipantsExcelBycompetition", "Admin")';
+        var initialCompetition = '@(Model.SelectedCompetitionName ?? "")';
 
         function filterBycompetition(competition) {
             selectedcompetition = competition;
@@ -90,14 +99,54 @@
                 }
             });
 
-            // Обновление ссылки кнопки скачивания
             var downloadButton = document.getElementById('download-button');
             downloadButton.href = baseDownloadUrl + '?competitionName=' + encodeURIComponent(competition);
-
-            // Активируем кнопку
             downloadButton.classList.remove('disabled');
             downloadButton.onclick = null;
         }
+
+        function updateCompetitionsVisibility() {
+            var hideFinished = document.getElementById('hide-finished').checked;
+            var buttons = document.querySelectorAll('#competitions-buttons .competition-button');
+
+            buttons.forEach(function (btn) {
+                var finished = btn.getAttribute('data-finished') === 'true';
+                if (hideFinished && finished) {
+                    btn.style.display = 'none';
+                    if (btn.textContent.indexOf(selectedcompetition) !== -1) {
+                        selectedcompetition = '';
+                        document.querySelectorAll('#participants-body tr').forEach(function (r) { r.style.display = ''; });
+                        var downloadButton = document.getElementById('download-button');
+                        downloadButton.classList.add('disabled');
+                        downloadButton.href = '#';
+                        downloadButton.onclick = function () { return false; };
+                    }
+                } else {
+                    btn.style.display = '';
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            updateCompetitionsVisibility();
+
+            // Если модель передала название по умолчанию — применяем фильтр сразу
+            if (initialCompetition && initialCompetition.length > 0) {
+                // Ищем кнопку с таким именем (без учёта счётчика в тексте) и кликаем логически
+                var buttons = document.querySelectorAll('#competitions-buttons .competition-button');
+                for (var i = 0; i < buttons.length; i++) {
+                    var btn = buttons[i];
+                    if (btn.textContent.indexOf(initialCompetition) !== -1) {
+                        filterBycompetition(initialCompetition);
+                        break;
+                    }
+                }
+            }
+
+            document.getElementById('hide-finished').addEventListener('change', function () {
+                updateCompetitionsVisibility();
+            });
+        });
     </script>
 </body>
 </html>
