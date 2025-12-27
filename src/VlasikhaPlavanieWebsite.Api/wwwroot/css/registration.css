@@ -1,4 +1,11 @@
-/* �������� ����� ���������� ����� */
+/* ÐÐ±ÑÐ¸Ðµ Ð½Ð°ÑÑÑÐ¾Ð¹ÐºÐ¸ Ð¸ ÑÐ±ÑÐ¾Ñ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ÐÑÐ½Ð¾Ð²Ð½ÑÐµ ÑÑÐ¸Ð»Ð¸ ÐºÐ¾Ð½ÑÐµÐ¹Ð½ÐµÑÐ° ÑÐ¾ÑÐ¼Ñ */
 .form-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -14,7 +21,7 @@
         color: #333;
     }
 
-/* ������ ��������� */
+/* Ð¡ÐµÐºÑÐ¸Ñ ÑÑÐ°ÑÑÐ½Ð¸ÐºÐ° */
 .participant-section {
     border-bottom: 1px solid #ddd;
     padding-bottom: 20px;
@@ -26,7 +33,7 @@
         color: #555;
     }
 
-/* ������ ���������� */
+/* Ð¡ÐµÐºÑÐ¸Ñ Ð´Ð¸ÑÑÐ¸Ð¿Ð»Ð¸Ð½Ñ */
 .discipline-section {
     margin-bottom: 15px;
     padding: 10px;
@@ -35,14 +42,14 @@
     position: relative;
 }
 
-/* ������ ����� ��� ������ ���������� */
+/* Ð¡ÑÑÐ¾ÐºÐ° ÑÐ¾ÑÐ¼Ñ Ð´Ð»Ñ Ð³Ð¸Ð±ÐºÐ¾Ð¹ ÐºÐ¾Ð¼Ð¿Ð¾Ð½Ð¾Ð²ÐºÐ¸ */
 .form-row {
     display: flex;
     flex-wrap: wrap;
     margin: 0 -15px;
 }
 
-/* ������ ����� */
+/* ÐÑÑÐ¿Ð¿Ð° ÑÐ¾ÑÐ¼Ñ */
 .form-group {
     padding: 0 15px;
     margin-bottom: 1rem;
@@ -52,7 +59,7 @@
         font-weight: bold;
     }
 
-/* ������� � ��������� ������� */
+/* ÐÐ¾Ð»Ð¾Ð½ÐºÐ¸ Ñ ÑÐ°Ð·Ð»Ð¸ÑÐ½Ð¾Ð¹ ÑÐ¸ÑÐ¸Ð½Ð¾Ð¹ */
 .form-col-md-4,
 .form-col-md-6,
 .form-col-md-12 {
@@ -73,7 +80,7 @@
     width: 100%;
 }
 
-/* ���� ����� � ������� */
+/* ÐÐ¾Ð»Ñ Ð²Ð²Ð¾Ð´Ð° Ð¸ ÑÐµÐ»ÐµÐºÑÑ */
 .form-group input,
 .form-group select {
     width: 100%;
@@ -87,7 +94,7 @@
         padding: 6px;
     }
 
-/* ������ */
+/* ÐÐ½Ð¾Ð¿ÐºÐ¸ */
 .btn {
     padding: 10px 20px;
     border: none;
@@ -132,7 +139,7 @@
 }
 
 
-/* �������������� ������ */
+/* ÐÐ¾Ð¿Ð¾Ð»Ð½Ð¸ÑÐµÐ»ÑÐ½ÑÐµ ÐºÐ½Ð¾Ð¿ÐºÐ¸ */
 .add-discipline-button,
 .add-participant-button {
     margin-top: 10px;
@@ -197,7 +204,41 @@
     }
 
 
-/* ��������� ����� */
+/* Ð¡Ð¾ÑÑÐ¾ÑÐ½Ð¸Ðµ Ð½ÐµÐ²Ð°Ð»Ð¸Ð´Ð½Ð¾ÑÑÐ¸ */
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.text-danger {
+    color: #ff3860;
+    font-size: 12px;
+}
+
+.form-col-md-4,
+.form-col-md-6,
+.form-col-md-12,
+.col-md-4,
+.col-md-6,
+.col-md-12 {
+    min-width: 0;
+}
+
+.form-group input[type="date"] {
+    max-width: 100%;
+}
+
+/* ÐÑÐ°Ð²ÐºÐ¸ Ð´Ð»Ñ intl-tel-input Ð¸ Ð¼Ð¾Ð±Ð¸Ð»ÑÐ½ÑÑ ÑÐµÐ»ÐµÑÐ¾Ð½Ð¾Ð² */
+.form-group input[type="tel"],
+.iti {
+    width: 100%;
+}
+
+.iti input {
+    width: 100%;
+    padding-left: 58px; /* ÑÑÐ¾Ð±Ñ ÑÐ»Ð°Ð³ Ð½Ðµ Ð¿ÐµÑÐµÐºÑÑÐ²Ð°Ð» ÑÐµÐºÑÑ */
+}
+
+/* ÐÐ¾Ð±Ð¸Ð»ÑÐ½Ð°Ñ Ð°Ð´Ð°Ð¿ÑÐ°ÑÐ¸Ñ */
 @media (max-width: 768px) {
     .form-container {
         padding: 15px;
@@ -218,6 +259,7 @@
         padding: 0;
     }
 
+    /* ÐÐ½Ð¾Ð¿ÐºÐ¸ ÑÐ°ÑÑÑÐ³Ð¸Ð²Ð°ÑÑÑÑ Ð¿Ð¾Ð´ ÑÐ¸ÑÐ¸Ð½Ñ ÑÐºÑÐ°Ð½Ð° Ð½Ð° Ð¼Ð¾Ð±Ð¸Ð»ÐºÐµ */
     .btn {
         width: 100%;
         margin-bottom: 10px;
@@ -228,12 +270,65 @@
     .remove-discipline-button,
     .remove-participant-button {
         width: 100%;
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    /* Ð£Ð¼ÐµÐ½ÑÑÐ°ÐµÐ¼ Ð²ÑÑÐ¾ÑÑ Ð±Ð°Ð½Ð½ÐµÑÐ° Ð½Ð° Ð¼Ð°Ð»ÐµÐ½ÑÐºÐ¸Ñ ÑÐºÑÐ°Ð½Ð°Ñ */
+    .header-banner {
+        height: 180px;
+    }
+
+    .header-link {
+        padding: 10px 16px;
+        font-size: 16px;
+    }
+
+    .form-container h2 {
+        font-size: 20px;
+    }
+
+    .participant-section h3 {
+        font-size: 18px;
+    }
+
+    /* ÐÑÐµÐ¼ÐµÐ½Ð½Ð¾Ð¹ Ð²Ð²Ð¾Ð´ Ð¿Ð¾Ð´ÑÑÑÐ°Ð¸Ð²Ð°ÐµÑÑÑ Ð¿Ð¾Ð´ ÑÐ¸ÑÐ¸Ð½Ñ */
+    .time-input {
+        width: 100%;
+        text-align: left;
+    }
+
+    /* Ð£Ð²ÐµÐ»Ð¸ÑÐ¸Ð¼ ÑÐ°Ð·Ð¼ÐµÑÑ ÑÐ»ÐµÐ¼ÐµÐ½ÑÐ¾Ð² Ð´Ð»Ñ ÑÐ´Ð¾Ð±ÑÑÐ²Ð° ÐºÐ°ÑÐ°Ð½Ð¸Ñ */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 17px;
+        padding: 10px;
+    }
+
+    .btn {
+        margin-right: 0;
+    }
+
+    .time-input {
+        width: 100%;
+    }
+
+    .form-group input[type="date"] {
+        width: 100%;
     }
 }
 
-.is-invalid {
-    border-color: #dc3545;
-}
+/* ÐÐ°Ð»ÑÐ½ÐµÐ¹ÑÐ°Ñ Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ñ Ð´Ð»Ñ Ð¾ÑÐµÐ½Ñ ÑÐ·ÐºÐ¸Ñ ÑÐºÑÐ°Ð½Ð¾Ð² */
+@media (max-width: 420px) {
+    .header-banner {
+        height: 140px;
+    }
+
+    .header-link {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
 
 .text-danger {
     color: #ff3860; 
