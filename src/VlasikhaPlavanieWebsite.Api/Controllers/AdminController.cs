@@ -114,44 +114,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		[Route("Admin/Index")]
 		public async Task<IActionResult> Index()
 		{
-			var participants = await _participantService.GetAllParticipantOrdersAsync();
-			var competitions = await _competitionService.GetAllAsync();
-
-			// Выбираем последний открытый по дате начала регистрации.
-			var lastOpenCompetition = competitions
-				.Where(c => c.IsOpen)
-				.OrderByDescending(c => c.RegistrationStartDate)
-				.FirstOrDefault();
-
-			// Если нет открытых — берём последний по дате регистрации среди всех соревнований.
-			var defaultCompetition = lastOpenCompetition ?? competitions.OrderByDescending(c => c.RegistrationStartDate).FirstOrDefault();
-
-			var competitionSummaries = competitions.Select(c => new CompetitionSummaryViewModel
-			{
-				Id = c.Id,
-				Name = c.Name,
-				IsOpen = c.IsOpen,
-				RegistrationEndDate = c.RegistrationEndDate
-			}).ToList();
-
-			// Фильтруем участников по выбранному соревнованию, если оно найдено
-			if (defaultCompetition != null)
-			{
-				participants = participants
-					.Where(p => p.RegistrationCompetitionName == defaultCompetition.Name)
-					.ToList();
-			}
-
-			var vm = new AdminParticipantsViewModel
-			{
-				Participants = participants,
-				Competitions = competitionSummaries,
-				SelectedCompetitionName = defaultCompetition?.Name
-			};
-
-			return View(vm);
+			return View(await _participantService.GetAllParticipantOrdersAsync());
 		}
-
 
 		[HttpGet]
 		[Route("Admin/DownloadParticipantsExcelBycompetition")]
