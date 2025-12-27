@@ -538,7 +538,6 @@ html, body {
 
 /* Date inputs: prevent calendar icon “escaping” + consistent sizing */
 .form-group input[type="date"] {
-    padding-right: 44px;
     min-height: var(--field-h);
 }
 
