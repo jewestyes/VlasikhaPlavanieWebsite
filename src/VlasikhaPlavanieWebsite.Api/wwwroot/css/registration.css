@@ -340,3 +340,21 @@
         padding: 12px;
     }
 }
+
+input[type="date"] {
+  position: relative;
+  box-sizing: border-box;
+  padding-right: 2.4rem; /* оставьте место для иконки */
+  overflow: hidden;
+  -webkit-appearance: textfield; /* уменьшает нативные отступы в iOS */
+}
+
+/* позиционируем индикатор внутри поля */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 0.4rem;     /* отступ от правого края поля */
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0;
+  margin: 0;
+}
