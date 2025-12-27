@@ -39,24 +39,24 @@
 				<div class="participant-section">
 					<h3>Участник №@(i + 1)</h3>
 					<div class="form-row">
-						<div class="form-group form-col-md-4">
+						<div class="form-group col-md-4">
 							<label asp-for="Participants[i].LastName">Фамилия</label>
 							<input asp-for="Participants[i].LastName" class="form-control" required />
 							<span asp-validation-for="Participants[i].LastName" class="text-danger"></span>
 						</div>
-						<div class="form-group form-col-md-4">
+						<div class="form-group col-md-4">
 							<label asp-for="Participants[i].FirstName">Имя</label>
 							<input asp-for="Participants[i].FirstName" class="form-control" required />
 							<span asp-validation-for="Participants[i].FirstName" class="text-danger"></span>
 						</div>
-						<div class="form-group form-col-md-4">
+						<div class="form-group col-md-4">
 							<label asp-for="Participants[i].MiddleName">Отчество</label>
 							<input asp-for="Participants[i].MiddleName" class="form-control" required />
 							<span asp-validation-for="Participants[i].MiddleName" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="form-row">
-						<div class="form-group form-col-md-4">
+						<div class="form-group col-md-4">
 							<label asp-for="Participants[i].BirthDate">Дата рождения</label>
 							<input asp-for="Participants[i].BirthDate"
 								   type="date"
@@ -64,7 +64,7 @@
 								   id="birthDatePicker_@(i)" />
 							<span asp-validation-for="Participants[i].BirthDate" class="text-danger"></span>
 						</div>
-						<div class="form-group form-col-md-4">
+						<div class="form-group col-md-4">
 							<label asp-for="Participants[i].Gender">Пол</label>
 							<select asp-for="Participants[i].Gender" class="form-control" required>
 								<option value="Мужской">Мужской</option>
@@ -72,26 +72,26 @@
 							</select>
 							<span asp-validation-for="Participants[i].Gender" class="text-danger"></span>
 						</div>
-						<div class="form-group form-col-md-4">
+						<div class="form-group col-md-4">
 							<label asp-for="Participants[i].Phone">Телефон</label>
 							<input asp-for="Participants[i].Phone" type="tel" class="form-control" required />
 							<span asp-validation-for="Participants[i].Phone" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="form-row">
-						<div class="form-group form-col-md-6">
+						<div class="form-group col-md-6">
 							<label asp-for="Participants[i].Email">Email</label>
 							<input asp-for="Participants[i].Email" class="form-control" type="email" required />
 							<span asp-validation-for="Participants[i].Email" class="text-danger"></span>
 						</div>
-						<div class="form-group form-col-md-6">
+						<div class="form-group col-md-6">
 							<label asp-for="Participants[i].CityOrTeam">Город/команда</label>
 							<input asp-for="Participants[i].CityOrTeam" class="form-control" required />
 							<span asp-validation-for="Participants[i].CityOrTeam" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="form-row">
-						<div class="form-group form-col-md-6">
+						<div class="form-group col-md-6">
 							<label asp-for="Participants[i].Rank">Разряд</label>
 							<select asp-for="Participants[i].Rank" class="form-control">
 								<option value="Б/Р">Б/Р</option>
@@ -115,7 +115,7 @@
 					{
 						<div class="discipline-section">
 							<div class="form-row">
-								<div class="form-group form-col-md-4">
+								<div class="form-group col-md-4">
 									<label asp-for="Participants[i].Disciplines[j].Name">Дисциплина</label>
 									<select asp-for="Participants[i].Disciplines[j].Name" class="form-control discipline-select" required>
 										@foreach (var discipline in Model.DisciplineOptions.Where(d => d.Value.Count > 0))
@@ -125,14 +125,14 @@
 									</select>
 									<span asp-validation-for="Participants[i].Disciplines[j].Name" class="text-danger"></span>
 								</div>
-								<div class="form-group form-col-md-4">
+								<div class="form-group col-md-4">
 									<label asp-for="Participants[i].Disciplines[j].Distance">Выберите дистанцию</label>
 									<select asp-for="Participants[i].Disciplines[j].Distance" class="form-control distance-select"
 											data-current-distance="@Model.Participants[i].Disciplines[j].Distance" required>
 									</select>
 									<span asp-validation-for="Participants[i].Disciplines[j].Distance" class="text-danger"></span>
 								</div>
-								<div class="form-group form-col-md-4">
+								<div class="form-group col-md-4">
 									<label asp-for="Participants[i].Disciplines[j].StartDate">Дата старта</label>
 									<input asp-for="Participants[i].Disciplines[j].StartDate"
 										   type="date"
@@ -142,7 +142,7 @@
 										   readonly />
 									<span asp-validation-for="Participants[i].Disciplines[j].StartDate" class="text-danger"></span>
 								</div>
-								<div class="form-group form-col-md-4">
+								<div class="form-group col-md-4">
 									<label asp-for="Participants[i].Disciplines[j].EntryTime">Заявочное время</label>
 									<input asp-for="Participants[i].Disciplines[j].EntryTime" type="text" class="form-control time-input" placeholder="MM:SS:SS" maxlength="9" required />
 									<span asp-validation-for="Participants[i].Disciplines[j].EntryTime" class="text-danger"></span>
