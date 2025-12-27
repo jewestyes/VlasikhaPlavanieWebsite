@@ -134,14 +134,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 				RegistrationEndDate = c.RegistrationEndDate
 			}).ToList();
 
-			// Фильтруем участников по выбранному соревнованию, если оно найдено
-			if (defaultCompetition != null)
-			{
-				participants = participants
-					.Where(p => p.RegistrationCompetitionName == defaultCompetition.Name)
-					.ToList();
-			}
-
+			// НЕ фильтруем участников на сервере — возвращаем всех, но указываем выбранное соревнование
 			var vm = new AdminParticipantsViewModel
 			{
 				Participants = participants,
