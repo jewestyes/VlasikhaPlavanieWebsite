@@ -1,60 +1,145 @@
-.login-container {
-    background-color: #fff;
-    margin: 50px auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
+:root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --accent: #2563eb;
+    --accent-dark: #1e40af;
+    --danger: #dc2626;
+    --muted: #6b7280;
+    --border: #e6e9ef;
+    --radius: 12px;
+    --shadow: 0 8px 30px rgba(16,24,40,0.06);
+    --max-width: 420px;
+    --gap: 12px;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-.form-group {
-    margin-bottom: 20px;
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; font-family: var(--font-sans); background: var(--bg); color: #071033; -webkit-font-smoothing:antialiased; }
+
+.login-container {
+    max-width: var(--max-width);
+    width: 92%;
+    margin: 40px auto;
+    background: linear-gradient(180deg, var(--card), #fbfdff);
+    padding: 22px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
+
+/* Центрирование по высоте ТОЛЬКО для обёртки страницы входа.
+   Теперь не трогаем глобальный body, header/footer не будут "сплющены". */
+@media (min-height: 700px) and (min-width: 720px) {
+    .login-page-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .login-container { margin: 0; width: 420px; }
+}
+
+.participants-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #071033;
+}
+
+/* Подзаголовок/описание (если понадобится) */
+.login-sub {
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-top: -4px;
+}
+
+/* Форма и поля */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+label { font-size: 0.9rem; color: #0b1320; font-weight: 600; }
 
 .login-input {
     width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    font-size: 0.95rem;
+    color: #071033;
+    transition: box-shadow 120ms ease, border-color 120ms ease, transform 60ms ease;
 }
 
+/* Автокомплит/тип ввода */
+input[type="email"], input[type="password"], input[type="text"] {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* Фокус и доступность */
+.login-input:focus {
+    outline: none;
+    border-color: rgba(37,99,235,0.9);
+    box-shadow: 0 6px 18px rgba(37,99,235,0.08);
+    transform: translateY(-1px);
+}
+
+/* Кнопка входа */
 .login-button {
-    background-color: #007bff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    font-weight: 700;
     color: #fff;
-    padding: 10px 20px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-dark));
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
-    width: 100%;
+    transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+.login-button:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37,99,235,0.08); }
+.login-button:active { transform: translateY(0); }
+.login-button:focus { outline: 3px solid rgba(37,99,235,0.12); outline-offset: 2px; }
+
+/* Валидация */
+.text-danger, .validation-summary-errors {
+    color: var(--danger);
+    font-size: 0.92rem;
+    margin: 0;
 }
 
-    .login-button:hover {
-        background-color: #0056b3;
-    }
+/* Подсказки */
+.small-muted { color: var(--muted); font-size: 0.88rem; }
 
-@media (max-width: 768px) {
-    .login-container {
-        padding: 15px;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .login-button {
-        padding: 10px;
-    }
+/* Скрытые системные подсказки браузера — аккуратно */
+input::-ms-clear, input::-ms-reveal, input::-webkit-contacts-auto-fill-button {
+    display: none !important;
 }
 
+/* Адаптив: уменьшение отступов на малых экранах */
 @media (max-width: 480px) {
-    .login-container {
-        margin: 20px auto;
-        padding: 10px;
-    }
-
-    .login-button {
-        padding: 8px;
-    }
+    :root { --max-width: 380px; }
+    .login-container { padding: 14px; border-radius: 10px; width: 94%; margin: 18px auto; }
+    .participants-title { font-size: 1.05rem; }
+    .login-button { padding: 10px; font-size: 0.98rem; border-radius: 8px; }
+    .login-input { padding: 10px; font-size: 0.95rem; }
 }
+
+/* Упрощаем анимации, если пользователь предпочитает уменьшенное движение */
+@media (prefers-reduced-motion: reduce) {
+    .login-input, .login-button { transition: none !important; transform: none !important; }
+}
+
+/* Печать: убрать фон */
+@media print {
+    body, .login-container { background: #fff; box-shadow: none; border: none; }
+}
+
+/* Minor utility: центрирование формы в старых браузерах */
+.center { display: flex; align-items: center; justify-content: center; }

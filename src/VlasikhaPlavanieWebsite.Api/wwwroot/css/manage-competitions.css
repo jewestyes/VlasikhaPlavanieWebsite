@@ -163,3 +163,277 @@
         width: 100%;
     }
 }
+
+/* ======================================
+   BigTech overrides: Manage Competitions
+   (paste to END of manage-competitions.css)
+======================================= */
+
+:root {
+    --ui-bg: #f6f8fb;
+    --ui-card: #ffffff;
+    --ui-muted: #64748b;
+    --ui-text: #0f172a;
+    --ui-border: rgba(15, 23, 42, 0.12);
+    --ui-border-strong: rgba(15, 23, 42, 0.18);
+    --ui-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
+    --ui-shadow-md: 0 10px 30px rgba(15, 23, 42, 0.10);
+    --ui-radius: 12px;
+    --ui-radius-sm: 10px;
+    --ui-focus: rgba(37, 99, 235, 0.35);
+    --ui-primary: #2563eb;
+    --ui-primary-hover: #1d4ed8;
+    --ui-success: #16a34a;
+    --ui-success-hover: #15803d;
+    --ui-danger: #dc2626;
+    --ui-danger-hover: #b91c1c;
+    --ui-warning: #f59e0b;
+    --ui-warning-hover: #d97706;
+    --ui-control-h: 44px;
+    --ui-pad-x: 12px;
+    --ui-pad-y: 10px;
+}
+
+/* Page background */
+html, body {
+    background: var(--ui-bg);
+    color: var(--ui-text);
+}
+
+/* Container */
+.manage-competitions-container {
+    max-width: 980px;
+    width: min(980px, calc(100% - 32px));
+    margin: 28px auto;
+    padding: clamp(14px, 2.2vw, 22px);
+    border-radius: var(--ui-radius);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--ui-border);
+    box-shadow: var(--ui-shadow-md);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Competition item card */
+.competition-item {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 14px;
+    border-radius: var(--ui-radius);
+    background: var(--ui-card);
+    border: 1px solid var(--ui-border);
+    box-shadow: var(--ui-shadow-sm);
+}
+
+.competition-name {
+    margin: 0;
+    font-weight: 750;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    color: var(--ui-text);
+}
+
+.competition-details {
+    margin: 0;
+    color: var(--ui-muted);
+    font-size: 0.92rem;
+}
+
+/* Actions layout: grid */
+.competition-actions {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 0;
+    display: grid;
+    gap: 8px;
+}
+
+    .form-group label {
+        font-weight: 650;
+        color: var(--ui-text);
+        font-size: 0.92rem;
+    }
+
+/* Inputs */
+.form-control,
+.distance-input,
+select,
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+textarea {
+    width: 100%;
+    max-width: 100%;
+    min-height: var(--ui-control-h);
+    padding: var(--ui-pad-y) var(--ui-pad-x);
+    border-radius: var(--ui-radius-sm);
+    border: 1px solid var(--ui-border);
+    background: #fff;
+    color: var(--ui-text);
+    transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+    box-sizing: border-box;
+}
+
+.form-control {
+    padding: var(--ui-pad-y) var(--ui-pad-x);
+}
+
+/* Disciplines block as a card */
+.disciplines-list {
+    background: rgba(255, 255, 255, 0.80);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    padding: 12px;
+    box-shadow: var(--ui-shadow-sm);
+}
+
+/* Discipline rows: grid (checkbox + label + input) */
+.discipline-item {
+    display: grid;
+    grid-template-columns: 22px 1fr minmax(180px, 40%);
+    gap: 10px;
+    align-items: center;
+    justify-content: initial;
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+    .discipline-item:last-child {
+        border-bottom: none;
+    }
+
+.discipline-checkbox {
+    transform: none;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--ui-primary);
+    margin-right: 0;
+}
+
+.discipline-item label {
+    font-weight: 650;
+    color: var(--ui-text);
+}
+
+/* Disabled inputs */
+.distance-input:disabled,
+.form-control:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background: rgba(241, 245, 249, 0.95);
+    color: rgba(15, 23, 42, 0.60);
+    cursor: not-allowed;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: var(--ui-control-h);
+    width: 100%;
+    padding: 0 16px;
+    border-radius: var(--ui-radius-sm);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    border: 1px solid transparent;
+    box-shadow: var(--ui-shadow-sm);
+    transition: transform 80ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+    text-decoration: none;
+    user-select: none;
+}
+
+    .btn:hover {
+        opacity: 1;
+        box-shadow: var(--ui-shadow-md);
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+        box-shadow: var(--ui-shadow-sm);
+    }
+
+.btn-primary {
+    background-color: var(--ui-primary);
+    border-color: rgba(29, 78, 216, 0.55);
+}
+
+    .btn-primary:hover {
+        background-color: var(--ui-primary-hover);
+    }
+
+.btn-success {
+    background-color: var(--ui-success);
+    border-color: rgba(21, 128, 61, 0.55);
+}
+
+    .btn-success:hover {
+        background-color: var(--ui-success-hover);
+    }
+
+.btn-danger {
+    background-color: var(--ui-danger);
+    border-color: rgba(185, 28, 28, 0.55);
+}
+
+    .btn-danger:hover {
+        background-color: var(--ui-danger-hover);
+    }
+
+.btn-warning {
+    background-color: var(--ui-warning);
+    border-color: rgba(217, 119, 6, 0.55);
+    color: #111827;
+}
+
+    .btn-warning:hover {
+        background-color: var(--ui-warning-hover);
+        color: #111827;
+    }
+
+/* Focus ring */
+.btn:focus,
+.btn:focus-visible,
+.form-control:focus,
+.form-control:focus-visible,
+.distance-input:focus,
+.distance-input:focus-visible,
+input:focus,
+input:focus-visible,
+select:focus,
+select:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--ui-focus);
+    border-color: rgba(37, 99, 235, 0.70);
+}
+
+/* Desktop: show buttons 2 per row in actions blocks when possible */
+@media (min-width: 860px) {
+    .competition-actions .btn {
+        grid-column: span 6;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .manage-competitions-container {
+        width: calc(100% - 24px);
+        margin: 16px auto;
+        padding: 14px;
+    }
+}
+    

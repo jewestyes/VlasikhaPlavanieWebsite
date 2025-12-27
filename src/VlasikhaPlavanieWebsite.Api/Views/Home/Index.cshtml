@@ -57,4 +57,28 @@
         <p>Наш клуб объединяет любителей и профессионалов плавания. Мы стремимся к развитию спорта, популяризации здорового образа жизни и достижению новых рекордов.</p>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.carousel-card').forEach(function (card) {
+                // делаем курсор указателем для наглядности
+                card.style.cursor = 'pointer';
+
+                card.addEventListener('click', function (e) {
+                    // если клик был по ссылке или внутри ссылки — не перехватываем
+                    if (e.target.closest('a')) return;
+
+                    var link = card.querySelector('.register-button');
+                    if (!link) return;
+
+                    // получаем href атрибут (если его нет — значит регистрация недоступна)
+                    var href = link.getAttribute('href');
+                    if (!href) return;
+
+                    // перенаправляем как при нажатии на кнопку регистрации
+                    window.location.href = href;
+                });
+            });
+        });
+    </script>
+
 </body>

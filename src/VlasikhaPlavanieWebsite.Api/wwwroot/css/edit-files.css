@@ -114,3 +114,62 @@ a {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* ===== Fix: long links should not overflow the card/container ===== */
+.edit-files-container,
+.file-item,
+.file-name {
+    min-width: 0; /* важно для flex/grid-контейнеров */
+}
+
+    .file-name p {
+        margin: 6px 0 0;
+        max-width: 100%;
+    }
+
+    /* Сама ссылка: разрешаем переносы/разрывы длинных URL */
+    .file-name a {
+        display: inline-block;
+        max-width: 100%;
+        overflow-wrap: anywhere; /* современно: переносить где угодно */
+        word-break: break-word; /* fallback */
+        hyphens: auto; /* красивее в некоторых браузерах */
+    }
+
+    /* Если где-то влезает "в одну строку" и ломает — подстрахуем общий текст */
+    .file-name,
+    .file-name p,
+    .file-name span,
+    .file-name strong {
+        overflow-wrap: anywhere;
+    }
+
+/* ===== Fix overflow caused by padding on 100% width ===== */
+.edit-files-container,
+.file-item,
+.file-actions,
+.file-name,
+.delete-form,
+.replace-form {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+/* Страховка от горизонтального скролла */
+html, body {
+    overflow-x: hidden;
+}
+
+/* Контейнер: не шире экрана с учётом внутренних отступов */
+.edit-files-container {
+    width: min(800px, 100%);
+}
+
+/* На мобилке уменьшаем отступы и убираем “впритык к краю” */
+@media (max-width: 768px) {
+    .edit-files-container {
+        width: calc(100% - 24px);
+        margin: 16px auto;
+        padding: 14px;
+    }
+}

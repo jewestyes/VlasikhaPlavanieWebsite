@@ -1,123 +1,314 @@
+:root {
+    --bg: #f6f8fb;
+    --card-bg: #ffffff;
+    --muted: #6b7280;
+    --accent: #2563eb; /* primary blue */
+    --accent-dark: #1e40af;
+    --success: #16a34a;
+    --border: #e6e9ef;
+    --shadow: 0 6px 18px rgba(16,24,40,0.06);
+    --radius: 10px;
+    --max-width: 1300px;
+    --gap: 12px;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; font-family: var(--font-sans); background: var(--bg); color: #0f172a; }
+
+/* Container */
 .participants-container {
-    background-color: #fff;
-    margin: 50px auto;
+    max-width: var(--max-width);
+    margin: 36px auto;
+    background: var(--card-bg);
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 1300px;
-    width: 100%;
-    overflow-x: auto; /* Добавляем горизонтальную прокрутку */
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
-.participants-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: #fff;
-    min-width: 1000px; /* Устанавливаем минимальную ширину таблицы */
-}
-
-    .participants-table, .participants-table th, .participants-table td {
-        border: 1px solid #ddd;
-    }
-
-        .participants-table th, .participants-table td {
-            padding: 15px;
-            text-align: left;
-        }
-
-        .participants-table th {
-            background-color: #007bff;
-            color: #fff;
-            text-transform: uppercase;
-        }
-
-        .participants-table td a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-            .participants-table td a:hover {
-                text-decoration: underline;
-            }
-
-.download-excel-button {
+/* Title + controls row */
+.participants-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #0b1320;
     display: inline-block;
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
+}
+
+/* Controls wrapper (download + search + buttons) */
+.controls {
+    display: flex;
+    gap: var(--gap);
+    align-items: center;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+/* Download button */
+.download-excel-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: #fff;
-    background-color: #28a745;
+    background: linear-gradient(180deg, var(--success), #0f9a3f);
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     text-decoration: none;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+    box-shadow: 0 6px 12px rgba(16, 185, 129, 0.12);
+}
+.download-excel-button:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(16,185,129,0.12); }
+.download-excel-button:active { transform: translateY(0); }
+.download-excel-button:focus { outline: 3px solid rgba(16,185,129,0.18); outline-offset: 2px; }
+
+/* Disabled */
+.download-excel-button.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    box-shadow: none;
 }
 
-    .download-excel-button:hover {
-        background-color: #218838;
-    }
-
-    .download-excel-button:active {
-        background-color: #1e7e34;
-    }
-
-    .download-excel-button:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.5);
-    }
-
-    .download-excel-button.disabled {
-        pointer-events: none;
-        opacity: 0.5;
-    }
-
+/* Competition buttons group */
 .competitions-buttons {
-    margin-bottom: 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .competition-button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 5px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    background: #eef2ff;
+    color: var(--accent-dark);
+    border: 1px solid #e0e7ff;
+    border-radius: 999px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 160ms ease, transform 120ms ease;
+}
+.competition-button:hover { background: #e0e7ff; transform: translateY(-1px); }
+.competition-button:focus { outline: 3px solid rgba(37,99,235,0.12); outline-offset: 2px; }
+
+/* Table wrapper to allow horizontal scroll on small widths */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(15,23,42,0.02), transparent);
+    padding: 6px;
 }
 
-    .competition-button:hover {
-        background-color: #0056b3;
-    }
-
-    .competition-button:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
-    }
-
-@media (max-width: 768px) {
-    .participants-container {
-        padding: 15px;
-    }
-
-    .participants-table th, .participants-table td {
-        padding: 10px;
-    }
+/* Table base styles */
+.participants-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 920px; /* keep reasonable default, allows horizontal scroll on tiny viewports */
+    background: var(--card-bg);
+    box-shadow: 0 2px 6px rgba(12,18,28,0.03);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 0.92rem;
 }
 
-@media (max-width: 480px) {
-    .participants-container {
-        margin: 20px auto;
-        padding: 10px;
+/* Header */
+.participants-table thead th {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(180deg, #fbfcff, #f8fbff);
+    color: #0b1220;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.6px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    z-index: 3;
+}
+
+/* Cells */
+.participants-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    color: #091022;
+}
+
+/* Row hover and zebra */
+.participants-table tbody tr {
+    transition: background-color 120ms ease;
+}
+.participants-table tbody tr:nth-child(even) { background: #ffffff; }
+.participants-table tbody tr:hover { background: #f1f5ff; }
+
+/* Links inside table */
+.participants-table td a {
+    color: var(--accent);
+    text-decoration: none;
+}
+.participants-table td a:hover { text-decoration: underline; }
+
+/* Narrow columns for predictable layout */
+.participants-table th:nth-child(1),
+.participants-table td:nth-child(1) { width: 160px; } /* Дата заказа */
+.participants-table th:nth-child(2),
+.participants-table td:nth-child(2) { width: 120px; } /* OrderId */
+.participants-table th:nth-child(6),
+.participants-table td:nth-child(6) { width: 120px; } /* Дата рождения */
+.participants-table th:nth-child(9),
+.participants-table td:nth-child(9) { width: 90px; }  /* Разряд */
+
+/* Small utility */
+.small-muted { color: var(--muted); font-size: 0.85rem; }
+
+/* Responsive: convert rows to stacked cards on very small screens */
+@media (max-width: 720px) {
+    .participants-container { padding: 14px; margin: 16px; }
+    .controls { flex-direction: column; align-items: stretch; gap: 10px; }
+
+    .table-responsive { padding: 0; background: transparent; box-shadow: none; }
+
+    .participants-table, .participants-table thead, .participants-table tbody, .participants-table th, .participants-table td, .participants-table tr {
+        display: block;
     }
 
-    .participants-table, .participants-table th, .participants-table td {
-        font-size: 14px;
+    .participants-table thead { display: none; }
+
+    .participants-table tbody tr {
+        margin-bottom: 10px;
+        background: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        padding: 12px;
+        border: 1px solid var(--border);
     }
+
+    .participants-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 8px;
+        border: none;
+        border-bottom: 1px dashed var(--border);
+        font-size: 0.95rem;
+    }
+    .participants-table tbody td:last-child { border-bottom: none; }
+
+    .participants-table tbody td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-weight: 600;
+        margin-right: 8px;
+        flex: 0 0 45%;
+        text-align: left;
+    }
+
+    /* make download button full-width on mobile */
+    .download-excel-button { width: 100%; justify-content: center; }
+}
+
+/* Accessibility: visible focus for keyboard users */
+.participants-table tbody tr:focus-within { outline: 3px solid rgba(37,99,235,0.08); border-radius: 6px; }
+
+/* Print optimization */
+@media print {
+    .participants-container { box-shadow: none; background: #fff; }
+    .controls, .competitions-buttons { display: none; }
+    .participants-table { min-width: auto; font-size: 10pt; }
+}
+
+/* ===== Mobile fix: disable "stacked cards" table mode (needs data-label in HTML) ===== */
+@media (max-width: 720px) {
+    .participants-container {
+        padding: 14px;
+        margin: 16px;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .download-excel-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Keep table readable on mobile by using horizontal scroll instead of block-cards */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 6px;
+        background: linear-gradient(180deg, rgba(15,23,42,0.02), transparent);
+    }
+
+    /* Revert display: block transforms back to real table layout */
+    .participants-table {
+        display: table !important;
+        width: 100% !important;
+        min-width: 920px !important; /* keep your current baseline; scroll will handle it */
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        font-size: 0.9rem;
+    }
+
+        .participants-table thead {
+            display: table-header-group !important;
+        }
+
+        .participants-table tbody {
+            display: table-row-group !important;
+        }
+
+        .participants-table tr {
+            display: table-row !important;
+        }
+
+        .participants-table th,
+        .participants-table td {
+            display: table-cell !important;
+            padding: 12px 14px !important;
+            border-bottom: 1px solid var(--border) !important;
+            vertical-align: middle !important;
+        }
+
+        /* Remove card-like row styling that breaks table flow */
+        .participants-table tbody tr {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        /* Disable pseudo-labels (they rely on data-label which isn't guaranteed) */
+        .participants-table tbody td::before {
+            content: none !important;
+        }
+
+        /* Prevent ugly overflow in cells */
+        .participants-table td {
+            white-space: nowrap;
+        }
+
+            .participants-table td a {
+                white-space: nowrap;
+            }
+
+        /* Optional: slightly smaller header to fit more columns visually */
+        .participants-table thead th {
+            font-size: 0.72rem;
+            letter-spacing: 0.5px;
+        }
 }

@@ -47,6 +47,7 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
+		[ValidateAntiForgeryToken]
 		[Route("Admin/Login")]
 		public async Task<IActionResult> Login(LoginViewModel model)
 		{
@@ -81,7 +82,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
 				ModelState.AddModelError(string.Empty, "Произошла непредвиденная ошибка.");
 			}
 
-			return RedirectToAction("Index", "Admin");
+			// Возвращаем View с моделью, чтобы показать ошибки пользователю
+			return View(model);
 		}
 
 
