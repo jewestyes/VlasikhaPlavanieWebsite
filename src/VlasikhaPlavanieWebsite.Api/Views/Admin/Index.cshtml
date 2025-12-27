@@ -54,20 +54,20 @@
                     @foreach (var item in Model)
                     {
                         <tr data-competition="@item.RegistrationCompetitionName">
-                            <td>@item.CreatedAt.AddHours(3).ToString("dd.MM.yyyy HH:mm")</td>
-                            <td>@item.OrderId</td>
-                            <td>@item.FirstName</td>
-                            <td>@item.LastName</td>
-                            <td>@item.MiddleName</td>
-                            <td>@item.BirthDate.ToString("dd.MM.yyyy")</td>
-                            <td>@item.Gender</td>
-                            <td>@item.CityOrTeam</td>
-                            <td>@item.Rank</td>
-                            <td>@item.Phone</td>
-                            <td>@item.Email</td>
-                            <td>@item.DisciplineName</td>
-                            <td>@item.Distance</td>
-                            <td>@item.EntryTime</td>
+                            <td data-label="Дата заказа">@item.CreatedAt.AddHours(3).ToString("dd.MM.yyyy HH:mm")</td>
+                            <td data-label="OrderId">@item.OrderId</td>
+                            <td data-label="Имя">@item.FirstName</td>
+                            <td data-label="Фамилия">@item.LastName</td>
+                            <td data-label="Отчество">@item.MiddleName</td>
+                            <td data-label="Дата рождения">@item.BirthDate.ToString("dd.MM.yyyy")</td>
+                            <td data-label="Пол">@item.Gender</td>
+                            <td data-label="Город/Команда">@item.CityOrTeam</td>
+                            <td data-label="Разряд">@item.Rank</td>
+                            <td data-label="Телефон">@item.Phone</td>
+                            <td data-label="Email">@item.Email</td>
+                            <td data-label="Дисциплина">@item.DisciplineName</td>
+                            <td data-label="Дистанция">@item.Distance</td>
+                            <td data-label="Заявочное время">@item.EntryTime</td>
                         </tr>
                     }
                 </tbody>
