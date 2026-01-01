@@ -91,13 +91,13 @@
         function filterBycompetition(competition) {
             selectedcompetition = competition;
             var rows = document.querySelectorAll('#participants-body tr');
-            rows.forEach(function (row) {
-                if (row.getAttribute('data-competition') === competition) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+                    rows.forEach(function (row) {
+            if (row.getAttribute('data-competition') === competition) {
+                row.style.removeProperty('display');
+            } else {
+                row.style.setProperty('display', 'none', 'important');
+            }
+        });
 
             var downloadButton = document.getElementById('download-button');
             downloadButton.href = baseDownloadUrl + '?competitionName=' + encodeURIComponent(competition);
@@ -115,7 +115,10 @@
                     btn.style.display = 'none';
                     if (btn.textContent.indexOf(selectedcompetition) !== -1) {
                         selectedcompetition = '';
-                        document.querySelectorAll('#participants-body tr').forEach(function (r) { r.style.display = ''; });
+                                document.querySelectorAll('#participants-body tr').forEach(function (r) {
+            r.style.removeProperty('display');
+        });
+
                         var downloadButton = document.getElementById('download-button');
                         downloadButton.classList.add('disabled');
                         downloadButton.href = '#';
