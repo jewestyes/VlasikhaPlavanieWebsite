@@ -19,15 +19,18 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 		private readonly ApplicationDbContext _db;
 		private readonly ILogger<AlfaWebhookService> _logger;
 		private readonly IConfiguration _configuration;
+		private readonly IEmailService _emailService;
 
 		public AlfaWebhookService(
 			ApplicationDbContext db,
 			ILogger<AlfaWebhookService> logger,
-			IConfiguration configuration)
+			IConfiguration configuration,
+			IEmailService emailService)
 		{
 			_db = db;
 			_logger = logger;
 			_configuration = configuration;
+			_emailService = emailService;
 		}
 
 		public async Task<IActionResult> HandleWebhookAsync(AlfaCallbackQuery model, IQueryCollection query)
@@ -149,6 +152,15 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 
 				await _db.SaveChangesAsync();
 				await transaction.CommitAsync();
+
+				try
+				{
+					await _emailService.SendPaymentConfirmationAsync(order.Id);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, "Failed to send payment confirmation email for orderNumber={Order}", model.orderNumber);
+				}
 
 				_logger.LogInformation("Order marked as Paid (Alfa deposited). orderNumber={Order}, mdOrder={MdOrder}", model.orderNumber, model.mdOrder);
 				return new OkObjectResult("OK");
