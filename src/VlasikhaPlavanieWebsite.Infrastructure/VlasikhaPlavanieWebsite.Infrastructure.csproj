@@ -1,26 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\VlasikhaPlavanieWebsite.Application\VlasikhaPlavanieWebsite.Application.csproj" />
-    <ProjectReference Include="..\VlasikhaPlavanieWebsite.Domain\VlasikhaPlavanieWebsite.Domain.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
-	<PackageReference Include="EPPlus" Version="7.3.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\VlasikhaPlavanieWebsite.Application\VlasikhaPlavanieWebsite.Application.csproj" />
+		<ProjectReference Include="..\VlasikhaPlavanieWebsite.Domain\VlasikhaPlavanieWebsite.Domain.csproj" />
+		<PackageReference Include="MailKit" Version="4.14.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
+		<PackageReference Include="EPPlus" Version="7.3.0" />
+		<PackageReference Include="MimeKit" Version="4.14.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-    <Folder Include="Migrations\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Data\Migrations\" />
+		<Folder Include="Migrations\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Templates\payment_confirmation.html">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>

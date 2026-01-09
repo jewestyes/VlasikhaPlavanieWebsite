@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{Title}}</title>
+  <style>
+    /* Простые стили для писем — лучше оставлять инлайном для максимальной совместимости, но
+       здесь для удобства используем минимальные правила и классы, которые будут располагаться
+       внутри HTML-шаблона и попадать в тело письма. */
+    .container { width:100%; background:#f3f4f6; padding:28px 16px; }
+    .card { max-width:640px; width:100%; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(11,18,32,0.08); }
+    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#ecfdf3; color:#027a48; font-weight:600; font-size:12px; }
+    .title { font-weight:700; font-size:20px; color:#0b1220; }
+    .subtitle { margin-top:6px; color:#475467; }
+    .section { padding:16px 20px; }
+    .participant-name { font-weight:600; font-size:14px; color:#0b1220; }
+    .participant-meta { margin-top:6px; color:#667085; font-size:13px; }
+    .disciplines-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .discipline-dot { width:18px; vertical-align:top; padding-top:2px; }
+    .discipline-text { padding:0 0 8px 0; color:#0b1220; font-size:13px; }
+    .footer { max-width:640px; margin:12px auto 0; color:#98a2b3; font-size:12px; text-align:center; }
+  </style>
+</head>
+<body style="margin:0; padding:0;">
+  <div class="container">
+    <div class="card">
+      <div style="padding:20px 20px 0 20px;">
+        <div class="badge">Оплата подтверждена</div>
+      </div>
+
+      <div style="padding:12px 20px 0 20px;">
+        <div class="title">{{Title}}</div>
+        <div class="subtitle">Регистрация успешно оплачена. Ниже — участники и дисциплины.</div>
+      </div>
+
+      <div style="padding:10px 0 0 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; border-collapse:collapse;">
+          {{List}}
+        </table>
+      </div>
+
+      <div style="padding:18px 20px 20px 20px;">
+        <div style="padding:14px; border-radius:12px; background:#f8fafc; border:1px solid #e6e8ee;">
+          <div style="font-weight:600; color:#0b1220;">Спасибо за регистрацию!</div>
+          <div style="margin-top:4px; color:#667085;">Если вы получили это письмо по ошибке — просто проигнорируйте его.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer">Aqua Olymp • автоматическое уведомление</div>
+  </div>
+</body>
+</html>

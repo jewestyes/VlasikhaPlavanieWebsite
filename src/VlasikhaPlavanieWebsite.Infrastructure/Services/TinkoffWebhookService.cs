@@ -113,15 +113,6 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 				await _applicationDbContext.SaveChangesAsync();
 				await transaction.CommitAsync();
 
-				try
-				{
-					await _emailService.SendPaymentConfirmationAsync(order.Id);
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError(ex, "Failed to send payment confirmation email for OrderId: {OrderId}", model.OrderId);
-				}
-
 				_logger.LogInformation("Order {OrderId} marked as Paid.", model.OrderId);
 				return new OkObjectResult("OK");
 			}
