@@ -18,14 +18,17 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services
 		private readonly ApplicationDbContext _applicationDbContext;
 		private readonly ILogger<TinkoffWebhookService> _logger;
 		private readonly IConfiguration _configuration;
+		private readonly IEmailService _emailService;
 		public TinkoffWebhookService(
 			ApplicationDbContext context,
 			ILogger<TinkoffWebhookService> logger,
-			IConfiguration configuration)
+			IConfiguration configuration,
+			IEmailService emailService)
 		{
 			_applicationDbContext = context;
 			_logger = logger;
 			_configuration = configuration;
+			_emailService = emailService;
 		}
 		public async Task<IActionResult> HandleWebhookAsync(TinkoffWebhook model)
 		{
