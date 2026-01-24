@@ -8,6 +8,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 	{
 		Task CreateCompetitionAsync(ManageCompetitionsViewModel model);
 		Task ChangeStatusAsync(int id, bool isOpen);
+		Task UpdatePriceAsync(int id, decimal price);
 		Task<List<Competition>> GetAllAsync();
 	}
 }
