@@ -105,6 +105,17 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Admin
 			return competitions;
 		}
 
+		public async Task UpdatePriceAsync(int id, decimal price)
+		{
+			var competition = await _applicationDbContext.Competitions.FindAsync(id);
+
+			if (competition != null)
+			{
+				competition.Price = price;
+				await _applicationDbContext.SaveChangesAsync();
+			}
+		}
+
 		private async Task SaveUploadedFileAsync(IFormFile file, string folderType, string propertyName, Competition competition, string fileName)
 		{
 			if (file == null || file.Length == 0)

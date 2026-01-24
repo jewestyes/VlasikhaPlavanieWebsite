@@ -5,6 +5,14 @@
 <div class="manage-competitions-container">
 	<h2>Управление регистрациями</h2>
 
+	@if (TempData["SuccessMessage"] != null)
+	{
+		<div id="success-alert" class="alert alert-success alert-dismissible" role="alert">
+			<span>@TempData["SuccessMessage"]</span>
+			<button type="button" class="alert-close" aria-label="Закрыть">&times;</button>
+		</div>
+	}
+
 	<h3>Создать новое соревнование</h3>
 
 	<form asp-action="CreateCompetition" method="post" enctype="multipart/form-data">
@@ -85,7 +93,16 @@
 						@(competition.RegistrationEndDate.HasValue ? competition.RegistrationEndDate.Value.ToString("yyyy-MM-dd HH:mm") : "Не завершен")
 					</div>
 					<div>@(competition.IsOpen ? "Открыта" : "Закрыта")</div>
-					<div>Цена участия: @competition.Price</div>
+				<div>
+					Цена участия: @competition.Price
+				</div>
+				<div class="price-edit">
+				<form asp-action="UpdateCompetitionPrice" method="post" class="form-inline">
+					<input type="hidden" name="id" value="@competition.Id" />
+					<input type="number" name="price" value="@competition.Price" min="0" step="0.01" class="form-control price-input" />
+					<button type="submit" class="btn btn-primary" style="background-color:#2563eb; border-color:rgba(37,99,235,0.55); color:#fff;">Изменить</button>
+				</form>
+				</div>
 				</div>
 				<div class="competition-actions">
 					@if (competition.IsOpen)
@@ -118,6 +135,31 @@
 				input.disabled = !this.checked;
 				if (!this.checked) {
 					input.value = "";
+				}
+			});
+		});
+
+		// Dismissible alert
+		var alertClose = document.querySelector("#success-alert .alert-close");
+		if (alertClose) {
+			alertClose.addEventListener("click", function () {
+				document.getElementById("success-alert").style.display = "none";
+			});
+			setTimeout(function () {
+				var el = document.getElementById("success-alert");
+				if (el) el.style.display = "none";
+			}, 5000);
+		}
+
+		// Confirmation for price change
+		document.querySelectorAll('form[asp-action="UpdateCompetitionPrice"]').forEach(function (form) {
+			form.addEventListener('submit', function (e) {
+				e.preventDefault();
+				var price = form.querySelector('input[name="price"]').value;
+				var name = form.closest('.competition-item').querySelector('.competition-name').innerText;
+				var confirmed = confirm('Вы уверены, что хотите изменить цену соревнования "' + name + '" на ' + price + ' ?');
+				if (confirmed) {
+					form.submit();
 				}
 			});
 		});

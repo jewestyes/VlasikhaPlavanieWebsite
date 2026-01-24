@@ -265,5 +265,33 @@ namespace VlasikhaPlavanieWebsite.Controllers
 
 			return RedirectToAction("ManageCompetitions");
 		}
+
+		[HttpPost]
+		[Route("Admin/UpdateCompetitionPrice")]
+		public async Task<IActionResult> UpdateCompetitionPrice(int id, decimal price)
+		{
+			if (id <= 0)
+			{
+				return BadRequest("Invalid competition id.");
+			}
+
+			if (price < 0)
+			{
+				ModelState.AddModelError(string.Empty, "Цена не может быть отрицательной.");
+				var competitions = await _competitionService.GetAllAsync();
+				var orderedCompetitions = competitions
+					.OrderByDescending(c => c.IsOpen)
+					.ThenByDescending(c => c.RegistrationStartDate)
+					.ToList();
+
+				return View("ManageCompetitions", new ManageCompetitionsViewModel { Competitions = orderedCompetitions });
+			}
+
+			await _competitionService.UpdatePriceAsync(id, price);
+
+			TempData["SuccessMessage"] = "Цена успешно обновлена.";
+
+			return RedirectToAction("ManageCompetitions");
+		}
 	}
 }
