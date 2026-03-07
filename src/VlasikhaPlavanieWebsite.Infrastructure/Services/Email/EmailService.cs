@@ -133,7 +133,7 @@ namespace VlasikhaPlavanieWebsite.Infrastructure.Services.Email
 						var message = new MimeMessage();
 						var senderAddress = MailboxAddress.Parse(!string.IsNullOrWhiteSpace(username) ? username : from);
 						message.Sender = senderAddress;
-						message.From.Add(new MailboxAddress("Aqua Olymp", from));
+						message.From.Add(new MailboxAddress("Аква Олимп", from));
 
 
 						// Add default CC addresses from configuration (comma or semicolon separated)
