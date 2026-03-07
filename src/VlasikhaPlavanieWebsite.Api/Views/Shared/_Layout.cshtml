@@ -50,7 +50,7 @@
 					<li class="nav-dropdown">
 						<span class="nav-link">Файлы</span>
 						<ul class="dropdown-list">
-							@foreach (var key in new[] { "Положение", "Регламент", "Памятка", "Правила плавание", "Online результаты", "Первый лист", "Список судей", "Нормативы" })
+							@foreach (var key in new[] { "Положение", "Регламент", "Памятка", "Правила плавание", "История результатов", "Первый лист", "Список судей", "Нормативы" })
 							{
 								if (buttonFiles.TryGetValue(key, out var file) && !string.IsNullOrEmpty(file.FilePath))
 								{
