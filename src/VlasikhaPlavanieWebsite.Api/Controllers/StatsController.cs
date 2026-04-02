@@ -57,6 +57,8 @@ namespace VlasikhaPlavanieWebsite.Controllers
 		}
 
         [HttpPost]
+        [RequestSizeLimit(60 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 60 * 1024 * 1024)]
         public async Task<IActionResult> AddFile(int id, IFormFile file)
         {
 			try
